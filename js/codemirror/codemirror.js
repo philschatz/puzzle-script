@@ -5,12 +5,14 @@
 // at http://marijnhaverbeke.nl/blog/#cm-internals .
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    module.exports = mod();
-  else if (typeof define == "function" && define.amd) // AMD
-    return define([], mod);
-  else // Plain browser env
-    this.CodeMirror = mod();
+  // TODO: Find a better way to pull out CodeMirror as a module
+  window.CodeMirror = mod();
+  // if (typeof exports == "object" && typeof module == "object") // CommonJS
+  //   module.exports = mod();
+  // else if (typeof define == "function" && define.amd) // AMD
+  //   return define([], mod);
+  // else // Plain browser env
+  //   this.CodeMirror = mod();
 })(function() {
   "use strict";
 
@@ -3749,7 +3751,7 @@
     constructor: CodeMirror,
 
     posFromMouse: function(e)  { return posFromMouse(this,e,true);},
-    
+
     focus: function(){window.focus(); focusInput(this); fastPoll(this);},
 
     setOption: function(option, value) {
@@ -7341,3 +7343,6 @@
 
   return CodeMirror;
 });
+
+
+export default window.CodeMirror;

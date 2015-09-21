@@ -12,11 +12,11 @@ export function jumpToLine(i) {
 }
 
 var consolecache = [];
-function consolePrint(text,urgent) {
+export function consolePrint(text,urgent) {
 	if (urgent===undefined) {
 		urgent=false;
 	}
-	if (cache_console_messages&&urgent==false) {		
+	if (cache_console_messages&&urgent==false) {
 		consolecache.push(text);
 	} else {
 		addToConsole(text);
@@ -26,12 +26,12 @@ function consolePrint(text,urgent) {
 
 var cache_n = 0;
 
-function addToConsole(text) {
+export function addToConsole(text) {
 	cache = document.createElement("div");
 	cache.id = "cache" + cache_n;
 	cache.innerHTML = text;
 	cache_n++;
-	
+
 	var code = document.getElementById('consoletextarea');
 	code.appendChild(cache);
 	consolecache=[];
@@ -39,11 +39,11 @@ function addToConsole(text) {
 	objDiv.scrollTop = objDiv.scrollHeight;
 }
 
-function consoleCacheDump() {
+export function consoleCacheDump() {
 	if (cache_console_messages===false) {
 		return;
 	}
-	
+
 	var lastline = "";
 	var times_repeated = 0;
 	var summarised_message = "<br>";
@@ -60,21 +60,21 @@ function consoleCacheDump() {
 			times_repeated = 0;
 		}
 	}
-	
+
 
 	addToConsole(summarised_message);
 }
 
-function consoleError(text) {	
+export function consoleError(text) {
         var errorString = '<span class="errorText">' + text + '</span>';
         consolePrint(errorString,true);
 }
-function clearConsole() {
+export function clearConsole() {
 	var code = document.getElementById('consoletextarea');
 	code.innerHTML = '';
 	var objDiv = document.getElementById('lowerarea');
 	objDiv.scrollTop = objDiv.scrollHeight;
 }
 
-var clearConsoleClick = document.getElementById("clearConsoleClick");
-clearConsoleClick.addEventListener("click", clearConsole, false);
+// var clearConsoleClick = document.getElementById("clearConsoleClick");
+// clearConsoleClick.addEventListener("click", clearConsole, false);

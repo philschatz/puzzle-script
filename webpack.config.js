@@ -23,7 +23,7 @@ var config = {
         //   { test: /\.jsx?$/, loader: 'eslint-loader', exclude: /node_modules/ },
         // ],
         loaders: [
-            { test: /\.jsx?$/, loaders: ['babel'], exclude: /node_modules/ },
+            { test: /\.jsx?$/, loaders: ['babel?blacklist=useStrict'], exclude: /node_modules/ }, //TODO: re-enable use-strict
             // { test: /\.less$/,  loader: ExtractTextPlugin.extract('css!less') },
             // { test: /\.(png|jpg|svg)/, loader: 'file-loader?name=[name].[ext]'},
             // { test: /\.(woff|woff2|eot|ttf)/, loader: "url-loader?limit=30000&name=[name]-[hash].[ext]" }
@@ -38,9 +38,9 @@ var config = {
 
 if (!isBuild) {
   // config.debug = true;
-  // config.devtool = 'inline-source-map';
+  config.devtool = 'inline-source-map';
   // config.entry.unshift('webpack/hot/only-dev-server');
-  // config.entry.unshift('webpack-dev-server/client?http://0.0.0.0:8080');
+  config.entry.unshift('webpack-dev-server/client?http://0.0.0.0:8080');
   // config.devServer.hotComponents = true;
 }
 

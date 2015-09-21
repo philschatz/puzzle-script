@@ -1,3 +1,7 @@
+import PHIL_HACK from './_global-graphics';
+import font from './font';
+import {sprites, _o12} from './engine';
+
 export function createSprite(name,spritegrid, colors, padding) {
 	if (colors === undefined) {
 		colors = [state.bgcolor, state.fgcolor];
@@ -76,7 +80,6 @@ var glyphMouseOver;
 var glyphSelectedIndex=0;
 var editorRowCount=1;
 
-var canvasdict={};
 export function makeSpriteCanvas(name) {
     var canvas;
     if (name in canvasdict) {
@@ -160,21 +163,22 @@ export function generateGlyphImages() {
 	}
 }
 
-var canvas;
-var ctx;
-
-
-var x;
-var y;
-var cellwidth;
-var cellheight;
-var magnification;
-var xoffset;
-var yoffset;
-
+// // TODO: Move to globals or export object
+// window.canvas = null;
+// window.ctx = null;
+//
+// // TODO: Move to globals or export object
+// window.x;
+// window.y;
+// window.cellwidth;
+// window.cellheight;
+// window.magnification;
+// window.xoffset;
+// window.yoffset;
+//
 window.addEventListener('resize', canvasResize, false);
-canvas = document.getElementById('gameCanvas');
-ctx = canvas.getContext('2d');
+// canvas = document.getElementById('gameCanvas');
+// ctx = canvas.getContext('2d');
 x = 0;
 y = 0;
 

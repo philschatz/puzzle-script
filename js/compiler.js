@@ -1,3 +1,7 @@
+import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setGameState} from './engine';
+import {consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
+import {codeMirrorFn} from './parser';
+
 'use strict';
 
 
@@ -40,7 +44,9 @@ export function generateSpriteMatrix(dat) {
 	return result;
 }
 
-var debugMode;
+// TODO: use globals or something
+window.debugMode = null;
+// var debugMode;
 var colorPalette;
 
 export function generateExtraMembers(state) {

@@ -9,11 +9,10 @@ import * as FOO8 from './colors';
 import * as FOO9 from './graphics';
 import * as FOO10 from './engine';
 import * as FOO11 from './parser';
-import * as FOO12 from './compiler';
+import {compile, qualifyURL} from './compiler';
 import * as FOO13 from './inputoutput';
 import * as FOO14 from './mobile';
 
-const {compile} = FOO12;
 
 
 

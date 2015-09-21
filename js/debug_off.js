@@ -1,44 +1,45 @@
-var canSetHTMLColors=true;
-var canDump=false;
-var canOpenEditor=false;
-var canYoutube=true;
-var IDE=false;
+// TODO: Move to globals or export
+window.canSetHTMLColors=true;
+window.canDump=false;
+window.canOpenEditor=false;
+window.canYoutube=true;
+window.IDE=false;
 
-function stripTags(str) {
+export function stripTags(str) {
 	var div = document.createElement("div");
 	div.innerHTML = str;
 	var result = div.textContent || div.innerText || "";
 	return result;
 }
 
-function consolePrint(str){
+export function consolePrint(str){
 /*	var errorText = document.getElementById("errormessage");
-	
+
 	str=stripTags(str);
 	errorText.innerHTML+=str+"<br>";*/
 }
 
-function consoleCacheDump(str){
-	
+export function consoleCacheDump(str){
+
 }
 
-function consoleError(str,lineNumber){
+export function consoleError(str,lineNumber){
 	var errorText = document.getElementById("errormessage");
 	str=stripTags(str);
 	errorText.innerHTML+=str+"<br>";
 }
 
-function logErrorNoLine(str){
+export function logErrorNoLine(str){
 	var errorText = document.getElementById("errormessage");
 	str=stripTags(str);
 	errorText.innerHTML+=str+"<br>";
 }
 
-function logBetaMessage(str){
+export function logBetaMessage(str){
 	var errorText = document.getElementById("errormessage");
 	str=stripTags(str);
-	errorText.innerHTML+=str+"<br>";	
+	errorText.innerHTML+=str+"<br>";
 }
 
-function clearInputHistory() {}
+export function clearInputHistory() {}
 export function pushInput(inp) {}

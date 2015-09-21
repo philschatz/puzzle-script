@@ -1,3 +1,5 @@
+import {RNG} from './rng';
+
 var SOUND_VOL = 0.25;
 var SAMPLE_RATE = 5512;
 var BIT_DEPTH = 8;
@@ -95,7 +97,7 @@ function rnd(max) {
 }
 
 
-pickupCoin = function() {
+var pickupCoin = function() {
   var result=Params();
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
@@ -116,7 +118,7 @@ pickupCoin = function() {
 };
 
 
-laserShoot = function() {
+var laserShoot = function() {
   var result=Params();
   result.wave_type = rnd(2);
   if (result.wave_type === SINE && rnd(1))
@@ -163,7 +165,7 @@ laserShoot = function() {
   return result;
 };
 
-explosion = function() {
+var explosion = function() {
   var result=Params();
 
   if (rnd(1)) {
@@ -198,7 +200,7 @@ explosion = function() {
   return result;
 };
 //9675111
-birdSound = function() {
+var birdSound = function() {
   var result=Params();
 
 if (frnd(10) < 1) {
@@ -390,7 +392,7 @@ return result;
 };
 
 
-pushSound = function() {
+var pushSound = function() {
   var result=Params();
   result.wave_type = Math.floor(frnd(SHAPES.length));//TRIANGLE;
   if (result.wave_type === 2) {
@@ -418,7 +420,7 @@ pushSound = function() {
 
 
 
-powerUp = function() {
+var powerUp = function() {
   var result=Params();
   if (rnd(1))
     result.wave_type = SAWTOOTH;
@@ -451,7 +453,7 @@ powerUp = function() {
   return result;
 };
 
-hitHurt = function() {
+var hitHurt = function() {
   result = Params();
   result.wave_type = rnd(2);
   if (result.wave_type === SINE)
@@ -470,7 +472,7 @@ hitHurt = function() {
 };
 
 
-jump = function() {
+var jump = function() {
   result = Params();
   result.wave_type = SQUARE;
   result.wave_type = Math.floor(frnd(SHAPES.length));
@@ -490,7 +492,7 @@ jump = function() {
   return result;
 };
 
-blipSelect = function() {
+var blipSelect = function() {
   result = Params();
   result.wave_type = rnd(1);
   result.wave_type = Math.floor(frnd(SHAPES.length));
@@ -507,7 +509,7 @@ blipSelect = function() {
   return result;
 };
 
-random = function() {
+var random = function() {
   result = Params();
   result.wave_type = Math.floor(frnd(SHAPES.length));
   result.p_base_freq = Math.pow(frnd(2.0) - 1.0, 2.0);
@@ -576,7 +578,7 @@ var generatorNames = [
 /*
 i like 9675111
 */
-generateFromSeed = function(seed) {
+var generateFromSeed = function(seed) {
   rng = new RNG((seed / 100) | 0);
   var generatorindex = seed % 100;
   var soundGenerator = generators[generatorindex % generators.length];
@@ -929,12 +931,12 @@ window.console.log(psstring);*/
   return sound;
 };
 
-if (typeof exports != 'undefined') {
-  // For node.js
-  var RIFFWAVE = require('./riffwave').RIFFWAVE;
-  exports.Params = Params;
-  exports.generate = generate;
-}
+// if (typeof exports != 'undefined') {
+//   // For node.js
+//   var RIFFWAVE = require('./riffwave').RIFFWAVE;
+//   exports.Params = Params;
+//   exports.generate = generate;
+// }
 
 var sfxCache = {};
 var cachedSeeds = [];
@@ -963,7 +965,7 @@ function cacheSeed(seed){
   return sound;
 }
 
-function playSound(seed) {
+export function playSound(seed) {
   if (unitTesting) return;
   var sound = cacheSeed(seed);
   sound.play();

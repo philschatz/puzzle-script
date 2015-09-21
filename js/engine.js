@@ -1,3 +1,9 @@
+import {RNG} from './rng';
+import {canvasResize} from './graphics';
+import {clearInputHistory, consolePrint} from './debug_off';
+import {logErrorCacheable} from './parser';
+import {playSound} from './sfxr';
+
 /*
 ..................................
 .............SOKOBAN..............
@@ -136,14 +142,15 @@ var titletemplate_select1_selected = [
 	".Z to undo, R to restart..........",
 	".................................."];
 
-var titleImage=[];
-var titleWidth=titletemplate_select1[0].length;
-var titleHeight=titletemplate_select1.length;
-var textMode=true;
-var titleScreen=true;
-var titleMode=0;//1 means there are options
-var titleSelection=0;
-var titleSelected=false;
+	// TODO: Move these to globals?
+window.titleImage=[];
+window.titleWidth=titletemplate_select1[0].length;
+window.titleHeight=titletemplate_select1.length;
+window.textMode=true;
+window.titleScreen=true;
+window.titleMode=0;//1 means there are options
+window.titleSelection=0;
+window.titleSelected=false;
 
 export function unloadGame() {
 	state=introstate;
@@ -243,7 +250,8 @@ var introstate = {
    	fgcolor:"#FFFFFF"
 };
 
-var state = introstate;
+// TODO: Move this to globals
+window.state = introstate;
 
 export function deepClone(item) {
     if (!item) { return item; } // null, undefined values check
@@ -724,7 +732,8 @@ export function RebuildLevelArrays() {
     }
 }
 
-var messagetext="";
+// TODO: Move to globals
+window.messagetext="";
 export function restoreLevel(lev) {
 	oldflickscreendat=lev.oldflickscreendat.concat([]);
 
@@ -1237,8 +1246,9 @@ Rule.prototype.toJSON = function() {
 	];
 };
 
-var STRIDE_OBJ = 1;
-var STRIDE_MOV = 1;
+// TODO: move these to globals?
+window.STRIDE_OBJ = 1;
+window.STRIDE_MOV = 1;
 
 export function CellPattern(row) {
 	this.objectsPresent = row[0];
@@ -2509,3 +2519,8 @@ export function goToTitleScreen(){
 	titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
 	generateTitleScreen();
 }
+
+export {ellipsisPattern, sprites}
+
+export {_o1,_o2,_o2_5,_o3,_o4,_o5,_o6,_o7,_o8,_o9,_o10,_o11,_o12}
+export {_m1,_m2,_m3}

@@ -35,7 +35,7 @@ String.prototype.getBytes = function() {
  * @param {String} seed A string to seed the generator.
  * @constructor
  */
-function RC4(seed) {
+export function RC4(seed) {
     this.s = new Array(256);
     this.i = 0;
     this.j = 0;
@@ -77,7 +77,7 @@ RC4.prototype.next = function() {
     return this.s[(this.s[this.i] + this.s[this.j]) % 256];
 };
 
-function print_call_stack() {
+export function print_call_stack() {
   var e = new Error();
   var stack = e.stack;
   console.log( stack );
@@ -89,12 +89,12 @@ function print_call_stack() {
  * @param seed An arbitrary object used to seed the generator.
  * @constructor
  */
-function RNG(seed) {
+export function RNG(seed) {
     this.seed = seed;
     if (seed == null) {
         seed = (Math.random() + Date.now()).toString();
-        //window.console.log("setting random seed "+seed); 
-        //print_call_stack();  
+        //window.console.log("setting random seed "+seed);
+        //print_call_stack();
 
     } else if (typeof seed === 'function') {
         // Use it as a uniform number generator

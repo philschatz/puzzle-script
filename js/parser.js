@@ -1,3 +1,7 @@
+import CodeMirror from './codemirror/codemirror';
+import {reg_color} from './colors';
+import {consolePrint} from './debug_off';
+
 /*
 credits
 
@@ -1170,4 +1174,7 @@ var codeMirrorFn = function() {
     };
 };
 
-window.CodeMirror.defineMode('puzzle', codeMirrorFn);
+// TODO: is this used in the game? It's *the* lexer for the language!!!
+CodeMirror.defineMode('puzzle', codeMirrorFn);
+
+export {codeMirrorFn};

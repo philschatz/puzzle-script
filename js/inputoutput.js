@@ -1,3 +1,7 @@
+import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processInput, tryPlayCloseMessageSound, drawMessageScreen, DoRestart} from './engine';
+import {redraw, canvasResize} from './graphics';
+import {pushInput} from './debug_off';
+
 var keyRepeatTimer=0;
 var keyRepeatIndex=0;
 var input_throttle_timer=0.0;
@@ -45,7 +49,7 @@ function adjustLevel(level, widthdelta, heightdelta) {
 	level.objects = new Int32Array(level.n_tiles * STRIDE_OBJ);
 	var bgMask = new BitVec(STRIDE_OBJ);
 	bgMask.ibitset(state.backgroundid);
-	for (var i=0; i<level.n_tiles; ++i) 
+	for (var i=0; i<level.n_tiles; ++i)
 		level.setCell(i, bgMask);
 	level.movements = new Int32Array(level.objects.length);
 	columnAdded=true;
@@ -167,7 +171,7 @@ function matchGlyph(inputmask,glyphAndMask) {
 	if (highestbitcount>0) {
 		return highestmask;
 	}
-	
+
 	logErrorNoLine("Wasn't able to approximate a glyph value for some tiles, using '.' as a placeholder.",true);
 	return '.';
 }
@@ -221,7 +225,7 @@ function printLevel() {
 			var cellMask = level.getCell(cellIndex);
 			var glyph = matchGlyph(cellMask,glyphAndMask);
 			if (glyph in htmlEntityMap) {
-				glyph = htmlEntityMap[glyph]; 
+				glyph = htmlEntityMap[glyph];
 			}
 			output = output+glyph;
 		}
@@ -253,7 +257,7 @@ function levelEditorClick(event,click) {
 			var id = glyph[i];
 			if (id>=0) {
 				glyphmask.ibitset(id);
-			}			
+			}
 		}
 
 		var backgroundMask = state.layerMasks[state.backgroundlayer];
@@ -269,7 +273,7 @@ function levelEditorClick(event,click) {
 			return;
 		} else {
 			if (anyEditsSinceMouseDown===false) {
-				anyEditsSinceMouseDown=true;				
+				anyEditsSinceMouseDown=true;
         		backups.push(backupLevel());
 			}
 			level.setCell(coordIndex, glyphmask);
@@ -279,12 +283,12 @@ function levelEditorClick(event,click) {
 	else if (click) {
 		if (mouseCoordX===-1) {
 			//add a left row to the map
-			addLeftColumn();			
+			addLeftColumn();
 			canvasResize();
 		} else if (mouseCoordX===screenwidth-2) {
 			addRightColumn();
 			canvasResize();
-		} 
+		}
 		if (mouseCoordY===-1) {
 			addTopRow();
 			canvasResize();
@@ -311,12 +315,12 @@ function levelEditorRightClick(event,click) {
 	else if (click) {
 		if (mouseCoordX===-1) {
 			//add a left row to the map
-			removeLeftColumn();			
+			removeLeftColumn();
 			canvasResize();
 		} else if (mouseCoordX===screenwidth-2) {
 			removeRightColumn();
 			canvasResize();
-		} 
+		}
 		if (mouseCoordY===-1) {
 			removeTopRow();
 			canvasResize();
@@ -343,7 +347,7 @@ function onMouseDown(event) {
         	}
         }
         dragging=false;
-        rightdragging=false; 
+        rightdragging=false;
     } else if (event.button===2 || (event.button===0 && (event.ctrlKey||event.metaKey)) ) {
     	if (event.target.id==="gameCanvas") {
 		    dragging=false;
@@ -395,7 +399,7 @@ function onKeyDown(event) {
         } else if (event.keyCode===75 && (event.ctrlKey||event.metaKey)) {//ctrl+k
             makeGIF();
             prevent(event);
-        } 
+        }
     }
 }
 
@@ -430,7 +434,7 @@ function onKeyUp(event) {
     }
 }
 
-function onMyFocus(event) {	
+function onMyFocus(event) {
 	keybuffer=[];
 	keyRepeatIndex = 0;
 	keyRepeatTimer = 0;
@@ -455,11 +459,11 @@ function setMouseCoord(e){
 
 function mouseMove(event) {
     if (levelEditorOpened) {
-    	setMouseCoord(event);  
-    	if (dragging) { 	
+    	setMouseCoord(event);
+    	if (dragging) {
     		levelEditorClick(event,false);
     	} else if (rightdragging){
-    		levelEditorRightClick(event,false);    		
+    		levelEditorRightClick(event,false);
     	}
 	    redraw();
     }
@@ -562,9 +566,9 @@ function checkKey(e,justPressed) {
         case 27://escape
         {
         	if (titleScreen===false) {
-				goToTitleScreen();	
+				goToTitleScreen();
 		    	tryPlayTitleSound();
-				canvasResize();			
+				canvasResize();
 				return prevent(e)
         	}
         	break;
@@ -605,8 +609,8 @@ function checkKey(e,justPressed) {
 
         		canvasResize();
         		return prevent(e);
-        	}	
-        	break;	
+        	}
+        	break;
         }
     }
     if (throttle_movement && inputdir>=0&&inputdir<=3) {
@@ -623,7 +627,7 @@ function checkKey(e,justPressed) {
     	} else if (titleScreen) {
     		if (titleMode===0) {
     			if (inputdir===4&&justPressed) {
-    				if (titleSelected===false) {    				
+    				if (titleSelected===false) {
 						tryPlayStartGameSound();
 	    				titleSelected=true;
 	    				messageselected=false;
@@ -635,7 +639,7 @@ function checkKey(e,justPressed) {
     			}
     		} else {
     			if (inputdir==4&&justPressed) {
-    				if (titleSelected===false) {    				
+    				if (titleSelected===false) {
 						tryPlayStartGameSound();
 	    				titleSelected=true;
 	    				messageselected=false;
@@ -652,7 +656,7 @@ function checkKey(e,justPressed) {
     			}
     		}
     	} else {
-    		if (inputdir==4&&justPressed) {    				
+    		if (inputdir==4&&justPressed) {
 				if (unitTesting) {
 					nextLevel();
 					return;
@@ -712,8 +716,8 @@ function update() {
 				titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
 				titleSelected=false;
 				titleSelection=0;
-    			canvasResize();  
-    			checkWin();          	
+    			canvasResize();
+    			checkWin();
             }
         }
     }
@@ -727,7 +731,7 @@ function update() {
 	    keyRepeatTimer+=deltatime;
 	    var ticklength = throttle_movement ? repeatinterval : repeatinterval/(Math.sqrt(keybuffer.length));
 	    if (keyRepeatTimer>ticklength) {
-	    	keyRepeatTimer=0;	
+	    	keyRepeatTimer=0;
 	    	keyRepeatIndex = (keyRepeatIndex+1)%keybuffer.length;
 	    	var key = keybuffer[keyRepeatIndex];
 	        checkKey({keyCode:key},false);
