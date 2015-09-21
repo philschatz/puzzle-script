@@ -1,4 +1,4 @@
-function createSprite(name,spritegrid, colors, padding) {
+export function createSprite(name,spritegrid, colors, padding) {
 	if (colors === undefined) {
 		colors = [state.bgcolor, state.fgcolor];
 	}
@@ -32,7 +32,7 @@ function createSprite(name,spritegrid, colors, padding) {
     return sprite;
 }
 
-function regenText(spritecanvas,spritectx) {
+export function regenText(spritecanvas,spritectx) {
 	textImages={};
 
 	for (var n in font) {
@@ -42,14 +42,14 @@ function regenText(spritecanvas,spritectx) {
 	}
 }
 var spriteimages;
-function regenSpriteImages() {
+export function regenSpriteImages() {
 	if (textMode) {
 		regenText();
 		return;
 	} else if (levelEditorOpened) {
         textImages['s'] = createSprite('chars',font['s'],undefined);
     }
-    
+
     if (state.levels.length===0) {
         return;
     }
@@ -77,7 +77,7 @@ var glyphSelectedIndex=0;
 var editorRowCount=1;
 
 var canvasdict={};
-function makeSpriteCanvas(name) {
+export function makeSpriteCanvas(name) {
     var canvas;
     if (name in canvasdict) {
         canvas = canvasdict[name];
@@ -91,13 +91,13 @@ function makeSpriteCanvas(name) {
 }
 
 
-function generateGlyphImages() {
+export function generateGlyphImages() {
     if (cellwidth===0||cellheight===0) {
         return;
     }
 	glyphImagesCorrespondance=[];
 	glyphImages=[];
-	
+
 	for (var n in state.glyphDict) {
 		if (n.length==1 && state.glyphDict.hasOwnProperty(n)) {
 			var g=state.glyphDict[n];
@@ -123,7 +123,7 @@ function generateGlyphImages() {
 
 		spritectx.fillRect(0,0,cellwidth,1);
 		spritectx.fillRect(0,0,1,cellheight);
-		
+
 		spritectx.fillRect(0,cellheight-1,cellwidth,1);
 		spritectx.fillRect(cellwidth-1,0,1,cellheight);
 	}
@@ -136,7 +136,7 @@ function generateGlyphImages() {
 		glyphHighlightResize = makeSpriteCanvas("highlightresize");
 		var spritectx = glyphHighlightResize.getContext('2d');
 		spritectx.fillStyle = '#FFFFFF';
-		
+
 		var minx=((cellwidth/2)-1)|0;
 		var xsize=cellwidth-minx-1-minx;
 		var miny=((cellheight/2)-1)|0;
@@ -151,10 +151,10 @@ function generateGlyphImages() {
 		glyphMouseOver = makeSpriteCanvas();
 		var spritectx = glyphMouseOver.getContext('2d');
 		spritectx.fillStyle = 'yellow';
-		
+
 		spritectx.fillRect(0,0,cellwidth,2);
 		spritectx.fillRect(0,0,2,cellheight);
-		
+
 		spritectx.fillRect(0,cellheight-2,cellwidth,2);
 		spritectx.fillRect(cellwidth-2,0,2,cellheight);
 	}
@@ -178,17 +178,17 @@ ctx = canvas.getContext('2d');
 x = 0;
 y = 0;
 
-function glyphCount(){
+export function glyphCount(){
     var count=0;
     for (var n in state.glyphDict) {
         if (n.length==1 && state.glyphDict.hasOwnProperty(n)) {
             count++;
         }
-    }    
+    }
     return count;
 }
 
-function redraw() {
+export function redraw() {
     if (cellwidth===0||cellheight===0) {
         return;
     }
@@ -205,7 +205,7 @@ function redraw() {
                 var ch = titleImage[j].charAt(i);
                 if (ch in textImages) {
                     var sprite = textImages[ch];
-                    ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);                   
+                    ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
                 }
             }
         }
@@ -261,16 +261,16 @@ function redraw() {
                 minj=oldflickscreendat[1];
                 maxi=oldflickscreendat[2];
                 maxj=oldflickscreendat[3];
-            }         
+            }
         }
-	    
+
 
         for (var i = mini; i < maxi; i++) {
             for (var j = minj; j < maxj; j++) {
                 var posIndex = j + i * level.height;
-                var posMask = level.getCellInto(posIndex,_o12);                
+                var posMask = level.getCellInto(posIndex,_o12);
                 for (var k = 0; k < state.objectCount; k++) {
-                    if (posMask.get(k) != 0) {                  
+                    if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
                         ctx.drawImage(sprite, xoffset + (i-mini) * cellwidth, yoffset + (j-minj) * cellheight);
                     }
@@ -284,7 +284,7 @@ function redraw() {
     }
 }
 
-function drawEditorIcons() {
+export function drawEditorIcons() {
 	var glyphCount = glyphImages.length;
 	var glyphStartIndex=0;
 	var glyphEndIndex = glyphImages.length;/*Math.min(
@@ -296,7 +296,7 @@ function drawEditorIcons() {
 
 	ctx.drawImage(glyphPrintButton,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
 	if (mouseCoordY===(-1-editorRowCount)&&mouseCoordX===-1) {
-			ctx.drawImage(glyphMouseOver,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));								
+			ctx.drawImage(glyphMouseOver,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
@@ -309,23 +309,23 @@ function drawEditorIcons() {
         var ypos=(i/(screenwidth-1))|0;
 		ctx.drawImage(sprite,xoffset+(xpos)*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		if (mouseCoordX>=0&&mouseCoordX<(screenwidth-1)&&mouseIndex===i) {
-			ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));						
+			ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
 			ctx.drawImage(glyphHighlight,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
-		} 		
+		}
 	}
 	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<screenwidth-1&&mouseCoordY<screenheight-1-editorRowCount) {
 		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==screenwidth-2||mouseCoordY===screenheight-2-editorRowCount) {
 			ctx.drawImage(glyphHighlightResize,
 				xoffset+mouseCoordX*cellwidth,
 				yoffset+mouseCoordY*cellheight
-				);								
+				);
 		} else {
 			ctx.drawImage(glyphHighlight,
 				xoffset+mouseCoordX*cellwidth,
 				yoffset+mouseCoordY*cellheight
-				);				
+				);
 		}
 	}
 
@@ -338,7 +338,7 @@ var oldcellheight=0;
 var oldtextmode=-1;
 var oldfgcolor=-1;
 var forceRegenImages=false;
-function canvasResize() {
+export function canvasResize() {
     canvas.width = canvas.parentNode.clientWidth;
     canvas.height = canvas.parentNode.clientHeight;
 
@@ -365,7 +365,7 @@ function canvasResize() {
         screenwidth=titleWidth;
         screenheight=titleHeight;
     }
-    
+
     cellwidth = canvas.width / screenwidth;
     cellheight = canvas.height / screenheight;
 

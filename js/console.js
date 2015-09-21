@@ -1,4 +1,4 @@
-function jumpToLine(i) {
+export function jumpToLine(i) {
 
     var code = parent.form1.code;
 

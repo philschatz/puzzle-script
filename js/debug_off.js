@@ -41,4 +41,4 @@ function logBetaMessage(str){
 }
 
 function clearInputHistory() {}
-function pushInput(inp) {}
+export function pushInput(inp) {}

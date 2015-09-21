@@ -1,4 +1,4 @@
-function makeGIF() {
+export function makeGIF() {
 	var randomseed = RandomGen.seed;
 	levelEditorOpened=false;
 	var targetlevel=curlevel;

@@ -399,7 +399,7 @@ function onKeyDown(event) {
     }
 }
 
-function relMouseCoords(event){
+export function relMouseCoords(event){
     var totalOffsetX = 0;
     var totalOffsetY = 0;
     var canvasX = 0;

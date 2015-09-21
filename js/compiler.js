@@ -1,7 +1,7 @@
 'use strict';
 
 
-function isColor(str) {
+export function isColor(str) {
 	str = str.trim();
 	if (str in colorPalettes.arnecolors)
 		return true;
@@ -12,7 +12,7 @@ function isColor(str) {
 	return false;
 }
 
-function colorToHex(palette,str) {
+export function colorToHex(palette,str) {
 	str = str.trim();
 	if (str in palette) {
 		return palette[str];
@@ -22,7 +22,7 @@ function colorToHex(palette,str) {
 }
 
 
-function generateSpriteMatrix(dat) {
+export function generateSpriteMatrix(dat) {
 
 	var result = [];
 	for (var i = 0; i < dat.length; i++) {
@@ -43,7 +43,7 @@ function generateSpriteMatrix(dat) {
 var debugMode;
 var colorPalette;
 
-function generateExtraMembers(state) {
+export function generateExtraMembers(state) {
 
 	if (state.collisionLayers.length===0) {
 		logError("No collision layers defined.  All objects need to be in collision layers.");
@@ -82,7 +82,7 @@ function generateExtraMembers(state) {
 	STRIDE_MOV = Math.ceil(layerCount/5)|0;
 	state.STRIDE_OBJ=STRIDE_OBJ;
 	state.STRIDE_MOV=STRIDE_MOV;
-	
+
 	//get colorpalette name
 	debugMode=false;
 	verbose_logging=false;
@@ -162,7 +162,7 @@ function generateExtraMembers(state) {
  	var added=true;
     while (added) {
         added=false;
-        
+
         //then, synonyms
         for (var i = 0; i < state.legend_synonyms.length; i++) {
             var dat = state.legend_synonyms[i];
@@ -173,7 +173,7 @@ function generateExtraMembers(state) {
                 glyphDict[key] = glyphDict[val];
             }
         }
-    
+
         //then, aggregates
         for (var i = 0; i < state.legend_aggregates.length; i++) {
             var dat = state.legend_aggregates[i];
@@ -187,9 +187,9 @@ function generateExtraMembers(state) {
             		break;
             	}
             }
-            if ((!(key in glyphDict)||(glyphDict[key]===undefined))&&allVallsFound) {            
+            if ((!(key in glyphDict)||(glyphDict[key]===undefined))&&allVallsFound) {
                 var mask = blankMask.concat([]);
-        
+
                 for (var j = 1; j < dat.length; j++) {
                     var n = dat[j];
                     var o = state.objects[n];
@@ -201,7 +201,7 @@ function generateExtraMembers(state) {
                     } else {
                     	if (o.layer===undefined) {
                     		logError('Object "' + n.toUpperCase() + '" has been defined, but not assigned to a layer.',dat.lineNumber);
-                    	} else {                    		
+                    	} else {
 	                        logError(
 	                            'Trying to create an aggregate object (defined in the legend) with both "'
 	                            + n.toUpperCase() + '" and "' + state.idDict[mask[o.layer]].toUpperCase() + '", which are on the same layer and therefore can\'t coexist.',
@@ -243,7 +243,7 @@ function generateExtraMembers(state) {
 		else if (value in propertiesDict) {
 			propertiesDict[key]=propertiesDict[value];
 		} else if (key!==value) {
-			synonymsDict[key] = value;		
+			synonymsDict[key] = value;
 		}
 	}
 	state.synonymsDict = synonymsDict;
@@ -394,7 +394,7 @@ Level.prototype.calcBackgroundMask = function(state) {
 	return cell;
 }
 
-function levelFromString(state,level) {
+export function levelFromString(state,level) {
 	var backgroundlayer=state.backgroundlayer;
 	var backgroundid=state.backgroundid;
 	var backgroundLayerMask = state.layerMasks[backgroundlayer];
@@ -413,13 +413,13 @@ function levelFromString(state,level) {
 				if (state.propertiesDict[ch]===undefined) {
 					logError('Error, symbol "' + ch + '", used in map, not found.', level[0]+j);
 				} else {
-					logError('Error, symbol "' + ch + '" is defined using \'or\', and therefore ambiguous - it cannot be used in a map. Did you mean to define it in terms of \'and\'?', level[0]+j);							
+					logError('Error, symbol "' + ch + '" is defined using \'or\', and therefore ambiguous - it cannot be used in a map. Did you mean to define it in terms of \'and\'?', level[0]+j);
 				}
 
 			}
 
 			var maskint = new BitVec(STRIDE_OBJ);
-			mask = mask.concat([]);					
+			mask = mask.concat([]);
 			for (var z = 0; z < o.layerCount; z++) {
 				if (mask[z]>=0) {
 					maskint.ibitset(mask[z]);
@@ -443,7 +443,7 @@ function levelFromString(state,level) {
 	return o;
 }
 //also assigns glyphDict
-function levelsToArray(state) {
+export function levelsToArray(state) {
 	var levels = state.levels;
 	var processedLevels = [];
 
@@ -485,7 +485,7 @@ var commandwords = ["sfx0","sfx1","sfx2","sfx3","sfx4","sfx5","sfx6","sfx7","sfx
 
 
 
-function directionalRule(rule) {
+export function directionalRule(rule) {
 	for (var i=0;i<rule.lhs.length;i++) {
 		var cellRow = rule.lhs[i];
 		if (cellRow.length>1) {
@@ -517,7 +517,7 @@ function directionalRule(rule) {
 	return false;
 }
 
-function processRuleString(rule, state, curRules) 
+export function processRuleString(rule, state, curRules)
 {
 /*
 
@@ -593,20 +593,20 @@ function processRuleString(rule, state, curRules)
 		switch (parsestate) {
 			case 0: {
 				//read initial directions
-				if (token==='+') {					
+				if (token==='+') {
 					if (groupNumber===lineNumber) {
 						if (curRules.length==0) {
-							logError('The "+" symbol, for joining a rule with the group of the previous rule, needs a previous rule to be applied to.');							
+							logError('The "+" symbol, for joining a rule with the group of the previous rule, needs a previous rule to be applied to.');
 						}
 						if (i!==0) {
 							logError('The "+" symbol, for joining a rule with the group of the previous rule, must be the first symbol on the line ');
-						}						
+						}
 						groupNumber = curRules[curRules.length-1].groupNumber;
 					} else {
 						logError('Two "+"s ("append to previous rule group" symbol)applied to the same rule.',lineNumber);
 					}
 				} else if (token in directionaggregates) {
-					directions = directions.concat(directionaggregates[token]);						
+					directions = directions.concat(directionaggregates[token]);
 				} else if (token==='late') {
 						late=true;
 				} else if (token==='rigid') {
@@ -763,12 +763,12 @@ function processRuleString(rule, state, curRules)
 	return rule_line;
 }
 
-function deepCloneHS(HS) {
+export function deepCloneHS(HS) {
 	var cloneHS = HS.map(function(arr) {return arr.map(function(deepArr) {return deepArr.slice();});});
 	return cloneHS;
 }
 
-function deepCloneRule(rule) {
+export function deepCloneRule(rule) {
 	var clonedRule = {
 		direction: rule.direction,
 		lhs: deepCloneHS(rule.lhs),
@@ -783,7 +783,7 @@ function deepCloneRule(rule) {
 	return clonedRule;
 }
 
-function rulesToArray(state) {
+export function rulesToArray(state) {
 	var oldrules = state.rules;
 	var rules = [];
 	var loops=[];
@@ -849,7 +849,7 @@ function rulesToArray(state) {
 	state.rules = rules4;
 }
 
-function containsEllipsis(rule) {
+export function containsEllipsis(rule) {
 	for (var i=0;i<rule.lhs.length;i++) {
 		for (var j=0;j<rule.lhs[i].length;j++) {
 			if (rule.lhs[i][j][1]==='...')
@@ -859,7 +859,7 @@ function containsEllipsis(rule) {
 	return false;
 }
 
-function rewriteUpLeftRules(rule) {
+export function rewriteUpLeftRules(rule) {
 	if (containsEllipsis(rule)) {
 		return;
 	}
@@ -880,7 +880,7 @@ function rewriteUpLeftRules(rule) {
 	}
 }
 
-function getPropertiesFromCell(state,cell ) {
+export function getPropertiesFromCell(state,cell ) {
 	var result = [];
 	for (var j = 0; j < cell.length; j += 2) {
 		var dir = cell[j];
@@ -896,7 +896,7 @@ function getPropertiesFromCell(state,cell ) {
 }
 
 //returns you a list of object names in that cell that're moving
-function getMovings(state,cell ) {
+export function getMovings(state,cell ) {
 	var result = [];
 	for (var j = 0; j < cell.length; j += 2) {
 		var dir = cell[j];
@@ -908,7 +908,7 @@ function getMovings(state,cell ) {
 	return result;
 }
 
-function concretizePropertyInCell(cell ,property, concreteType) {
+export function concretizePropertyInCell(cell ,property, concreteType) {
 	for (var j = 0; j < cell.length; j += 2) {
 		if (cell[j+1] === property && cell[j]!=="random") {
 			cell[j+1] = concreteType;
@@ -916,7 +916,7 @@ function concretizePropertyInCell(cell ,property, concreteType) {
 	}
 }
 
-function concretizeMovingInCell(cell , ambiguousMovement, nameToMove, concreteDirection) {
+export function concretizeMovingInCell(cell , ambiguousMovement, nameToMove, concreteDirection) {
 	for (var j = 0; j < cell.length; j += 2) {
 		if (cell[j]===ambiguousMovement && cell[j+1] === nameToMove) {
 			cell[j] = concreteDirection;
@@ -924,7 +924,7 @@ function concretizeMovingInCell(cell , ambiguousMovement, nameToMove, concreteDi
 	}
 }
 
-function concretizeMovingInCellByAmbiguousMovementName(cell ,ambiguousMovement, concreteDirection) {
+export function concretizeMovingInCellByAmbiguousMovementName(cell ,ambiguousMovement, concreteDirection) {
 	for (var j = 0; j < cell.length; j += 2) {
 		if (cell[j] === ambiguousMovement) {
 			cell[j] = concreteDirection;
@@ -932,7 +932,7 @@ function concretizeMovingInCellByAmbiguousMovementName(cell ,ambiguousMovement, 
 	}
 }
 
-function expandNoPrefixedProperties(state, cell) {
+export function expandNoPrefixedProperties(state, cell) {
 	var expanded = [];
 	for (var i=0;i<cell.length;i+=2)  {
 		var dir = cell[i];
@@ -948,12 +948,12 @@ function expandNoPrefixedProperties(state, cell) {
 		} else {
 			expanded.push(dir);
 			expanded.push(name);
-		} 
+		}
 	}
 	return expanded;
 }
 
-function concretizePropertyRule(state, rule,lineNumber) {	
+export function concretizePropertyRule(state, rule,lineNumber) {
 
 	//step 1, rephrase rule to change "no flying" to "no cat no bat"
 	for (var i = 0; i < rule.lhs.length; i++) {
@@ -1032,11 +1032,11 @@ function concretizePropertyRule(state, rule,lineNumber) {
 							if (newrule.rhs.length>0) {
 								concretizePropertyInCell(newrule.rhs[j][k], property, concreteType);//do for the corresponding rhs cell as well
 							}
-                            
+
                             if (newrule.propertyReplacement[property]===undefined) {
     							newrule.propertyReplacement[property]=[concreteType,1];
                             } else {
-    							newrule.propertyReplacement[property][1]=newrule.propertyReplacement[property][1]+1;                                
+    							newrule.propertyReplacement[property][1]=newrule.propertyReplacement[property][1]+1;
                             }
 
 							result.push(newrule);
@@ -1054,14 +1054,14 @@ function concretizePropertyRule(state, rule,lineNumber) {
 		}
 	}
 
-    
+
 	for (var i = 0; i < result.length; i++) {
         //for each rule
 		var cur_rule = result[i];
         if (cur_rule.propertyReplacement===undefined) {
             continue;
         }
-        
+
         //for each property replacement in that rule
         for (var property in cur_rule.propertyReplacement) {
             if (cur_rule.propertyReplacement.hasOwnProperty(property)) {
@@ -1110,7 +1110,7 @@ function concretizePropertyRule(state, rule,lineNumber) {
 }
 
 
-function concretizeMovingRule(state, rule,lineNumber) {	
+export function concretizeMovingRule(state, rule,lineNumber) {
 
 	var shouldremove;
 	var result = [rule];
@@ -1150,11 +1150,11 @@ function concretizeMovingRule(state, rule,lineNumber) {
 							if (newrule.rhs.length>0) {
 								concretizeMovingInCell(newrule.rhs[j][k], ambiguous_dir, cand_name, concreteDirection);//do for the corresponding rhs cell as well
 							}
-                            
+
                             if (newrule.movingReplacement[cand_name]===undefined) {
     							newrule.movingReplacement[cand_name]=[concreteDirection,1,ambiguous_dir];
                             } else {
-    							newrule.movingReplacement[cand_name][1]=newrule.movingReplacement[cand_name][1]+1;                                
+    							newrule.movingReplacement[cand_name][1]=newrule.movingReplacement[cand_name][1]+1;
                             }
 
 							result.push(newrule);
@@ -1170,7 +1170,7 @@ function concretizeMovingRule(state, rule,lineNumber) {
 		}
 	}
 
-    
+
 	for (var i = 0; i < result.length; i++) {
         //for each rule
 		var cur_rule = result[i];
@@ -1232,7 +1232,7 @@ function concretizeMovingRule(state, rule,lineNumber) {
 				var cur_cell = cur_rulerow[k];
 				var movings = getMovings(state, cur_cell);
 				if (movings.length > 0) {
-					rhsAmbiguousMovementsRemain = movings[0][1];					
+					rhsAmbiguousMovementsRemain = movings[0][1];
 				}
 			}
 		}
@@ -1246,7 +1246,7 @@ function concretizeMovingRule(state, rule,lineNumber) {
 	return result;
 }
 
-function rephraseSynonyms(state,rule) {
+export function rephraseSynonyms(state,rule) {
 	for (var i = 0; i < rule.lhs.length; i++) {
 		var cellrow_l = rule.lhs[i];
 		var cellrow_r = rule.rhs[i];
@@ -1271,7 +1271,7 @@ function rephraseSynonyms(state,rule) {
 	}
 }
 
-function atomizeAggregates(state, rule) {
+export function atomizeAggregates(state, rule) {
 	for (var i = 0; i < rule.lhs.length; i++) {
 		var cellrow = rule.lhs[i];
 		for (var j = 0; j < cellrow.length; j++) {
@@ -1288,7 +1288,7 @@ function atomizeAggregates(state, rule) {
 	}
 }
 
-function atomizeCellAggregates(state, cell, lineNumber) {
+export function atomizeCellAggregates(state, cell, lineNumber) {
 	for (var i = 0; i < cell.length; i += 2) {
 		var dir =cell[i];
 		var c = cell[i+1];
@@ -1306,7 +1306,7 @@ function atomizeCellAggregates(state, cell, lineNumber) {
 	}
 }
 
-function convertRelativeDirsToAbsolute(rule) {
+export function convertRelativeDirsToAbsolute(rule) {
 	var forward = rule.direction;
 	for (var i = 0; i < rule.lhs.length; i++) {
 		var cellrow = rule.lhs[i];
@@ -1332,12 +1332,12 @@ var relativeDict = {
 	'left': ['down', 'up', 'right', 'left','horizontal','vertical']
 };
 
-function absolutifyRuleCell(forward, cell) {
+export function absolutifyRuleCell(forward, cell) {
 	for (var i = 0; i < cell.length; i += 2) {
 		var c = cell[i];
 		var index = relativeDirs.indexOf(c);
 		if (index >= 0) {
-			cell[i] = relativeDict[forward][index];		
+			cell[i] = relativeDict[forward][index];
 		}
 	}
 }
@@ -1364,7 +1364,7 @@ var dirMasks = {
 	'' : parseInt('00000',2)
 };
 
-function rulesToMask(state) {
+export function rulesToMask(state) {
 	/*
 
 	*/
@@ -1400,9 +1400,9 @@ function rulesToMask(state) {
 						} else if (rule.rhs.length>0) {
 							var rhscell=cellrow_r[k];
 							if (rhscell.length!==2 || rhscell[0]!=='...') {
-								logError("An ellipsis on the left must be matched by one in the corresponding place on the right.",rule.lineNumber);								
+								logError("An ellipsis on the left must be matched by one in the corresponding place on the right.",rule.lineNumber);
 							}
-						} 
+						}
 						break;
 					}  else if (object_dir==='random') {
 						logError("'random' cannot be matched on the left-hand side, it can only appear on the right",rule.lineNumber);
@@ -1451,13 +1451,13 @@ function rulesToMask(state) {
 					var rhscell = cellrow_r[k];
 					var lhscell = cellrow_l[k];
 					if (rhscell[0]==='...' && lhscell[0]!=='...' ) {
-						logError("An ellipsis on the right must be matched by one in the corresponding place on the left.",rule.lineNumber);								
+						logError("An ellipsis on the right must be matched by one in the corresponding place on the left.",rule.lineNumber);
 					}
 					for (var l=0;l<rhscell.length;l+=2) {
 						var content=rhscell[l];
 						if (content==='...') {
 							if (rhscell.length!==2) {
-								logError("You can't have anything in with an ellipsis. Sorry.",rule.lineNumber);							
+								logError("You can't have anything in with an ellipsis. Sorry.",rule.lineNumber);
 							}
 						}
 					}
@@ -1495,8 +1495,8 @@ function rulesToMask(state) {
 						break;
 					} else if (object_dir==='random') {
 						if (object_name in state.objectMasks) {
-							var mask = state.objectMasks[object_name];    
-							randomMask_r.ior(mask);                      
+							var mask = state.objectMasks[object_name];
+							randomMask_r.ior(mask);
 						} else {
 							logError('You want to spawn a random "'+object_name.toUpperCase()+'", but I don\'t know how to do that',rule.lineNumber);
 						}
@@ -1511,7 +1511,7 @@ function rulesToMask(state) {
 						var layerIndex = state.propertiesSingleLayer[object_name];
 					}
 
-					
+
 					if (object_dir=='no') {
 						objectsClear.ior(objectMask);
 					} else {
@@ -1539,7 +1539,7 @@ function rulesToMask(state) {
 							movementsClear.ishiftor(0x1f, 5*layerIndex);
 						} if (object_dir==='randomdir') {
 							randomDirMask_r.ishiftor(dirMasks[object_dir], 5 * layerIndex);
-						} else {						
+						} else {
 							movementsSet.ishiftor(dirMasks[object_dir], 5 * layerIndex);
 						};
 					}
@@ -1572,7 +1572,7 @@ function rulesToMask(state) {
 	}
 }
 
-function cellRowMasks(rule) {
+export function cellRowMasks(rule) {
 	var ruleMasks=[];
 	var lhs=rule[1];
 	for (var i=0;i<lhs.length;i++) {
@@ -1588,7 +1588,7 @@ function cellRowMasks(rule) {
 	return ruleMasks;
 }
 
-function collapseRules(groups) {
+export function collapseRules(groups) {
 	for (var gn = 0; gn < groups.length; gn++) {
 		var rules = groups[gn];
 		for (var i = 0; i < rules.length; i++) {
@@ -1606,7 +1606,7 @@ function collapseRules(groups) {
 					if (cellrow_l[k] === ellipsisPattern) {
 						if (ellipses[j]) {
 							logError("You can't use two ellipses in a single cell match pattern.  If you really want to, please implement it yourself and send me a patch :) ", oldrule.lineNumber);
-						} 
+						}
 						ellipses[j]=true;
 					}
 				}
@@ -1624,7 +1624,7 @@ function collapseRules(groups) {
 	matchCache = {}; // clear match cache so we don't slowly leak memory
 }
 
-function ruleGroupRandomnessTest(ruleGroup) {
+export function ruleGroupRandomnessTest(ruleGroup) {
 	if (ruleGroup.length === 0)
 		return;
 	var firstLineNumber = ruleGroup[0].lineNumber;
@@ -1638,7 +1638,7 @@ function ruleGroupRandomnessTest(ruleGroup) {
 	}
 }
 
-function arrangeRulesByGroupNumber(state) {
+export function arrangeRulesByGroupNumber(state) {
 	var aggregates = {};
 	var aggregates_late = {};
 	for (var i=0;i<state.rules.length;i++) {
@@ -1677,7 +1677,7 @@ function arrangeRulesByGroupNumber(state) {
 }
 
 
-function checkNoLateRulesHaveMoves(state){
+export function checkNoLateRulesHaveMoves(state){
 	for (var ruleGroupIndex=0;ruleGroupIndex<state.lateRules.length;ruleGroupIndex++) {
 		var lateGroup = state.lateRules[ruleGroupIndex];
 		for (var ruleIndex=0;ruleIndex<lateGroup.length;ruleIndex++) {
@@ -1704,14 +1704,14 @@ function checkNoLateRulesHaveMoves(state){
 							logError("Movements cannot appear in late rules.",rule.lineNumber);
 							return;
 						}
-					}				
+					}
 				}
 			}
 		}
 	}
 }
 
-function generateRigidGroupList(state) {
+export function generateRigidGroupList(state) {
 	var rigidGroupIndex_to_GroupIndex=[];
 	var groupIndex_to_RigidGroupIndex=[];
 	var groupNumber_to_GroupIndex=[];
@@ -1746,7 +1746,7 @@ function generateRigidGroupList(state) {
 	state.groupIndex_to_RigidGroupIndex=groupIndex_to_RigidGroupIndex;
 }
 
-function getMaskFromName(state,name) {
+export function getMaskFromName(state,name) {
 	var objectMask=new BitVec(STRIDE_OBJ);
 	if (name in state.objects) {
 		var o=state.objects[name];
@@ -1783,7 +1783,7 @@ function getMaskFromName(state,name) {
 	return objectMask;
 }
 
-function generateMasks(state) {
+export function generateMasks(state) {
 	state.playerMask=getMaskFromName(state,'player');
 
 	var layerMasks=[];
@@ -1837,7 +1837,7 @@ function generateMasks(state) {
 	state.objectMasks = objectMask;
 }
 
-function checkObjectsAreLayered(state) {
+export function checkObjectsAreLayered(state) {
 	for (var n in state.objects) {
 		if (state.objects.hasOwnProperty(n)) {
 			var found=false;
@@ -1861,7 +1861,7 @@ function checkObjectsAreLayered(state) {
 	}
 }
 
-function twiddleMetaData(state) {
+export function twiddleMetaData(state) {
 	var newmetadata = {};
 	for (var i=0;i<state.metadata.length;i+=2) {
 		var key = state.metadata[i];
@@ -1882,12 +1882,12 @@ function twiddleMetaData(state) {
 		newmetadata.zoomscreen=intcoords;
 	}
 
-	state.metadata=newmetadata;	
+	state.metadata=newmetadata;
 }
 
-function processWinConditions(state) {
+export function processWinConditions(state) {
 //	[-1/0/1 (no,some,all),ob1,ob2] (ob2 is background by default)
-	var newconditions=[]; 
+	var newconditions=[];
 	for (var i=0;i<state.winconditions.length;i++)  {
 		var wincondition=state.winconditions[i];
 		if (wincondition.length==0) {
@@ -1927,7 +1927,7 @@ function processWinConditions(state) {
 	state.winconditions=newconditions;
 }
 
-function printCellRow(cellRow) {
+export function printCellRow(cellRow) {
 	var result ="[ ";
 	for (var i=0;i<cellRow.length;i++) {
 		if (i>0) {
@@ -1942,13 +1942,13 @@ function printCellRow(cellRow) {
 			} else {
 				result += direction+" "+object+" ";
 			}
-		}		
+		}
 	}
 	result +="] ";
 	return result;
 }
 
-function printRule(rule) {
+export function printRule(rule) {
 	var result="(<a onclick=\"jumpToLine('"+ rule.lineNumber.toString() + "');\"  href=\"javascript:void(0);\">"+rule.groupNumber+"</a>) "+ rule.direction.toString().toUpperCase()+" ";
 	if (rule.rigid) {
 		result = "RIGID "+result+" ";
@@ -1973,13 +1973,13 @@ function printRule(rule) {
 		if (command.length===1) {
 			result = result +command[0].toString();
 		} else {
-			result = result + '('+command[0].toString()+", "+command[1].toString()+') ';			
+			result = result + '('+command[0].toString()+", "+command[1].toString()+') ';
 		}
 	}
 	//print commands next
 	return result;
 }
-function printRules(state) {
+export function printRules(state) {
 	var output = "<br>Rule Assembly : ("+ state.rules.length +" rules )<br>===========<br>";
 	var loopIndex = 0;
 	var loopEnd = -1;
@@ -2008,7 +2008,7 @@ function printRules(state) {
 	consolePrint(output);
 }
 
-function removeDuplicateRules(state) {
+export function removeDuplicateRules(state) {
 	console.log("rule count before = " +state.rules.length);
 	var record = {};
 	var newrules=[];
@@ -2029,7 +2029,7 @@ function removeDuplicateRules(state) {
 	}
 	console.log("rule count after = " +state.rules.length);
 }
-function generateLoopPoints(state) {
+export function generateLoopPoints(state) {
 	var loopPoint={};
 	var loopPointIndex=0;
 	var outside=true;
@@ -2044,7 +2044,7 @@ function generateLoopPoints(state) {
 		for (var i=0;i<state.rules.length;i++) {
 			var ruleGroup = state.rules[i];
 
-			var firstRule = ruleGroup[0];			
+			var firstRule = ruleGroup[0];
 			var lastRule = ruleGroup[ruleGroup.length-1];
 
 			var firstRuleLine = firstRule.lineNumber;
@@ -2055,17 +2055,17 @@ function generateLoopPoints(state) {
 					target=i;
 					outside=false;
 					if (loop[1]===-1) {
-						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");						
+						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");
 					}
 					break;
 				}
 			} else {
 				if (firstRuleLine>=loop[0]) {
-					source = i-1;		
+					source = i-1;
 					loopPoint[source]=target;
 					outside=true;
 					if (loop[1]===1) {
-						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");						
+						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");
 					}
 					break;
 				}
@@ -2086,7 +2086,7 @@ function generateLoopPoints(state) {
 		for (var i=0;i<state.lateRules.length;i++) {
 			var ruleGroup = state.lateRules[i];
 
-			var firstRule = ruleGroup[0];			
+			var firstRule = ruleGroup[0];
 			var lastRule = ruleGroup[ruleGroup.length-1];
 
 			var firstRuleLine = firstRule.lineNumber;
@@ -2097,17 +2097,17 @@ function generateLoopPoints(state) {
 					target=i;
 					outside=false;
 					if (loop[1]===-1) {
-						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");						
+						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");
 					}
 					break;
 				}
 			} else {
 				if (firstRuleLine>=loop[0]) {
-					source = i-1;		
+					source = i-1;
 					loopPoint[source]=target;
 					outside=true;
 					if (loop[1]===1) {
-						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");						
+						logErrorNoLine("Need have to have matching number of  'startLoop' and 'endLoop' loop points.");
 					}
 					break;
 				}
@@ -2127,7 +2127,7 @@ var soundMaskedEvents =["create","destroy","move","cantmove","action"];
 var soundVerbs = soundEvents.concat(soundMaskedEvents);
 
 
-function validSeed (seed ) {
+export function validSeed (seed ) {
 	return /^\s*\d+\s*$/.exec(seed)!==null;
 }
 
@@ -2146,7 +2146,7 @@ var soundDirectionIndicatorMasks = {
 var soundDirectionIndicators = ["up","down","left","right","horizontal","vertical","orthogonal","___action____"];
 
 
-function generateSoundData(state) {
+export function generateSoundData(state) {
 	var sfx_Events={};
 	var sfx_CreationMasks=[];
 	var sfx_DestructionMasks=[];
@@ -2160,7 +2160,7 @@ function generateSoundData(state) {
 		}
 		var lineNumber=sound[sound.length-1];
 
-		if (sound.length===2){			
+		if (sound.length===2){
 			logError('incorrect sound declaration.',lineNumber);
 			continue;
 		}
@@ -2172,11 +2172,11 @@ function generateSoundData(state) {
 			var seed = sound[1];
 			if (validSeed(seed)) {
 				if (sfx_Events[sound[0]]!==undefined){
-					logError(sound[0].toUpperCase()+" already declared.",lineNumber);				
-				} 
+					logError(sound[0].toUpperCase()+" already declared.",lineNumber);
+				}
 				sfx_Events[sound[0]]=sound[1];
 			} else {
-				logError("Expecting sfx data, instead found \""+sound[1]+"\".",lineNumber);				
+				logError("Expecting sfx data, instead found \""+sound[1]+"\".",lineNumber);
 			}
 		} else {
 			var target = sound[0].trim();
@@ -2256,7 +2256,7 @@ function generateSoundData(state) {
 					};
 
 					if (verb==='move') {
-						sfx_MovementMasks.push(o);						
+						sfx_MovementMasks.push(o);
 					} else {
 						sfx_MovementFailureMasks.push(o);
 					}
@@ -2265,7 +2265,7 @@ function generateSoundData(state) {
 
 
 			if (!validSeed(seed)) {
-				logError("Expecting sfx data, instead found \""+seed+"\".",lineNumber);	
+				logError("Expecting sfx data, instead found \""+seed+"\".",lineNumber);
 			}
 
 			var targetArray;
@@ -2298,7 +2298,7 @@ function generateSoundData(state) {
 }
 
 
-function formatHomePage(state){
+export function formatHomePage(state){
 	if ('background_color' in state.metadata) {
 		state.bgcolor=colorToHex(colorPalette,state.metadata.background_color);
 	} else {
@@ -2309,7 +2309,7 @@ function formatHomePage(state){
 	} else {
 		state.fgcolor="#FFFFFF";
 	}
-	
+
 	if (isColor(state.fgcolor)===false ){
 		logError("text_color in incorrect format - found "+state.fgcolor+", but I expect a color name (like 'pink') or hex-formatted color (like '#1412FA').")
 	}
@@ -2318,17 +2318,17 @@ function formatHomePage(state){
 	}
 
 	if (canSetHTMLColors) {
-		
+
 		if ('background_color' in state.metadata)  {
 			document.body.style.backgroundColor=state.bgcolor;
 		}
-		
+
 		if ('text_color' in state.metadata) {
 			var separator = document.getElementById("separator");
 			if (separator!=null) {
 			   separator.style.color = state.fgcolor;
 			}
-			
+
 			var h1Elements = document.getElementsByTagName("a");
 			for(var i = 0; i < h1Elements.length; i++) {
 			   h1Elements[i].style.color = state.fgcolor;
@@ -2350,7 +2350,7 @@ function formatHomePage(state){
 }
 
 var MAX_ERRORS=5;
-function loadFile(str) {
+export function loadFile(str) {
 	window.console.log('loadFile');
 
 	var processor = new codeMirrorFn();
@@ -2368,7 +2368,7 @@ function loadFile(str) {
 				consolePrint("too many errors, aborting compilation");
 				return;
 			}
-		}		
+		}
 		while (ss.eol() === false);
 	}
 
@@ -2426,7 +2426,7 @@ function loadFile(str) {
 }
 
 var ifrm;
-function compile(command,text,randomseed) {
+export function compile(command,text,randomseed) {
 	matchCache={};
 	forceRegenImages=true;
 	if (command===undefined) {
@@ -2435,7 +2435,7 @@ function compile(command,text,randomseed) {
 	if (randomseed===undefined) {
 		randomseed = null;
 	}
-	lastDownTarget=canvas;	
+	lastDownTarget=canvas;
 
 	if (text===undefined){
 		var code = window.form1.code;
@@ -2496,7 +2496,7 @@ function compile(command,text,randomseed) {
 
 
 
-function qualifyURL(url) {
+export function qualifyURL(url) {
 	var a = document.createElement('a');
 	a.href = url;
 	return a.href;

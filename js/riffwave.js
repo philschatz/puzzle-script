@@ -103,7 +103,7 @@ function MakeRiff ( sampleRate, bitsPerSample,data) {
       u32ToArray(header.subChunk2Size),
       data
     );
-    
+
     dataURI = 'data:audio/wav;base64,' + FastBase64_Encode(wav);
 
     var result = {

@@ -1,4 +1,4 @@
-function runClick() {
+export function runClick() {
 	clearConsole();
 	compile(["restart"]);
 }
