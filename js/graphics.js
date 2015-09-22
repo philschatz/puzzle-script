@@ -2,6 +2,7 @@ import {globals as GRAPHICS} from './_global-graphics';
 import font from './font';
 import {globals as ENGINE} from './_global-engine';
 import {sprites, _o12} from './engine';
+import {globals as GAME} from './globalVariables';
 
 export function createSprite(name,spritegrid, colors, padding) {
 	if (colors === undefined) {

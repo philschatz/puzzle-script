@@ -2,6 +2,7 @@ import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setG
 import {globals as DEBUG, consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
 import {codeMirrorFn} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
+import {globals as GAME} from './globalVariables';
 
 'use strict';
 

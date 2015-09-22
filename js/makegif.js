@@ -1,3 +1,5 @@
+import {globals as GAME} from './globalVariables';
+
 export function makeGIF() {
 	var randomseed = RandomGen.seed;
 	GAME.levelEditorOpened=false;
@@ -11,7 +13,7 @@ export function makeGIF() {
 	var gifctx = gifcanvas.getContext('2d');
 
 	var inputDat = inputHistory.concat([]);
-	
+
 
 	GAME.unitTesting=true;
 	levelString=compiledText;
@@ -37,7 +39,7 @@ export function makeGIF() {
 			DoUndo();
 		} else if (val==="restart") {
 			DoRestart();
-		} else if (val=="tick") {			
+		} else if (val=="tick") {
 			processInput(-1);
 			realtimeframe=true;
 		} else {
@@ -50,17 +52,17 @@ export function makeGIF() {
 		autotimer+=GAME.repeatinterval;
 
 		while (GAME.againing) {
-			processInput(-1);		
+			processInput(-1);
 			redraw();
 			encoder.setDelay(GAME.againinterval);
 			gifctx.drawImage(canvas,-xoffset,-yoffset);
-	  		encoder.addFrame(gifctx);	
+	  		encoder.addFrame(gifctx);
 		}
 	}
 
   	encoder.finish();
   	var dat = 'data:image/gif;base64,'+encode64(encoder.stream().getData());
   	window.open(dat);
-  	
+
   	GAME.unitTesting = false;
 }

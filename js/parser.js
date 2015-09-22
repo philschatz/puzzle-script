@@ -1,6 +1,7 @@
 import CodeMirror from './codemirror/codemirror';
 import {reg_color} from './colors';
 import {consolePrint} from './debug_off';
+import {globals as GAME} from './globalVariables';
 
 /*
 credits

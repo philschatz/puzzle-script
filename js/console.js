@@ -1,3 +1,5 @@
+import {globals as GAME} from './globalVariables';
+
 export function jumpToLine(i) {
 
     var code = parent.form1.code;

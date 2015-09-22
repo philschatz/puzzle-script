@@ -72,6 +72,7 @@ let initLevel = {
 let level = initLevel;
 
 
+// HACK: Prevent cycles because of `var fn = ` in engine.js (weird)
 export const globals = {
   curlevelTarget,
   curlevelTarget,
@@ -101,5 +102,3 @@ export const globals = {
   level,
 
 }
-
-window.GAME = globals;

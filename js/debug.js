@@ -1,3 +1,5 @@
+import {globals as GAME} from './globalVariables';
+
 var canSetHTMLColors=false;
 var canDump=true;
 var canYoutube=false;

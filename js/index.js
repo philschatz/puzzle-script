@@ -7,16 +7,14 @@ import * as FOO6 from './sfxr';
 import * as FOO7 from './codemirror/codemirror';
 import * as FOO8 from './colors';
 import * as FOO9 from './graphics';
-import * as FOO10 from './engine';
+import {init as engineInit} from './engine';
 import * as FOO11 from './parser';
 import {compile, qualifyURL} from './compiler';
 import * as FOO13 from './inputoutput';
 import * as FOO14 from './mobile';
 
 
-
-
-
+engineInit();
 
 function displayError(message) {
 	var errorText = document.getElementById("errormessage");

@@ -2,6 +2,7 @@ import {RNG} from './rng';
 import {canvasResize} from './graphics';
 import {globals as ENGINE} from './_global-engine';
 import {globals as DEBUG, clearInputHistory, consolePrint} from './debug_off';
+import {globals as GAME} from './globalVariables';
 import {logErrorCacheable} from './parser';
 import {playSound} from './sfxr';
 
@@ -440,9 +441,10 @@ var sprites = [
 }
 ];
 
-
-generateTitleScreen();
-canvasResize();
+export function init() {
+	generateTitleScreen();
+	canvasResize();
+}
 
 export function tryPlaySimpleSound(soundname) {
 	if (state.sfx_Events[soundname]!==undefined) {
@@ -1153,18 +1155,18 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 			/*
 			hard substitute in the first one - if I substitute in all of them, firefox chokes.
 			*/
-		var fn = "var d = "+d1+"+"+d0+"*GAME.level.height;\n";
+		var fn = "var d = "+d1+"+"+d0+"*GAME_dot_level.height;\n";
 		var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
 		for (var i = 0; i < STRIDE_OBJ; ++i) {
-			fn += 'var cellObjects' + i + ' = GAME.level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
+			fn += 'var cellObjects' + i + ' = GAME_dot_level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
 		mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
 		for (var i = 0; i < STRIDE_MOV; ++i) {
-			fn += 'var cellMovements' + i + ' = GAME.level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
+			fn += 'var cellMovements' + i + ' = GAME_dot_level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
 		fn += "return "+cellRow[0].generateMatchString('0_');// cellRow[0].matches(i)";
 		for (var cellIndex=1;cellIndex<cr_l;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%GAME.level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches(GAME_dot_level, (i+"+cellIndex+"*d)%GAME_dot_level.n_tiles)";
 		}
 		fn+=";";
 
@@ -1172,28 +1174,27 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 			return matchCache[fn];
 		}
 		//console.log(fn.replace(/\s+/g, ' '));
-		return matchCache[fn] = new Function("cellRow","i",fn);
+		return matchCache[fn] = new Function("GAME_dot_level","cellRow","i",fn);
 	} else {
 		var delta = dirMasksDelta[this.direction];
 		var d0 = delta[0];
 		var d1 = delta[1];
 		var cr_l = cellRow.length;
 
-
-		var fn = "var d = "+d1+"+"+d0+"*GAME.level.height;\n";
+		var fn = "var d = "+d1+"+"+d0+"*GAME_dot_level.height;\n";
 		fn += "var result = [];\n"
-		fn += "if(cellRow[0].matches(i)";
+		fn += "if(cellRow[0].matches(GAME_dot_level, i)";
 		var cellIndex=1;
 		for (;cellRow[cellIndex]!==ellipsisPattern;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%GAME.level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches(GAME_dot_level, (i+"+cellIndex+"*d)%GAME_dot_level.n_tiles)";
 		}
 		cellIndex++;
 		fn+=") {\n";
 		fn+="\tfor (var k=kmin;k<kmax;k++) {\n"
-		fn+="\t\tif(cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%GAME.level.n_tiles)";
+		fn+="\t\tif(cellRow["+cellIndex+"].matches(GAME_dot_level,(i+d*(k+"+(cellIndex-1)+"))%GAME_dot_level.n_tiles)";
 		cellIndex++;
 		for (;cellIndex<cr_l;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%GAME.level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches(GAME_dot_level,(i+d*(k+"+(cellIndex-1)+"))%GAME_dot_level.n_tiles)";
 		}
 		fn+="){\n";
 		fn+="\t\t\tresult.push([i,k]);\n";
@@ -1207,7 +1208,7 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 			return matchCache[fn];
 		}
 		//console.log(fn.replace(/\s+/g, ' '));
-		return matchCache[fn] = new Function("cellRow","i","kmax","kmin",fn);
+		return matchCache[fn] = new Function("GAME_dot_level","cellRow","i","kmax","kmin", fn);
 	}
 //say cellRow has length 3, with a split in the middle
 /*
@@ -1248,7 +1249,7 @@ export function CellPattern(row) {
 	this.anyObjectsPresent = row[2];
 	this.movementsPresent = row[3];
 	this.movementsMissing = row[4];
-	this.matches = this.generateMatchFunction();
+	this.matches = this.generateMatchFunction(GAME.level);
 	this.replacement = row[5];
 };
 
@@ -1311,18 +1312,18 @@ CellPattern.prototype.generateMatchFunction = function() {
 	var fn = '';
 	var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
 	for (var i = 0; i < STRIDE_OBJ; ++i) {
-		fn += '\tvar cellObjects' + i + ' = GAME.level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
+		fn += '\tvar cellObjects' + i + ' = GAME_dot_level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
 	for (var i = 0; i < STRIDE_MOV; ++i) {
-		fn += '\tvar cellMovements' + i + ' = GAME.level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
+		fn += '\tvar cellMovements' + i + ' = GAME_dot_level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	fn += "return " + this.generateMatchString()+';';
 	if (fn in matchCache) {
 		return matchCache[fn];
 	}
 	//console.log(fn.replace(/\s+/g, ' '));
-	return matchCache[fn] = new Function("i",fn);
+	return matchCache[fn] = new Function("GAME_dot_level","i",fn);
 }
 
 CellPattern.prototype.toJSON = function() {
@@ -1468,7 +1469,7 @@ export function DoesCellRowMatchWildCard(direction,cellRow,i,maxk,mink) {
 
     //var result=[];
 
-    if (cellPattern.matches(i)){
+    if (cellPattern.matches(GAME.level, i)){
     	var delta = dirMasksDelta[direction];
     	var d0 = delta[0]*GAME.level.height;
 		var d1 = delta[1];
@@ -1485,7 +1486,7 @@ export function DoesCellRowMatchWildCard(direction,cellRow,i,maxk,mink) {
                     targetIndex2 = (targetIndex2+(d1+d0)*(k)+GAME.level.n_tiles)%GAME.level.n_tiles;
             		for (var j2=j+1;j2<cellRow.length;j2++) {
 		                cellPattern = cellRow[j2];
-					    if (!cellPattern.matches(targetIndex2)) {
+					    if (!cellPattern.matches(GAME.level, targetIndex2)) {
 					    	break;
 					    }
                         targetIndex2 = (targetIndex2+d1+d0)%GAME.level.n_tiles;
@@ -1497,7 +1498,7 @@ export function DoesCellRowMatchWildCard(direction,cellRow,i,maxk,mink) {
 		            }
             	}
             	break;
-            } else if (!cellPattern.matches(targetIndex)) {
+            } else if (!cellPattern.matches(GAME.level, targetIndex)) {
 				break;
             }
         }
@@ -1517,7 +1518,7 @@ export function cellRowMatchesFunctionGenerate(direction,cellRow,i) {
 
 export function DoesCellRowMatch(direction,cellRow,i,k) {
 	var cellPattern = cellRow[0];
-    if (cellPattern.matches(i)) {
+    if (cellPattern.matches(GAME.level, i)) {
 
 	    var delta = dirMasksDelta[direction];
 	    var d0 = delta[0]*GAME.level.height;
@@ -1532,7 +1533,7 @@ export function DoesCellRowMatch(direction,cellRow,i,k) {
 					//only for once off verifications
             	targetIndex = (targetIndex+(d1+d0)*k)%GAME.level.n_tiles;
             }
-		    if (!cellPattern.matches(targetIndex)) {
+		    if (!cellPattern.matches(GAME.level, targetIndex)) {
                 break;
             }
         }
@@ -1595,7 +1596,7 @@ export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
 
 			for (var x=xmin;x<xmax;x++) {
 				var i = x*GAME.level.height+y;
-				if (cellRowMatch(cellRow,i))
+				if (cellRowMatch(GAME.level, cellRow,i))
 				{
 					result.push(i);
 				}
@@ -1609,7 +1610,7 @@ export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
 
 			for (var y=ymin;y<ymax;y++) {
 				var i = x*GAME.level.height+y;
-				if (cellRowMatch(	cellRow,i))
+				if (cellRowMatch(GAME.level,	cellRow,i))
 				{
 					result.push(i);
 				}
@@ -1680,7 +1681,7 @@ export function matchCellRowWildCard(direction, cellRowMatch, cellRow,cellRowMas
 					window.console.log("EEEP2 "+direction);
 				}
 
-				result.push.apply(result, cellRowMatch(cellRow,i,kmax,0));
+				result.push.apply(result, cellRowMatch(GAME.level, cellRow,i,kmax,0));
 			}
 		}
 	} else {
@@ -1700,7 +1701,7 @@ export function matchCellRowWildCard(direction, cellRowMatch, cellRow,cellRowMas
 				} else {
 					window.console.log("EEEP2 "+direction);
 				}
-				result.push.apply(result, cellRowMatch(cellRow,i,kmax,0));
+				result.push.apply(result, cellRowMatch(GAME.level, cellRow,i,kmax,0));
 			}
 		}
 	}
