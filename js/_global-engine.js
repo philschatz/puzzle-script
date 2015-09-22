@@ -42,6 +42,7 @@ export const globals = {
 	zoomscreen: false,
 	flickscreen: false,
 	screenwidth: 0,
-	screenheight: 0
+	screenheight: 0,
+	matchCache: {}
 
 };

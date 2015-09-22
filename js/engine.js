@@ -1152,11 +1152,11 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 		}
 		fn+=";";
 
-		if (fn in matchCache) {
-			return matchCache[fn];
+		if (fn in ENGINE.matchCache) {
+			return ENGINE.matchCache[fn];
 		}
 		//console.log(fn.replace(/\s+/g, ' '));
-		return matchCache[fn] = new Function("GAME_dot_level","cellRow","i",fn);
+		return ENGINE.matchCache[fn] = new Function("GAME_dot_level","cellRow","i",fn);
 	} else {
 		var delta = dirMasksDelta[this.direction];
 		var d0 = delta[0];
@@ -1186,11 +1186,11 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 		fn+="return result;"
 
 
-		if (fn in matchCache) {
-			return matchCache[fn];
+		if (fn in ENGINE.matchCache) {
+			return ENGINE.matchCache[fn];
 		}
 		//console.log(fn.replace(/\s+/g, ' '));
-		return matchCache[fn] = new Function("GAME_dot_level","cellRow","i","kmax","kmin", fn);
+		return ENGINE.matchCache[fn] = new Function("GAME_dot_level","cellRow","i","kmax","kmin", fn);
 	}
 //say cellRow has length 3, with a split in the middle
 /*
@@ -1241,10 +1241,6 @@ export function CellReplacement(row) {
 	this.randomEntityMask = row[5];
 	this.randomDirMask = row[6];
 };
-
-
-var matchCache = {};
-
 
 
 CellPattern.prototype.generateMatchString = function() {
@@ -1298,11 +1294,11 @@ CellPattern.prototype.generateMatchFunction = function() {
 		fn += '\tvar cellMovements' + i + ' = GAME_dot_level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	fn += "return " + this.generateMatchString()+';';
-	if (fn in matchCache) {
-		return matchCache[fn];
+	if (fn in ENGINE.matchCache) {
+		return ENGINE.matchCache[fn];
 	}
 	//console.log(fn.replace(/\s+/g, ' '));
-	return matchCache[fn] = new Function("GAME_dot_level","i",fn);
+	return ENGINE.matchCache[fn] = new Function("GAME_dot_level","i",fn);
 }
 
 CellPattern.prototype.toJSON = function() {

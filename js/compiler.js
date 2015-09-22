@@ -1629,7 +1629,7 @@ export function collapseRules(groups) {
 			rules[i] = new Rule(newrule);
 		}
 	}
-	matchCache = {}; // clear match cache so we don't slowly leak memory
+	ENGINE.matchCache = {}; // clear match cache so we don't slowly leak memory
 }
 
 export function ruleGroupRandomnessTest(ruleGroup) {
@@ -2435,7 +2435,7 @@ export function loadFile(str) {
 
 var ifrm;
 export function compile(command,text,randomseed) {
-	matchCache={};
+	ENGINE.matchCache={};
 	GRAPHICS.forceRegenImages=true;
 	if (command===undefined) {
 		command = ["restart"];
