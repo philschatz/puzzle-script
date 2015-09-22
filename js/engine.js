@@ -1,5 +1,6 @@
 import {RNG} from './rng';
 import {canvasResize} from './graphics';
+import {globals as ENGINE} from './_global-engine';
 import {globals as DEBUG, clearInputHistory, consolePrint} from './debug_off';
 import {logErrorCacheable} from './parser';
 import {playSound} from './sfxr';
@@ -142,15 +143,6 @@ var titletemplate_select1_selected = [
 	".Z to undo, R to restart..........",
 	".................................."];
 
-	// TODO: Move these to globals?
-window.titleImage=[];
-window.titleWidth=titletemplate_select1[0].length;
-window.titleHeight=titletemplate_select1.length;
-window.textMode=true;
-window.titleScreen=true;
-window.titleMode=0;//1 means there are options
-window.titleSelection=0;
-window.titleSelected=false;
 
 export function unloadGame() {
 	state=introstate;
@@ -163,10 +155,10 @@ export function unloadGame() {
 
 export function generateTitleScreen()
 {
-	titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
 
 	if (state.levels.length===0) {
-		titleImage=intro_template;
+		ENGINE.titleImage=intro_template;
 		return;
 	}
 
@@ -175,24 +167,24 @@ export function generateTitleScreen()
 		title=state.metadata.title;
 	}
 
-	if (titleMode===0) {
-		if (titleSelected) {
-			titleImage = deepClone(titletemplate_firstgo_selected);
+	if (ENGINE.titleMode===0) {
+		if (ENGINE.titleSelected) {
+			ENGINE.titleImage = deepClone(titletemplate_firstgo_selected);
 		} else {
-			titleImage = deepClone(titletemplate_firstgo);
+			ENGINE.titleImage = deepClone(titletemplate_firstgo);
 		}
 	} else {
-		if (titleSelection===0) {
-			if (titleSelected) {
-				titleImage = deepClone(titletemplate_select0_selected);
+		if (ENGINE.titleSelection===0) {
+			if (ENGINE.titleSelected) {
+				ENGINE.titleImage = deepClone(titletemplate_select0_selected);
 			} else {
-				titleImage = deepClone(titletemplate_select0);
+				ENGINE.titleImage = deepClone(titletemplate_select0);
 			}
 		} else {
-			if (titleSelected) {
-				titleImage = deepClone(titletemplate_select1_selected);
+			if (ENGINE.titleSelected) {
+				ENGINE.titleImage = deepClone(titletemplate_select1_selected);
 			} else {
-				titleImage = deepClone(titletemplate_select1);
+				ENGINE.titleImage = deepClone(ENGINE.titletemplate_select1);
 			}
 		}
 	}
@@ -201,40 +193,40 @@ export function generateTitleScreen()
 	var noUndo = 'noundo' in state.metadata;
 	var noRestart = 'norestart' in state.metadata;
 	if (noUndo && noRestart) {
-		titleImage[11]="..................................";
+		ENGINE.titleImage[11]="..................................";
 	} else if (noUndo) {
-		titleImage[11]=".R to restart.....................";
+		ENGINE.titleImage[11]=".R to restart.....................";
 	} else if (noRestart) {
-		titleImage[11]=".Z to undo.....................";
+		ENGINE.titleImage[11]=".Z to undo.....................";
 	}
 	if (noAction) {
-		titleImage[10]="..................................";
+		ENGINE.titleImage[10]="..................................";
 	}
-	for (var i=0;i<titleImage.length;i++)
+	for (var i=0;i<ENGINE.titleImage.length;i++)
 	{
-		titleImage[i]=titleImage[i].replace(/\./g, ' ');
+		ENGINE.titleImage[i]=ENGINE.titleImage[i].replace(/\./g, ' ');
 	}
 
-	var width = titleImage[0].length;
-	var titlelines=wordwrap(title,titleImage[0].length);
+	var width = ENGINE.titleImage[0].length;
+	var titlelines=wordwrap(title,ENGINE.titleImage[0].length);
 	for (var i=0;i<titlelines.length;i++) {
 		var titleline=titlelines[i];
 		var titleLength=titleline.length;
 		var lmargin = ((width-titleLength)/2)|0;
 		var rmargin = width-titleLength-lmargin;
-		var row = titleImage[1+i];
-		titleImage[1+i]=row.slice(0,lmargin)+titleline+row.slice(lmargin+titleline.length);
+		var row = ENGINE.titleImage[1+i];
+		ENGINE.titleImage[1+i]=row.slice(0,lmargin)+titleline+row.slice(lmargin+titleline.length);
 	}
 	if (state.metadata.author!==undefined) {
 		var attribution="by "+state.metadata.author;
-		var attributionsplit = wordwrap(attribution,titleImage[0].length);
+		var attributionsplit = wordwrap(attribution,ENGINE.titleImage[0].length);
 		for (var i=0;i<attributionsplit.length;i++) {
 			var line = attributionsplit[i]+" ";
 			if (line.length>width){
 				line=line.slice(0,width);
 			}
-			var row = titleImage[3+i];
-			titleImage[3+i]=row.slice(0,width-line.length)+line;
+			var row = ENGINE.titleImage[3+i];
+			ENGINE.titleImage[3+i]=row.slice(0,width-line.length)+line;
 		}
 	}
 
@@ -320,16 +312,16 @@ export function wordwrap( str, width ) {
 var splitMessage=[];
 
 export function drawMessageScreen() {
-	titleMode=0;
-	textMode=true;
-	titleImage = deepClone(messagecontainer_template);
+	ENGINE.titleMode=0;
+	ENGINE.textMode=true;
+	ENGINE.titleImage = deepClone(messagecontainer_template);
 
-	for (var i=0;i<titleImage.length;i++)
+	for (var i=0;i<ENGINE.titleImage.length;i++)
 	{
-		titleImage[i]=titleImage[i].replace(/\./g, ' ');
+		ENGINE.titleImage[i]=ENGINE.titleImage[i].replace(/\./g, ' ');
 	}
 
-	var width = titleImage[0].length;
+	var width = ENGINE.titleImage[0].length;
 
 	var message;
 	if (messagetext==="") {
@@ -338,7 +330,7 @@ export function drawMessageScreen() {
 	} else {
 		message = messagetext;
 	}
-	splitMessage = wordwrap(message,titleImage[0].length);
+	splitMessage = wordwrap(message,ENGINE.titleImage[0].length);
 
 	for (var i=0;i<splitMessage.length;i++) {
 		var m = splitMessage[i];
@@ -346,12 +338,12 @@ export function drawMessageScreen() {
 		var messageLength=m.length;
 		var lmargin = ((width-messageLength)/2)|0;
 		var rmargin = width-messageLength-lmargin;
-		var rowtext = titleImage[row];
-		titleImage[row]=rowtext.slice(0,lmargin)+m+rowtext.slice(lmargin+m.length);
+		var rowtext = ENGINE.titleImage[row];
+		ENGINE.titleImage[row]=rowtext.slice(0,lmargin)+m+rowtext.slice(lmargin+m.length);
 	}
 
 	if (quittingMessageScreen) {
-		titleImage[10]=titleImage[9];
+		ENGINE.titleImage[10]=ENGINE.titleImage[9];
 	}
 	canvasResize();
 }
@@ -365,18 +357,18 @@ export function loadLevelFromLevelDat(state,leveldat,randomseed) {
 	loadedLevelSeed = randomseed;
 	RandomGen = new RNG(loadedLevelSeed);
 	forceRegenImages=true;
-	titleScreen=false;
-	titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
-	titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
-	titleSelected=false;
+	ENGINE.titleScreen=false;
+	ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleSelected=false;
     againing=false;
     if (leveldat===undefined) {
     	consolePrint("Trying to access a level that doesn't exist.",true);
     	return;
     }
     if (leveldat.message===undefined) {
-    	titleMode=0;
-    	textMode=false;
+    	ENGINE.titleMode=0;
+    	ENGINE.textMode=false;
 		level = leveldat.clone();
 		RebuildLevelArrays();
 
@@ -572,17 +564,17 @@ export function setGameState(_state, command, randomseed) {
     	{
 		    winning=false;
 		    timer=0;
-		    titleScreen=true;
+		    ENGINE.titleScreen=true;
 		    tryPlayTitleSound();
-		    textMode=true;
-		    titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
-		    titleSelected=false;
+		    ENGINE.textMode=true;
+		    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+		    ENGINE.titleSelected=false;
 		    quittingMessageScreen=false;
 		    quittingTitleScreen=false;
 		    messageselected=false;
-		    titleMode = 0;
+		    ENGINE.titleMode = 0;
 		    if ((curlevel>0||curlevelTarget!==null)) {
-		    	titleMode=1;
+		    	ENGINE.titleMode=1;
 		    }
 		    generateTitleScreen();
 		    break;
@@ -598,14 +590,14 @@ export function setGameState(_state, command, randomseed) {
 			curlevel=i;
 		    winning=false;
 		    timer=0;
-		    titleScreen=false;
-		    textMode=false;
-		    titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
-		    titleSelected=false;
+		    ENGINE.titleScreen=false;
+		    ENGINE.textMode=false;
+		    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+		    ENGINE.titleSelected=false;
 		    quittingMessageScreen=false;
 		    quittingTitleScreen=false;
 		    messageselected=false;
-		    titleMode = 0;
+		    ENGINE.titleMode = 0;
 			loadLevelFromState(state,targetLevel,randomseed);
 			break;
 		}
@@ -618,14 +610,14 @@ export function setGameState(_state, command, randomseed) {
 					curlevel=i;
 				    winning=false;
 				    timer=0;
-				    titleScreen=false;
-				    textMode=false;
-				    titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
-				    titleSelected=false;
+				    ENGINE.titleScreen=false;
+				    ENGINE.textMode=false;
+				    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+				    ENGINE.titleSelected=false;
 				    quittingMessageScreen=false;
 				    quittingTitleScreen=false;
 				    messageselected=false;
-				    titleMode = 0;
+				    ENGINE.titleMode = 0;
 					loadLevelFromState(state,i);
 					break;
 				}
@@ -1892,8 +1884,8 @@ Rule.prototype.queueCommands = function() {
 
 export function showTempMessage() {
 	keybuffer=[];
-	textMode=true;
-	titleScreen=false;
+	ENGINE.textMode=true;
+	ENGINE.titleScreen=false;
 	quittingMessageScreen=false;
 	messageselected=false;
 	tryPlayShowMessageSound();
@@ -2288,7 +2280,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 			}
 	    }
 
-	    if (textMode===false && (dontCheckWin===undefined ||dontCheckWin===false)) {
+	    if (ENGINE.textMode===false && (dontCheckWin===undefined ||dontCheckWin===false)) {
 	    	if (verbose_logging) {
 	    		consolePrint('Checking win condition.');
 			}
@@ -2461,8 +2453,8 @@ export function nextLevel() {
 	keybuffer=[];
     againing=false;
 	messagetext="";
-	if (titleScreen) {
-		if (titleSelection===0) {
+	if (ENGINE.titleScreen) {
+		if (ENGINE.titleSelection===0) {
 			//new game
 			curlevel=0;
 			curlevelTarget=null;
@@ -2476,8 +2468,8 @@ export function nextLevel() {
 		if (curlevel<(state.levels.length-1))
 		{
 			curlevel++;
-			textMode=false;
-			titleScreen=false;
+			ENGINE.textMode=false;
+			ENGINE.titleScreen=false;
 			quittingMessageScreen=false;
 			messageselected=false;
 
@@ -2514,9 +2506,9 @@ export function nextLevel() {
 export function goToTitleScreen(){
     againing=false;
 	messagetext="";
-	titleScreen=true;
-	textMode=true;
-	titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleScreen=true;
+	ENGINE.textMode=true;
+	ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
 	generateTitleScreen();
 }
 

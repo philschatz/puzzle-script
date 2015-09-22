@@ -2,6 +2,7 @@ import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processI
 import {redraw, canvasResize} from './graphics';
 import {globals as DEBUG, pushInput} from './debug_off';
 import {globals as GRAPHICS} from './_global-graphics';
+import {globals as ENGINE} from './_global-engine';
 
 var keyRepeatTimer=0;
 var keyRepeatIndex=0;
@@ -544,7 +545,7 @@ function checkKey(e,justPressed) {
         case 90://z
         {
             //undo
-            if (textMode===false) {
+            if (ENGINE.textMode===false) {
                 pushInput("undo");
                 DoUndo();
                 canvasResize(); // calls redraw
@@ -554,7 +555,7 @@ function checkKey(e,justPressed) {
         }
         case 82://r
         {
-        	if (textMode===false) {
+        	if (ENGINE.textMode===false) {
         		if (justPressed) {
 	        		pushInput("restart");
 	        		DoRestart();
@@ -566,7 +567,7 @@ function checkKey(e,justPressed) {
         }
         case 27://escape
         {
-        	if (titleScreen===false) {
+        	if (ENGINE.titleScreen===false) {
 				goToTitleScreen();
 		    	tryPlayTitleSound();
 				canvasResize();
@@ -622,15 +623,15 @@ function checkKey(e,justPressed) {
     		input_throttle_timer=0;
     	}
     }
-    if (textMode) {
+    if (ENGINE.textMode) {
     	if (state.levels.length===0) {
     		//do nothing
-    	} else if (titleScreen) {
-    		if (titleMode===0) {
+    	} else if (ENGINE.titleScreen) {
+    		if (ENGINE.titleMode===0) {
     			if (inputdir===4&&justPressed) {
-    				if (titleSelected===false) {
+    				if (ENGINE.titleSelected===false) {
 						tryPlayStartGameSound();
-	    				titleSelected=true;
+	    				ENGINE.titleSelected=true;
 	    				messageselected=false;
 	    				timer=0;
 	    				quittingTitleScreen=true;
@@ -640,9 +641,9 @@ function checkKey(e,justPressed) {
     			}
     		} else {
     			if (inputdir==4&&justPressed) {
-    				if (titleSelected===false) {
+    				if (ENGINE.titleSelected===false) {
 						tryPlayStartGameSound();
-	    				titleSelected=true;
+	    				ENGINE.titleSelected=true;
 	    				messageselected=false;
 	    				timer=0;
 	    				quittingTitleScreen=true;
@@ -651,7 +652,7 @@ function checkKey(e,justPressed) {
 	    			}
     			}
     			else if (inputdir===0||inputdir===2) {
-    				titleSelection=1-titleSelection;
+    				ENGINE.titleSelection=1-ENGINE.titleSelection;
     				generateTitleScreen();
     				redraw();
     			}
@@ -666,7 +667,7 @@ function checkKey(e,justPressed) {
     				timer=0;
     				quittingMessageScreen=true;
     				tryPlayCloseMessageSound();
-    				titleScreen=false;
+    				ENGINE.titleScreen=false;
     				drawMessageScreen();
     			}
     		}
@@ -712,11 +713,11 @@ function update() {
             	nextLevel();
             } else {
             	messagetext="";
-            	textMode=false;
-				titleScreen=false;
-				titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
-				titleSelected=false;
-				titleSelection=0;
+            	ENGINE.textMode=false;
+				ENGINE.titleScreen=false;
+				ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
+				ENGINE.titleSelected=false;
+				ENGINE.titleSelection=0;
     			canvasResize();
     			checkWin();
             }
@@ -739,7 +740,7 @@ function update() {
 	    }
 	}
 
-    if (autotickinterval>0&&!textMode&&!levelEditorOpened&&!againing&&!winning) {
+    if (autotickinterval>0&&!ENGINE.textMode&&!levelEditorOpened&&!againing&&!winning) {
         autotick+=deltatime;
         if (autotick>autotickinterval) {
             autotick=0;

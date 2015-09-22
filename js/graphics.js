@@ -1,5 +1,6 @@
 import {globals as GRAPHICS} from './_global-graphics';
 import font from './font';
+import {globals as ENGINE} from './_global-engine';
 import {sprites, _o12} from './engine';
 
 export function createSprite(name,spritegrid, colors, padding) {
@@ -47,7 +48,7 @@ export function regenText(spritecanvas,spritectx) {
 }
 var spriteimages;
 export function regenSpriteImages() {
-	if (textMode) {
+	if (ENGINE.textMode) {
 		regenText();
 		return;
 	} else if (levelEditorOpened) {
@@ -184,13 +185,13 @@ export function redraw() {
         regenSpriteImages();
     }
 
-    if (textMode) {
+    if (ENGINE.textMode) {
         GRAPHICS.ctx.fillStyle = state.bgcolor;
         GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
-        for (var i = 0; i < titleWidth; i++) {
-            for (var j = 0; j < titleHeight; j++) {
-                var ch = titleImage[j].charAt(i);
+        for (var i = 0; i < ENGINE.titleWidth; i++) {
+            for (var j = 0; j < ENGINE.titleHeight; j++) {
+                var ch = ENGINE.titleImage[j].charAt(i);
                 if (ch in textImages) {
                     var sprite = textImages[ch];
                     GRAPHICS.ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
@@ -349,9 +350,9 @@ export function canvasResize() {
 	    }
 	}
 
-    if (textMode) {
-        screenwidth=titleWidth;
-        screenheight=titleHeight;
+    if (ENGINE.textMode) {
+        screenwidth=ENGINE.titleWidth;
+        screenheight=ENGINE.titleHeight;
     }
 
     cellwidth = GRAPHICS.canvas.width / screenwidth;
@@ -361,7 +362,7 @@ export function canvasResize() {
     var h = 5;//sprites[1].dat[0].length;
 
 
-    if (textMode) {
+    if (ENGINE.textMode) {
         w=6;
         h=6;
     }
@@ -384,7 +385,7 @@ export function canvasResize() {
     }
     magnification = ((cellwidth/w)*5)|0;
 
-    if (levelEditorOpened && !textMode) {
+    if (levelEditorOpened && !ENGINE.textMode) {
     	xoffset+=cellwidth;
     	yoffset+=cellheight*(1+editorRowCount);
     }
@@ -394,14 +395,14 @@ export function canvasResize() {
     xoffset = xoffset|0;
     yoffset = yoffset|0;
 
-    if (oldcellwidth!=cellwidth||oldcellheight!=cellheight||oldtextmode!=textMode||oldfgcolor!=state.fgcolor||forceRegenImages){
+    if (oldcellwidth!=cellwidth||oldcellheight!=cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=state.fgcolor||forceRegenImages){
     	forceRegenImages=false;
     	regenSpriteImages();
     }
 
     oldcellheight=cellheight;
     oldcellwidth=cellwidth;
-    oldtextmode=textMode;
+    oldtextmode=ENGINE.textMode;
     oldfgcolor=state.fgcolor;
 
     redraw();
