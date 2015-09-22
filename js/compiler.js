@@ -2440,7 +2440,7 @@ export function compile(command,text,randomseed) {
 	if (randomseed===undefined) {
 		randomseed = null;
 	}
-	lastDownTarget=GRAPHICS.canvas;
+	GRAPHICS.lastDownTarget=GRAPHICS.canvas;
 
 	if (DEBUG.canDump===true) {
 		compiledText=text;

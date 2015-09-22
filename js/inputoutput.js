@@ -337,7 +337,7 @@ var anyEditsSinceMouseDown = false;
 
 function onMouseDown(event) {
 	if (event.button===0 && !(event.ctrlKey||event.metaKey) ) {
-        lastDownTarget = event.target;
+        GRAPHICS.lastDownTarget = event.target;
         GAME.keybuffer=[];
         if (event.target===GRAPHICS.canvas) {
         	setMouseCoord(event);
@@ -385,7 +385,7 @@ function onKeyDown(event) {
     	return;
     }
 
-    if(lastDownTarget === GRAPHICS.canvas) {
+    if(GRAPHICS.lastDownTarget === GRAPHICS.canvas) {
     	if (GAME.keybuffer.indexOf(event.keyCode)===-1) {
     		GAME.keybuffer.splice(keyRepeatIndex,0,event.keyCode);
 	    	keyRepeatTimer=0;

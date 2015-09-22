@@ -16,7 +16,8 @@ const globals = {
   x: 0,
   y: 0,
 
-  canvasdict: {}
+  canvasdict: {},
+  lastDownTarget: null
 }
 
 export {globals}

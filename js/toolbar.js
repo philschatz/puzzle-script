@@ -142,7 +142,7 @@ function levelEditorClick_Fn() {
 		GAME.levelEditorOpened=!GAME.levelEditorOpened;
     	canvasResize();
     }
-    lastDownTarget=canvas;	
+    GRAPHICS.lastDownTarget=canvas;	
 }
 
 function shareClick() {
@@ -206,7 +206,7 @@ function shareClick() {
 	githubHTTPClient.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	var stringifiedGist = JSON.stringify(gistToCreate);
 	githubHTTPClient.send(stringifiedGist);
-    lastDownTarget=canvas;	
+    GRAPHICS.lastDownTarget=canvas;	
 }
 
 function rebuildClick() {
