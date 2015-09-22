@@ -1,4 +1,4 @@
-colorPalettesAliases = {
+var colorPalettesAliases = {
 	1 : "mastersystem",
 	2 : "gameboycolour",
 	3 : "amiga",
@@ -15,7 +15,7 @@ colorPalettesAliases = {
 	14 : "whitingjp"
 };
 
-colorPalettes = {
+var colorPalettes = {
 	mastersystem : {
 	black   		: "#000000",
 	white			: "#FFFFFF",
@@ -401,4 +401,4 @@ var reg_color_names = /(black|white|darkgray|lightgray|gray|grey|darkgrey|lightg
 var reg_color = /(black|white|gray|darkgray|lightgray|grey|darkgrey|lightgrey|red|darkred|lightred|brown|darkbrown|lightbrown|orange|yellow|green|darkgreen|lightgreen|blue|lightblue|darkblue|purple|pink|transparent|#(?:[0-9a-f]{3}){1,2})\s*/;
 
 
-export {reg_color};
+export {reg_color, colorPalettes};

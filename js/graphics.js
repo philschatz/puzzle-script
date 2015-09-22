@@ -6,7 +6,7 @@ import {globals as GAME} from './globalVariables';
 
 export function createSprite(name,spritegrid, colors, padding) {
 	if (colors === undefined) {
-		colors = [state.bgcolor, state.fgcolor];
+		colors = [ENGINE.state.bgcolor, ENGINE.state.fgcolor];
 	}
 
 	var sprite = makeSpriteCanvas(name);
@@ -19,10 +19,10 @@ export function createSprite(name,spritegrid, colors, padding) {
 	var cw = ~~(cellwidth / (w + (padding|0)));
     var ch = ~~(cellheight / (h + (padding|0)));
     var pixh=ch;
-    if ("scanline" in state.metadata) {
+    if ("scanline" in ENGINE.state.metadata) {
         pixh=Math.ceil(ch/2);
     }
-    spritectx.fillStyle = state.fgcolor;
+    spritectx.fillStyle = ENGINE.state.fgcolor;
     for (var j = 0; j < w; j++) {
         for (var k = 0; k < h; k++) {
             var val = spritegrid[j][k];
@@ -56,7 +56,7 @@ export function regenSpriteImages() {
         GAME.textImages['s'] = createSprite('chars',font['s'],undefined);
     }
 
-    if (state.levels.length===0) {
+    if (ENGINE.state.levels.length===0) {
         return;
     }
     spriteimages = [];
@@ -103,9 +103,9 @@ export function generateGlyphImages() {
 	glyphImagesCorrespondance=[];
 	glyphImages=[];
 
-	for (var n in state.glyphDict) {
-		if (n.length==1 && state.glyphDict.hasOwnProperty(n)) {
-			var g=state.glyphDict[n];
+	for (var n in ENGINE.state.glyphDict) {
+		if (n.length==1 && ENGINE.state.glyphDict.hasOwnProperty(n)) {
+			var g=ENGINE.state.glyphDict[n];
 			var sprite = makeSpriteCanvas("C"+n)
 			var spritectx = sprite.getContext('2d');
 			glyphImagesCorrespondance.push(n);
@@ -170,8 +170,8 @@ window.addEventListener('resize', canvasResize, false);
 
 export function glyphCount(){
     var count=0;
-    for (var n in state.glyphDict) {
-        if (n.length==1 && state.glyphDict.hasOwnProperty(n)) {
+    for (var n in ENGINE.state.glyphDict) {
+        if (n.length==1 && ENGINE.state.glyphDict.hasOwnProperty(n)) {
             count++;
         }
     }
@@ -187,7 +187,7 @@ export function redraw() {
     }
 
     if (ENGINE.textMode) {
-        GRAPHICS.ctx.fillStyle = state.bgcolor;
+        GRAPHICS.ctx.fillStyle = ENGINE.state.bgcolor;
         GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         for (var i = 0; i < ENGINE.titleWidth; i++) {
@@ -201,7 +201,7 @@ export function redraw() {
         }
         return;
     } else {
-        GRAPHICS.ctx.fillStyle = state.bgcolor;
+        GRAPHICS.ctx.fillStyle = ENGINE.state.bgcolor;
         GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         var mini=0;
@@ -259,7 +259,7 @@ export function redraw() {
             for (var j = minj; j < maxj; j++) {
                 var posIndex = j + i * GAME.level.height;
                 var posMask = GAME.level.getCellInto(posIndex,_o12);
-                for (var k = 0; k < state.objectCount; k++) {
+                for (var k = 0; k < ENGINE.state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
                         GRAPHICS.ctx.drawImage(sprite, xoffset + (i-mini) * cellwidth, yoffset + (j-minj) * cellheight);
@@ -332,20 +332,20 @@ export function canvasResize() {
 
     screenwidth=GAME.level.width;
     screenheight=GAME.level.height;
-    if (state!==undefined){
-        flickscreen=state.metadata.flickscreen!==undefined;
-        zoomscreen=state.metadata.zoomscreen!==undefined;
+    if (ENGINE.state!==undefined){
+        flickscreen=ENGINE.state.metadata.flickscreen!==undefined;
+        zoomscreen=ENGINE.state.metadata.zoomscreen!==undefined;
 	    if (GAME.levelEditorOpened) {
             screenwidth+=2;
             var glyphcount = glyphCount();
             editorRowCount = Math.ceil(glyphcount/(screenwidth-1));
             screenheight+=2+editorRowCount;
         } else if (flickscreen) {
-	        screenwidth=state.metadata.flickscreen[0];
-	        screenheight=state.metadata.flickscreen[1];
+	        screenwidth=ENGINE.state.metadata.flickscreen[0];
+	        screenheight=ENGINE.state.metadata.flickscreen[1];
 	    } else if (zoomscreen) {
-	        screenwidth=state.metadata.zoomscreen[0];
-	        screenheight=state.metadata.zoomscreen[1];
+	        screenwidth=ENGINE.state.metadata.zoomscreen[0];
+	        screenheight=ENGINE.state.metadata.zoomscreen[1];
 	    }
 	}
 
@@ -394,7 +394,7 @@ export function canvasResize() {
     xoffset = xoffset|0;
     yoffset = yoffset|0;
 
-    if (oldcellwidth!=cellwidth||oldcellheight!=cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=state.fgcolor||forceRegenImages){
+    if (oldcellwidth!=cellwidth||oldcellheight!=cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||forceRegenImages){
     	forceRegenImages=false;
     	regenSpriteImages();
     }
@@ -402,7 +402,7 @@ export function canvasResize() {
     oldcellheight=cellheight;
     oldcellwidth=cellwidth;
     oldtextmode=ENGINE.textMode;
-    oldfgcolor=state.fgcolor;
+    oldfgcolor=ENGINE.state.fgcolor;
 
     redraw();
 }

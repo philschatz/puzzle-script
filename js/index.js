@@ -7,6 +7,7 @@ import * as FOO6 from './sfxr';
 import * as FOO7 from './codemirror/codemirror';
 import * as FOO8 from './colors';
 import * as FOO9 from './graphics';
+import {globals as ENGINE} from './_global-engine';
 import {init as engineInit} from './engine';
 import * as FOO11 from './parser';
 import {compile, qualifyURL} from './compiler';
@@ -58,8 +59,8 @@ function getData(){
 		var code=result["files"]["script.txt"]["content"];
 		compile(["restart"],code);
 
-		if (state.metadata.homepage!==undefined) {
-			var homepage=state.metadata.homepage;
+		if (ENGINE.state.metadata.homepage!==undefined) {
+			var homepage=ENGINE.state.metadata.homepage;
 			var homepageLink = document.getElementById("homepagelink");
 			homepageLink.innerHTML=strip_http(homepage);
  			if (!homepage.match(/^https?:\/\//)) {
@@ -67,8 +68,8 @@ function getData(){
  			}
  			homepageLink.href = homepage;
 		}
-		if (state.metadata.title!==undefined) {
-			var title=state.metadata.title;
+		if (ENGINE.state.metadata.title!==undefined) {
+			var title=ENGINE.state.metadata.title;
 			var gametitle = document.getElementById("gametitle");
 			gametitle.innerHTML=title;
 			window.document.title=title+" - PuzzleScript Game";

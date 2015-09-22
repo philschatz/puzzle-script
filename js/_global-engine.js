@@ -14,6 +14,16 @@ const titletemplate_select1 = [
 	".................................."];
 
 
+var introstate = {
+	title: "2D Whale World",
+	attribution: "increpare",
+   	objectCount: 2,
+   	metadata:[],
+   	levels:[],
+   	bgcolor:"#000000",
+   	fgcolor:"#FFFFFF"
+};
+
 export const globals = {
 	titletemplate_select1,
 	titleImage: [],
@@ -23,5 +33,7 @@ export const globals = {
 	titleScreen: true,
 	titleMode: 0,//1 means there are options
 	titleSelection: 0,
-	titleSelected: false
+	titleSelected: false,
+	introstate,
+	state: introstate
 };

@@ -3,6 +3,7 @@ import {globals as DEBUG, consolePrint, clearInputHistory, consoleCacheDump} fro
 import {codeMirrorFn} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
 import {globals as GAME} from './globalVariables';
+import {colorPalettes} from './colors';
 
 'use strict';
 

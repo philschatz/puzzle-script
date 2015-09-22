@@ -19,8 +19,8 @@ function selectText(containerid,e) {
 	var myspan = document.getElementById(containerid);
 	if (e&&(e.ctrlKey || e.metaKey)) {
 		var levelarr = ["console"].concat(myspan.innerHTML.split("<br>"));
-		var leveldat = levelFromString(state,levelarr);
-		loadLevelFromLevelDat(state,leveldat,null);
+		var leveldat = levelFromString(ENGINE.state,levelarr);
+		loadLevelFromLevelDat(ENGINE.state,leveldat,null);
 		canvasResize();
 	} else {
 	    if (document.selection) {
@@ -51,7 +51,7 @@ function adjustLevel(level, widthdelta, heightdelta) {
 	level.n_tiles = level.width * level.height;
 	level.objects = new Int32Array(level.n_tiles * STRIDE_OBJ);
 	var bgMask = new BitVec(STRIDE_OBJ);
-	bgMask.ibitset(state.backgroundid);
+	bgMask.ibitset(ENGINE.state.backgroundid);
 	for (var i=0; i<level.n_tiles; ++i)
 		level.setCell(i, bgMask);
 	level.movements = new Int32Array(level.objects.length);
@@ -192,9 +192,9 @@ var selectableint  = 0;
 
 function printLevel() {
 	var glyphAndMask = [];
-	for (var glyphName in state.glyphDict) {
-		if (state.glyphDict.hasOwnProperty(glyphName)&&glyphName.length===1) {
-			var glyph = state.glyphDict[glyphName];
+	for (var glyphName in ENGINE.state.glyphDict) {
+		if (ENGINE.state.glyphDict.hasOwnProperty(glyphName)&&glyphName.length===1) {
+			var glyph = ENGINE.state.glyphDict[glyphName];
 			var glyphmask=new BitVec(STRIDE_OBJ);
 			for (var i=0;i<glyph.length;i++)
 			{
@@ -205,7 +205,7 @@ function printLevel() {
 			}
 			glyphAndMask.push([glyphName, glyphmask.clone()])
 			//register the same - backgroundmask with the same name
-			var bgMask = state.layerMasks[state.backgroundlayer];
+			var bgMask = ENGINE.state.layerMasks[ENGINE.state.backgroundlayer];
 			glyphmask.iclear(bgMask);
 			glyphAndMask.push([glyphName, glyphmask.clone()])
 			for (var i=0;i<32;i++) {
@@ -253,7 +253,7 @@ function levelEditorClick(event,click) {
 
 	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
 		var glyphname = glyphImagesCorrespondance[glyphSelectedIndex];
-		var glyph = state.glyphDict[glyphname];
+		var glyph = ENGINE.state.glyphDict[glyphname];
 		var glyphmask = new BitVec(STRIDE_OBJ);
 		for (var i=0;i<glyph.length;i++)
 		{
@@ -263,7 +263,7 @@ function levelEditorClick(event,click) {
 			}
 		}
 
-		var backgroundMask = state.layerMasks[state.backgroundlayer];
+		var backgroundMask = ENGINE.state.layerMasks[ENGINE.state.backgroundlayer];
 		if (glyphmask.bitsClearInArray(backgroundMask)) {
 			// If we don't already have a background layer, mix in
 			// the default one.
@@ -625,7 +625,7 @@ function checkKey(e,justPressed) {
     	}
     }
     if (ENGINE.textMode) {
-    	if (state.levels.length===0) {
+    	if (ENGINE.state.levels.length===0) {
     		//do nothing
     	} else if (ENGINE.titleScreen) {
     		if (ENGINE.titleMode===0) {
@@ -675,7 +675,7 @@ function checkKey(e,justPressed) {
     	}
     } else {
 	    if (!GAME.againing && inputdir>=0) {
-            if (inputdir===4 && ('noaction' in state.metadata)) {
+            if (inputdir===4 && ('noaction' in ENGINE.state.metadata)) {
 
             } else {
                 pushInput(inputdir);

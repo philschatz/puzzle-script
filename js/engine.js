@@ -146,7 +146,7 @@ var titletemplate_select1_selected = [
 
 
 export function unloadGame() {
-	state=introstate;
+	ENGINE.state=ENGINE.introstate;
 	GAME.level = new Level(0, 5, 5, 2, null);
 	GAME.level.objects = new Int32Array(0);
 	generateTitleScreen();
@@ -158,14 +158,14 @@ export function generateTitleScreen()
 {
 	ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 
-	if (state.levels.length===0) {
+	if (ENGINE.state.levels.length===0) {
 		ENGINE.titleImage=intro_template;
 		return;
 	}
 
 	var title = "PuzzleScript Game";
-	if (state.metadata.title!==undefined) {
-		title=state.metadata.title;
+	if (ENGINE.state.metadata.title!==undefined) {
+		title=ENGINE.state.metadata.title;
 	}
 
 	if (ENGINE.titleMode===0) {
@@ -190,9 +190,9 @@ export function generateTitleScreen()
 		}
 	}
 
-	var noAction = 'noaction' in state.metadata;
-	var noUndo = 'noundo' in state.metadata;
-	var noRestart = 'norestart' in state.metadata;
+	var noAction = 'noaction' in ENGINE.state.metadata;
+	var noUndo = 'noundo' in ENGINE.state.metadata;
+	var noRestart = 'norestart' in ENGINE.state.metadata;
 	if (noUndo && noRestart) {
 		ENGINE.titleImage[11]="..................................";
 	} else if (noUndo) {
@@ -218,8 +218,8 @@ export function generateTitleScreen()
 		var row = ENGINE.titleImage[1+i];
 		ENGINE.titleImage[1+i]=row.slice(0,lmargin)+titleline+row.slice(lmargin+titleline.length);
 	}
-	if (state.metadata.author!==undefined) {
-		var attribution="by "+state.metadata.author;
+	if (ENGINE.state.metadata.author!==undefined) {
+		var attribution="by "+ENGINE.state.metadata.author;
 		var attributionsplit = wordwrap(attribution,ENGINE.titleImage[0].length);
 		for (var i=0;i<attributionsplit.length;i++) {
 			var line = attributionsplit[i]+" ";
@@ -233,18 +233,6 @@ export function generateTitleScreen()
 
 }
 
-var introstate = {
-	title: "2D Whale World",
-	attribution: "increpare",
-   	objectCount: 2,
-   	metadata:[],
-   	levels:[],
-   	bgcolor:"#000000",
-   	fgcolor:"#FFFFFF"
-};
-
-// TODO: Move this to globals
-window.state = introstate;
 
 export function deepClone(item) {
     if (!item) { return item; } // null, undefined values check
@@ -326,7 +314,7 @@ export function drawMessageScreen() {
 
 	var message;
 	if (messagetext==="") {
-		var leveldat = state.levels[GAME.curlevel];
+		var leveldat = ENGINE.state.levels[GAME.curlevel];
 		message = leveldat.message.trim();
 	} else {
 		message = messagetext;
@@ -447,8 +435,8 @@ export function init() {
 }
 
 export function tryPlaySimpleSound(soundname) {
-	if (state.sfx_Events[soundname]!==undefined) {
-		var seed = state.sfx_Events[soundname];
+	if (ENGINE.state.sfx_Events[soundname]!==undefined) {
+		var seed = ENGINE.state.sfx_Events[soundname];
 		playSound(seed);
 	}
 }
@@ -514,7 +502,7 @@ export function setGameState(_state, command, randomseed) {
 	if (command===undefined) {
 		command=["restart"];
 	}
-	if (state.levels.length===0 && command.length>0 && command[0]==="rebuild")  {
+	if (ENGINE.state.levels.length===0 && command.length>0 && command[0]==="rebuild")  {
 		command=["restart"];
 	}
 	if (randomseed===undefined) {
@@ -522,14 +510,14 @@ export function setGameState(_state, command, randomseed) {
 	}
 	RandomGen = new RNG(randomseed);
 
-	state = _state;
+	ENGINE.state = _state;
     window.console.log('setting game state :D ');
     backups=[];
     //set sprites
     sprites = [];
-    for (var n in state.objects) {
-        if (state.objects.hasOwnProperty(n)) {
-            var object = state.objects[n];
+    for (var n in ENGINE.state.objects) {
+        if (ENGINE.state.objects.hasOwnProperty(n)) {
+            var object = ENGINE.state.objects[n];
             var sprite = {
                 colors: object.colors,
                 dat: object.spritematrix
@@ -537,29 +525,29 @@ export function setGameState(_state, command, randomseed) {
             sprites[object.id] = sprite;
         }
     }
-    if (state.metadata.realtime_interval!==undefined) {
+    if (ENGINE.state.metadata.realtime_interval!==undefined) {
     	GAME.autotick=0;
-    	GAME.autotickinterval=state.metadata.realtime_interval*1000;
+    	GAME.autotickinterval=ENGINE.state.metadata.realtime_interval*1000;
     } else {
     	GAME.autotick=0;
     	GAME.autotickinterval=0;
     }
 
-    if (state.metadata.key_repeat_interval!==undefined) {
-		GAME.repeatinterval=state.metadata.key_repeat_interval*1000;
+    if (ENGINE.state.metadata.key_repeat_interval!==undefined) {
+		GAME.repeatinterval=ENGINE.state.metadata.key_repeat_interval*1000;
     } else {
     	GAME.repeatinterval=150;
     }
 
-    if (state.metadata.again_interval!==undefined) {
-		GAME.againinterval=state.metadata.again_interval*1000;
+    if (ENGINE.state.metadata.again_interval!==undefined) {
+		GAME.againinterval=ENGINE.state.metadata.again_interval*1000;
     } else {
     	GAME.againinterval=150;
     }
     if (GAME.throttle_movement && GAME.autotickinterval===0) {
     	logWarning("GAME.throttle_movement is designed for use in conjunction with realtime_interval. Using it in other situations makes games gross and unresponsive, broadly speaking.  Please don't.");
     }
-    GAME.norepeat_action = state.metadata.norepeat_action!==undefined;
+    GAME.norepeat_action = ENGINE.state.metadata.norepeat_action!==undefined;
 
     switch(command[0]){
     	case "restart":
@@ -600,14 +588,14 @@ export function setGameState(_state, command, randomseed) {
 		    GAME.quittingTitleScreen=false;
 		    GAME.messageselected=false;
 		    ENGINE.titleMode = 0;
-			loadLevelFromState(state,targetLevel,randomseed);
+			loadLevelFromState(ENGINE.state,targetLevel,randomseed);
 			break;
 		}
 		case "levelline":
 		{
 			var targetLine = command[1];
-			for (var i=state.levels.length-1;i>=0;i--) {
-				var level= state.levels[i];
+			for (var i=ENGINE.state.levels.length-1;i>=0;i--) {
+				var level= ENGINE.state.levels[i];
 				if(level.lineNumber<=targetLine+1) {
 					GAME.curlevel=i;
 				    GAME.winning=false;
@@ -620,7 +608,7 @@ export function setGameState(_state, command, randomseed) {
 				    GAME.quittingTitleScreen=false;
 				    GAME.messageselected=false;
 				    ENGINE.titleMode = 0;
-					loadLevelFromState(state,i);
+					loadLevelFromState(ENGINE.state,i);
 					break;
 				}
 			}
@@ -636,8 +624,8 @@ export function setGameState(_state, command, randomseed) {
 
 
 	if (DEBUG.canYoutube) {
-		if ('youtube' in state.metadata) {
-			var youtubeid=state.metadata['youtube'];
+		if ('youtube' in ENGINE.state.metadata) {
+			var youtubeid=ENGINE.state.metadata['youtube'];
 			var url = "https://youtube.googleapis.com/v/"+youtubeid+"?autoplay=1&loop=1&playlist="+youtubeid;
 			ifrm = document.createElement("IFRAME");
 			ifrm.setAttribute("src",url);
@@ -771,7 +759,7 @@ var screenheight=0;
 
 export function DoRestart(force) {
 
-	if (force!==true && ('norestart' in state.metadata)) {
+	if (force!==true && ('norestart' in ENGINE.state.metadata)) {
 		return;
 	}
 	if (force===false) {
@@ -785,7 +773,7 @@ export function DoRestart(force) {
 	restoreLevel(restartTarget);
 	tryPlayRestartSound();
 
-	if ('run_rules_on_level_start' in state.metadata) {
+	if ('run_rules_on_level_start' in ENGINE.state.metadata) {
     	processInput(-1,true);
 	}
 
@@ -793,7 +781,7 @@ export function DoRestart(force) {
 }
 
 export function DoUndo(force) {
-	if ((!GAME.levelEditorOpened)&&('noundo' in state.metadata && force!==true)) {
+	if ((!GAME.levelEditorOpened)&&('noundo' in ENGINE.state.metadata && force!==true)) {
 		return;
 	}
 	if (GAME.verbose_logging) {
@@ -811,7 +799,7 @@ export function DoUndo(force) {
 
 export function getPlayerPositions() {
     var result=[];
-    var playerMask = state.playerMask;
+    var playerMask = ENGINE.state.playerMask;
     for (i=0;i<GAME.level.n_tiles;i++) {
         GAME.level.getCellInto(i,_o11);
         if (playerMask.anyBitsInCommon(_o11)) {
@@ -823,10 +811,10 @@ export function getPlayerPositions() {
 
 export function getLayersOfMask(cellMask) {
     var layers=[];
-    for (var i=0;i<state.objectCount;i++) {
+    for (var i=0;i<ENGINE.state.objectCount;i++) {
         if (cellMask.get(i)) {
-            var n = state.idDict[i];
-            var o = state.objects[n];
+            var n = ENGINE.state.idDict[i];
+            var o = ENGINE.state.objects[n];
             layers.push(o.layer)
         }
     }
@@ -851,7 +839,7 @@ export function startMovement(dir) {
     var playerPositions = getPlayerPositions();
     for (var i=0;i<playerPositions.length;i++) {
         var playerPosIndex = playerPositions[i];
-        moveEntitiesAtIndex(playerPosIndex,state.playerMask,dir);
+        moveEntitiesAtIndex(playerPosIndex,ENGINE.state.playerMask,dir);
     }
     return playerPositions;
 }
@@ -896,7 +884,7 @@ export function repositionEntitiesOnLayer(positionIndex,layer,dirMask)
 
     var targetIndex = (positionIndex+delta[1]+delta[0]*GAME.level.height)%GAME.level.n_tiles;
 
-    var layerMask = state.layerMasks[layer];
+    var layerMask = ENGINE.state.layerMasks[layer];
     var targetMask = GAME.level.getCellInto(targetIndex,_o7);
     var sourceMask = GAME.level.getCellInto(positionIndex,_o8);
 
@@ -904,8 +892,8 @@ export function repositionEntitiesOnLayer(positionIndex,layer,dirMask)
         return false;
     }
 
-	for (var i=0;i<state.sfx_MovementMasks.length;i++) {
-		var o = state.sfx_MovementMasks[i];
+	for (var i=0;i<ENGINE.state.sfx_MovementMasks.length;i++) {
+		var o = ENGINE.state.sfx_MovementMasks[i];
 		var objectMask = o.objectMask;
 		if (objectMask.anyBitsInCommon(sourceMask)) {
 			var movementMask = GAME.level.getMovements(positionIndex);
@@ -1362,10 +1350,10 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 			}
 		}
 		var rand = choices[Math.floor(RandomGen.uniform() * choices.length)];
-		var n = state.idDict[rand];
-		var o = state.objects[n];
+		var n = ENGINE.state.idDict[rand];
+		var o = ENGINE.state.objects[n];
 		objectsSet.ibitset(rand);
-		objectsClear.ior(state.layerMasks[o.layer]);
+		objectsClear.ior(ENGINE.state.layerMasks[o.layer]);
 		movementsClear.ishiftor(0x1f, 5 * o.layer);
 	}
 	if (!replace_RandomDirMask.iszero()) {
@@ -1393,7 +1381,7 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 	var curRigidGroupIndexMask =0;
 	var curRigidMovementAppliedMask =0;
 	if (rule.isRigid) {
-		var rigidGroupIndex = state.groupNumber_to_RigidGroupIndex[rule.groupNumber];
+		var rigidGroupIndex = ENGINE.state.groupNumber_to_RigidGroupIndex[rule.groupNumber];
 		rigidGroupIndex++;//don't forget to -- it when decoding :O
 		var rigidMask = new BitVec(STRIDE_MOV);
 		for (var layer = 0; layer < GAME.level.layerCount; layer++) {
@@ -2025,7 +2013,7 @@ export function resolveMovements(dir){
 							var rigidGroupIndexMask = GAME.level.rigidGroupIndexMask[i];
 							var rigidGroupIndex = rigidGroupIndexMask.getshiftor(0x1f, 5*j);
 							rigidGroupIndex--;//group indices start at zero, but are incremented for storing in the bitfield
-							var groupIndex = state.rigidGroupIndex_to_GroupIndex[rigidGroupIndex];
+							var groupIndex = ENGINE.state.rigidGroupIndex_to_GroupIndex[rigidGroupIndex];
 							GAME.level.bannedGroup[groupIndex]=true;
 							//backtrackTarget = rigidBackups[rigidGroupIndex];
 							doUndo=true;
@@ -2034,8 +2022,8 @@ export function resolveMovements(dir){
 					}
 				}
 			}
-			for (var j=0;j<state.sfx_MovementFailureMasks.length;j++) {
-				var o = state.sfx_MovementFailureMasks[j];
+			for (var j=0;j<ENGINE.state.sfx_MovementFailureMasks.length;j++) {
+				var o = ENGINE.state.sfx_MovementFailureMasks[j];
 				var objectMask = o.objectMask;
 				if (objectMask.anyBitsInCommon(cellMask)) {
 					var directionMask = o.directionMask;
@@ -2155,7 +2143,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 
         	if (GAME.verbose_logging){consolePrint('applying rules');}
 
-        	applyRules(state.rules, state.loopPoint, startRuleGroupIndex, GAME.level.bannedGroup);
+        	applyRules(ENGINE.state.rules, ENGINE.state.loopPoint, startRuleGroupIndex, GAME.level.bannedGroup);
         	var shouldUndo = resolveMovements();
 
         	if (shouldUndo) {
@@ -2164,7 +2152,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
         		startRuleGroupIndex=0;//rigidGroupUndoDat.ruleGroupIndex+1;
         	} else {
         		if (GAME.verbose_logging){consolePrint('applying late rules');}
-        		applyRules(state.lateRules, state.lateLoopPoint, 0);
+        		applyRules(ENGINE.state.lateRules, ENGINE.state.lateLoopPoint, 0);
         		startRuleGroupIndex=0;
         	}
         } while (i < 50 && rigidloop);
@@ -2174,12 +2162,12 @@ export function processInput(dir,dontCheckWin,dontModify) {
         }
 
 
-        if (playerPositions.length>0 && state.metadata.require_player_movement!==undefined) {
+        if (playerPositions.length>0 && ENGINE.state.metadata.require_player_movement!==undefined) {
         	var somemoved=false;
         	for (var i=0;i<playerPositions.length;i++) {
         		var pos = playerPositions[i];
         		var val = GAME.level.getCell(pos);
-        		if (state.playerMask.bitsClearInArray(val.data)) {
+        		if (ENGINE.state.playerMask.bitsClearInArray(val.data)) {
         			somemoved=true;
         			break;
         		}
@@ -2255,15 +2243,15 @@ export function processInput(dir,dontCheckWin,dontModify) {
 	        	playSound(seedsToPlay_CanMove[i]);
         }
 
-        for (var i=0;i<state.sfx_CreationMasks.length;i++) {
-        	var entry = state.sfx_CreationMasks[i];
+        for (var i=0;i<ENGINE.state.sfx_CreationMasks.length;i++) {
+        	var entry = ENGINE.state.sfx_CreationMasks[i];
         	if (sfxCreateMask.anyBitsInCommon(entry.objectMask)) {
 	        	playSound(entry.seed);
         	}
         }
 
-        for (var i=0;i<state.sfx_DestructionMasks.length;i++) {
-        	var entry = state.sfx_DestructionMasks[i];
+        for (var i=0;i<ENGINE.state.sfx_DestructionMasks.length;i++) {
+        	var entry = ENGINE.state.sfx_DestructionMasks[i];
         	if (sfxDestroyMask.anyBitsInCommon(entry.objectMask)) {
 	        	playSound(entry.seed);
         	}
@@ -2360,10 +2348,10 @@ export function checkWin() {
 	}
 
 	var won= false;
-	if (state.winconditions.length>0)  {
+	if (ENGINE.state.winconditions.length>0)  {
 		var passed=true;
-		for (var wcIndex=0;wcIndex<state.winconditions.length;wcIndex++) {
-			var wincondition = state.winconditions[wcIndex];
+		for (var wcIndex=0;wcIndex<ENGINE.state.winconditions.length;wcIndex++) {
+			var wincondition = ENGINE.state.winconditions[wcIndex];
 			var filter1 = wincondition[1];
 			var filter2 = wincondition[2];
 			var rulePassed=true;
@@ -2461,12 +2449,12 @@ export function nextLevel() {
 			GAME.curlevelTarget=null;
 		}
 		if (GAME.curlevelTarget!==null){
-			loadLevelFromStateTarget(state,GAME.curlevel,GAME.curlevelTarget);
+			loadLevelFromStateTarget(ENGINE.state,GAME.curlevel,GAME.curlevelTarget);
 		} else {
-			loadLevelFromState(state,GAME.curlevel);
+			loadLevelFromState(ENGINE.state,GAME.curlevel);
 		}
 	} else {
-		if (GAME.curlevel<(state.levels.length-1))
+		if (GAME.curlevel<(ENGINE.state.levels.length-1))
 		{
 			GAME.curlevel++;
 			ENGINE.textMode=false;
@@ -2475,9 +2463,9 @@ export function nextLevel() {
 			GAME.messageselected=false;
 
 			if (GAME.curlevelTarget!==null){
-				loadLevelFromStateTarget(state,GAME.curlevel,GAME.curlevelTarget);
+				loadLevelFromStateTarget(ENGINE.state,GAME.curlevel,GAME.curlevelTarget);
 			} else {
-				loadLevelFromState(state,GAME.curlevel);
+				loadLevelFromState(ENGINE.state,GAME.curlevel);
 			}
 		} else {
 			GAME.curlevel=0;
