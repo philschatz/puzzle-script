@@ -1,7 +1,7 @@
 import {globals as ENGINE} from './_global-engine';
 import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setGameState} from './engine';
 import {globals as DEBUG, consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
-import {codeMirrorFn} from './parser';
+import {codeMirrorFn, errorStrings, errorCount} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
 import {globals as GAME} from './globalVariables';
 import {colorPalettes} from './colors';
@@ -2372,7 +2372,7 @@ export function loadFile(str) {
 		do {
 			processor.token(ss, state);
 
-			if (errorCount>MAX_ERRORS) {
+			if (errorCount[0]>MAX_ERRORS) {
 				consolePrint("too many errors, aborting compilation");
 				return;
 			}
@@ -2449,9 +2449,9 @@ export function compile(command,text,randomseed) {
 		compiledText=text;
 	}
 
-	errorCount = 0;
+	errorCount[0] = 0;
 	compiling = true;
-	errorStrings = [];
+	errorStrings.splice(0, errorStrings.length); // Clear the array without changing the var
 	consolePrint('=================================');
 	try
 	{
@@ -2460,7 +2460,7 @@ export function compile(command,text,randomseed) {
 	} finally {
 		compiling = false;
 	}
-	if (errorCount>MAX_ERRORS) {
+	if (errorCount[0]>MAX_ERRORS) {
 		return;
 	}
 	/*catch(err)
@@ -2470,7 +2470,7 @@ export function compile(command,text,randomseed) {
 		}
 	}*/
 
-	if (errorCount>0) {
+	if (errorCount[0]>0) {
 		consoleError('<span class="systemMessage">Errors detected during compilation, the game may not work correctly.</span>');
 	}
 	else {

@@ -26,8 +26,8 @@ for post-launch credits, check out activty on github.com/increpare/PuzzleScript
 */
 
 var compiling = false;
-var errorStrings = [];
-var errorCount=0;
+export const errorStrings = [];
+export var errorCount=[0]; // put it in an array so we can change it
 
 export function logErrorCacheable(str, lineNumber,urgent) {
     if (compiling||urgent) {
@@ -40,7 +40,7 @@ export function logErrorCacheable(str, lineNumber,urgent) {
          } else {
             consolePrint(errorString);
             errorStrings.push(errorString);
-            errorCount++;
+            errorCount[0]++;
         }
     }
 }
@@ -56,7 +56,7 @@ export function logError(str, lineNumber,urgent) {
          } else {
             consolePrint(errorString,true);
             errorStrings.push(errorString);
-            errorCount++;
+            errorCount[0]++;
         }
     }
 }
@@ -84,7 +84,7 @@ export function logErrorNoLine(str,urgent) {
             consolePrint(errorString,true);
             errorStrings.push(errorString);
         }
-        errorCount++;
+        errorCount[0]++;
     }
 }
 
