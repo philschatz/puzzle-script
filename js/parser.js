@@ -25,12 +25,12 @@ for post-launch credits, check out activty on github.com/increpare/PuzzleScript
 
 */
 
-var compiling = false;
+export var compiling = [false];
 export const errorStrings = [];
 export var errorCount=[0]; // put it in an array so we can change it
 
 export function logErrorCacheable(str, lineNumber,urgent) {
-    if (compiling||urgent) {
+    if (compiling[0]||urgent) {
         if (lineNumber === undefined) {
             return logErrorNoLine(str);
         }
@@ -46,7 +46,7 @@ export function logErrorCacheable(str, lineNumber,urgent) {
 }
 
 export function logError(str, lineNumber,urgent) {
-    if (compiling||urgent) {
+    if (compiling[0]||urgent) {
         if (lineNumber === undefined) {
             return logErrorNoLine(str);
         }
@@ -62,7 +62,7 @@ export function logError(str, lineNumber,urgent) {
 }
 
 export function logWarning(str, lineNumber,urgent) {
-    if (compiling||urgent) {
+    if (compiling[0]||urgent) {
         if (lineNumber === undefined) {
             return logErrorNoLine(str);
         }
@@ -76,7 +76,7 @@ export function logWarning(str, lineNumber,urgent) {
     }
 }
 export function logErrorNoLine(str,urgent) {
-    if (compiling||urgent) {
+    if (compiling[0]||urgent) {
         var errorString = '<span class="errorText">' + str + '</span>';
          if (errorStrings.indexOf(errorString) >= 0 && !urgent) {
             //do nothing, duplicate error
@@ -91,7 +91,7 @@ export function logErrorNoLine(str,urgent) {
 
 
 export function logBetaMessage(str,urgent){
-    if (compiling||urgent) {
+    if (compiling[0]||urgent) {
         var errorString = '<span class="betaText">' + str + '</span>';
          if (errorStrings.indexOf(errorString) >= 0 && !urgent) {
             //do nothing, duplicate error
@@ -1096,7 +1096,7 @@ var codeMirrorFn = function() {
 		                    			}
 		                    			state.tokenIndex=1;
 		                    			return 'METADATA';
-		                    		} else if ( ['run_rules_on_level_start','GAME.norepeat_action','require_player_movement','debug','GAME.verbose_logging','GAME.throttle_movement','noundo','noaction','norestart','scanline'].indexOf(token)>=0) {
+		                    		} else if ( ['run_rules_on_level_start','norepeat_action','require_player_movement','debug','verbose_logging','throttle_movement','noundo','noaction','norestart','scanline'].indexOf(token)>=0) {
 		                    			state.metadata.push(token);
 		                    			state.metadata.push("true");
 		                    			state.tokenIndex=-1;

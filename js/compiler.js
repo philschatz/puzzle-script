@@ -1,7 +1,7 @@
 import {globals as ENGINE} from './_global-engine';
 import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setGameState} from './engine';
-import {globals as DEBUG, consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
-import {codeMirrorFn, errorStrings, errorCount} from './parser';
+import {globals as DEBUG, consolePrint, consoleError, clearInputHistory, consoleCacheDump} from './debug_off';
+import {codeMirrorFn, errorStrings, errorCount, compiling} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
 import {globals as GAME} from './globalVariables';
 import {colorPalettes} from './colors';
@@ -2450,7 +2450,7 @@ export function compile(command,text,randomseed) {
 	}
 
 	errorCount[0] = 0;
-	compiling = true;
+	compiling[0] = true;
 	errorStrings.splice(0, errorStrings.length); // Clear the array without changing the var
 	consolePrint('=================================');
 	try
@@ -2458,7 +2458,7 @@ export function compile(command,text,randomseed) {
 		var state = loadFile(text);
 //		consolePrint(JSON.stringify(state));
 	} finally {
-		compiling = false;
+		compiling[0] = false;
 	}
 	if (errorCount[0]>MAX_ERRORS) {
 		return;
@@ -2472,6 +2472,9 @@ export function compile(command,text,randomseed) {
 
 	if (errorCount[0]>0) {
 		consoleError('<span class="systemMessage">Errors detected during compilation, the game may not work correctly.</span>');
+		for (var errorStringIndex in errorStrings) {
+			consoleError(errorStrings[errorStringIndex]);
+		}
 	}
 	else {
 		var ruleCount=0;
