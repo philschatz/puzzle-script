@@ -1,8 +1,7 @@
 import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setGameState} from './engine';
-import {consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
+import {globals as DEBUG, consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
 import {codeMirrorFn} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
-
 
 'use strict';
 
@@ -2323,7 +2322,7 @@ export function formatHomePage(state){
 		logError("background_color in incorrect format - found "+state.bgcolor+", but I expect a color name (like 'pink') or hex-formatted color (like '#1412FA').")
 	}
 
-	if (canSetHTMLColors) {
+	if (DEBUG.canSetHTMLColors) {
 
 		if ('background_color' in state.metadata)  {
 			document.body.style.backgroundColor=state.bgcolor;
@@ -2443,7 +2442,7 @@ export function compile(command,text,randomseed) {
 	}
 	lastDownTarget=GRAPHICS.canvas;
 
-	if (canDump===true) {
+	if (DEBUG.canDump===true) {
 		compiledText=text;
 	}
 

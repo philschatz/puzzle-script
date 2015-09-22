@@ -1,6 +1,6 @@
 import {RNG} from './rng';
 import {canvasResize} from './graphics';
-import {clearInputHistory, consolePrint} from './debug_off';
+import {globals as DEBUG, clearInputHistory, consolePrint} from './debug_off';
 import {logErrorCacheable} from './parser';
 import {playSound} from './sfxr';
 
@@ -641,7 +641,7 @@ export function setGameState(_state, command, randomseed) {
 
 
 
-	if (canYoutube) {
+	if (DEBUG.canYoutube) {
 		if ('youtube' in state.metadata) {
 			var youtubeid=state.metadata['youtube'];
 			var url = "https://youtube.googleapis.com/v/"+youtubeid+"?autoplay=1&loop=1&playlist="+youtubeid;

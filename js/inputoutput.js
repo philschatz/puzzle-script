@@ -1,6 +1,6 @@
 import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processInput, tryPlayCloseMessageSound, drawMessageScreen, DoRestart, DoUndo} from './engine';
 import {redraw, canvasResize} from './graphics';
-import {pushInput} from './debug_off';
+import {globals as DEBUG, pushInput} from './debug_off';
 import {globals as GRAPHICS} from './_global-graphics';
 
 var keyRepeatTimer=0;
@@ -375,7 +375,7 @@ function onKeyDown(event) {
     event = event || window.event;
 
 	// Prevent arrows/space from scrolling page
-	if ((!IDE) && ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1)) {
+	if ((!DEBUG.IDE) && ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1)) {
 		prevent(event);
 	}
 
@@ -393,7 +393,7 @@ function onKeyDown(event) {
 	}
 
 
-    if (canDump===true) {
+    if (DEBUG.canDump===true) {
         if (event.keyCode===74 && (event.ctrlKey||event.metaKey)) {//ctrl+j
             dumpTestCase();
             prevent(event);

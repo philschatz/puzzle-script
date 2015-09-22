@@ -66,7 +66,7 @@ export function regenSpriteImages() {
         spriteimages[i] = createSprite(i.toString(),sprites[i].dat, sprites[i].colors);
     }
 
-    if (canOpenEditor) {
+    if (DEBUG.canOpenEditor) {
     	generateGlyphImages();
     }
 }

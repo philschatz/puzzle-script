@@ -1,9 +1,13 @@
-// TODO: Move to globals or export
-window.canSetHTMLColors=true;
-window.canDump=false;
-window.canOpenEditor=false;
-window.canYoutube=true;
-window.IDE=false;
+export const globals = {
+
+	canSetHTMLColors: true,
+	canDump: false,
+	canOpenEditor: false,
+	canYoutube: true,
+	IDE: false,
+
+};
+
 
 export function stripTags(str) {
 	var div = document.createElement("div");
