@@ -17,7 +17,9 @@ const globals = {
   y: 0,
 
   canvasdict: {},
-  lastDownTarget: null
+  lastDownTarget: null,
+  forceRegenImages: false
+
 }
 
 export {globals}

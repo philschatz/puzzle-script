@@ -325,7 +325,6 @@ var oldcellwidth=0;
 var oldcellheight=0;
 var oldtextmode=-1;
 var oldfgcolor=-1;
-var forceRegenImages=false;
 export function canvasResize() {
     GRAPHICS.canvas.width = GRAPHICS.canvas.parentNode.clientWidth;
     GRAPHICS.canvas.height = GRAPHICS.canvas.parentNode.clientHeight;
@@ -395,8 +394,8 @@ export function canvasResize() {
     ENGINE.xoffset = ENGINE.xoffset|0;
     ENGINE.yoffset = ENGINE.yoffset|0;
 
-    if (oldcellwidth!=ENGINE.cellwidth||oldcellheight!=ENGINE.cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||forceRegenImages){
-    	forceRegenImages=false;
+    if (oldcellwidth!=ENGINE.cellwidth||oldcellheight!=ENGINE.cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||GRAPHICS.forceRegenImages){
+    	GRAPHICS.forceRegenImages=false;
     	regenSpriteImages();
     }
 

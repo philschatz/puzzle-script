@@ -2436,7 +2436,7 @@ export function loadFile(str) {
 var ifrm;
 export function compile(command,text,randomseed) {
 	matchCache={};
-	forceRegenImages=true;
+	GRAPHICS.forceRegenImages=true;
 	if (command===undefined) {
 		command = ["restart"];
 	}

@@ -345,7 +345,7 @@ export function loadLevelFromLevelDat(state,leveldat,randomseed) {
 	}
 	loadedLevelSeed = randomseed;
 	RandomGen = new RNG(loadedLevelSeed);
-	forceRegenImages=true;
+	GRAPHICS.forceRegenImages=true;
 	ENGINE.titleScreen=false;
 	ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 	ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
