@@ -38,5 +38,10 @@ export const globals = {
 	state: introstate,
 	messagetext: '',
   STRIDE_OBJ: 1,
-  STRIDE_MOV: 1
+  STRIDE_MOV: 1,
+	zoomscreen: false,
+	flickscreen: false,
+	screenwidth: 0,
+	screenheight: 0
+
 };

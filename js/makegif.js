@@ -5,10 +5,10 @@ export function makeGIF() {
 	GAME.levelEditorOpened=false;
 	var targetlevel=GAME.curlevel;
 	var gifcanvas = document.createElement('canvas');
-	gifcanvas.width=screenwidth*cellwidth;
-	gifcanvas.height=screenheight*cellheight;
-	gifcanvas.style.width=screenwidth*cellwidth;
-	gifcanvas.style.height=screenheight*cellheight;
+	gifcanvas.width=ENGINE.screenwidth*cellwidth;
+	gifcanvas.height=ENGINE.screenheight*cellheight;
+	gifcanvas.style.width=ENGINE.screenwidth*cellwidth;
+	gifcanvas.style.height=ENGINE.screenheight*cellheight;
 
 	var gifctx = gifcanvas.getContext('2d');
 

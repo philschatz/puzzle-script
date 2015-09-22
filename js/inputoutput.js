@@ -243,7 +243,7 @@ function printLevel() {
 function levelEditorClick(event,click) {
 	if (mouseCoordY<=-2) {
 		var ypos = editorRowCount-(-mouseCoordY-2)-1;
-		var newindex=mouseCoordX+(screenwidth-1)*ypos;
+		var newindex=mouseCoordX+(ENGINE.screenwidth-1)*ypos;
 		if (mouseCoordX===-1) {
 			printLevel();
 		} else if (mouseCoordX>=0&&newindex<glyphImages.length) {
@@ -251,7 +251,7 @@ function levelEditorClick(event,click) {
 			redraw();
 		}
 
-	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
+	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<ENGINE.screenwidth-2&&mouseCoordY<ENGINE.screenheight-2-editorRowCount	) {
 		var glyphname = glyphImagesCorrespondance[glyphSelectedIndex];
 		var glyph = ENGINE.state.glyphDict[glyphname];
 		var glyphmask = new BitVec(ENGINE.STRIDE_OBJ);
@@ -288,14 +288,14 @@ function levelEditorClick(event,click) {
 			//add a left row to the map
 			addLeftColumn();
 			canvasResize();
-		} else if (mouseCoordX===screenwidth-2) {
+		} else if (mouseCoordX===ENGINE.screenwidth-2) {
 			addRightColumn();
 			canvasResize();
 		}
 		if (mouseCoordY===-1) {
 			addTopRow();
 			canvasResize();
-		} else if (mouseCoordY===screenheight-2-editorRowCount) {
+		} else if (mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
 			addBottomRow();
 			canvasResize();
 		}
@@ -308,7 +308,7 @@ function levelEditorRightClick(event,click) {
 			glyphSelectedIndex=mouseCoordX;
 			redraw();
 		}
-	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
+	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<ENGINE.screenwidth-2&&mouseCoordY<ENGINE.screenheight-2-editorRowCount	) {
 		var coordIndex = mouseCoordY + mouseCoordX*GAME.level.height;
 		var glyphmask = new BitVec(ENGINE.STRIDE_OBJ);
 		glyphmask.ibitset(state.backgroundid);
@@ -320,14 +320,14 @@ function levelEditorRightClick(event,click) {
 			//add a left row to the map
 			removeLeftColumn();
 			canvasResize();
-		} else if (mouseCoordX===screenwidth-2) {
+		} else if (mouseCoordX===ENGINE.screenwidth-2) {
 			removeRightColumn();
 			canvasResize();
 		}
 		if (mouseCoordY===-1) {
 			removeTopRow();
 			canvasResize();
-		} else if (mouseCoordY===screenheight-2-editorRowCount) {
+		} else if (mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
 			removeBottomRow();
 			canvasResize();
 		}

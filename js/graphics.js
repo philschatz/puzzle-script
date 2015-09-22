@@ -205,28 +205,28 @@ export function redraw() {
         GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         var mini=0;
-        var maxi=screenwidth;
+        var maxi=ENGINE.screenwidth;
         var minj=0;
-        var maxj=screenheight;
+        var maxj=ENGINE.screenheight;
 
         if (GAME.levelEditorOpened) {
             var glyphcount = glyphCount();
-            editorRowCount = Math.ceil(glyphcount/(screenwidth-1));
+            editorRowCount = Math.ceil(glyphcount/(ENGINE.screenwidth-1));
             maxi-=2;
             maxj-=2+editorRowCount;
-        } else if (flickscreen) {
+        } else if (ENGINE.flickscreen) {
             var playerPositions = getPlayerPositions();
             if (playerPositions.length>0) {
                 var playerPosition=playerPositions[0];
                 var px = (playerPosition/(GAME.level.height))|0;
                 var py = (playerPosition%GAME.level.height)|0;
 
-                var screenx = (px/screenwidth)|0;
-                var screeny = (py/screenheight)|0;
-                mini=screenx*screenwidth;
-                minj=screeny*screenheight;
-                maxi=Math.min(mini+screenwidth,GAME.level.width);
-                maxj=Math.min(minj+screenheight,GAME.level.height);
+                var screenx = (px/ENGINE.screenwidth)|0;
+                var screeny = (py/ENGINE.screenheight)|0;
+                mini=screenx*ENGINE.screenwidth;
+                minj=screeny*ENGINE.screenheight;
+                maxi=Math.min(mini+ENGINE.screenwidth,GAME.level.width);
+                maxj=Math.min(minj+ENGINE.screenheight,GAME.level.height);
 
                 GAME.oldflickscreendat=[mini,minj,maxi,maxj];
             } else if (GAME.oldflickscreendat.length>0){
@@ -235,16 +235,16 @@ export function redraw() {
                 maxi=GAME.oldflickscreendat[2];
                 maxj=GAME.oldflickscreendat[3];
             }
-        } else if (zoomscreen) {
+        } else if (ENGINE.zoomscreen) {
             var playerPositions = getPlayerPositions();
             if (playerPositions.length>0) {
                 var playerPosition=playerPositions[0];
                 var px = (playerPosition/(GAME.level.height))|0;
                 var py = (playerPosition%GAME.level.height)|0;
-                mini=Math.max(Math.min(px-((screenwidth/2)|0),GAME.level.width-screenwidth),0);
-                minj=Math.max(Math.min(py-((screenheight/2)|0),GAME.level.height-screenheight),0);
-                maxi=Math.min(mini+screenwidth,GAME.level.width);
-                maxj=Math.min(minj+screenheight,GAME.level.height);
+                mini=Math.max(Math.min(px-((ENGINE.screenwidth/2)|0),GAME.level.width-ENGINE.screenwidth),0);
+                minj=Math.max(Math.min(py-((ENGINE.screenheight/2)|0),GAME.level.height-ENGINE.screenheight),0);
+                maxi=Math.min(mini+ENGINE.screenwidth,GAME.level.width);
+                maxj=Math.min(minj+ENGINE.screenheight,GAME.level.height);
                 GAME.oldflickscreendat=[mini,minj,maxi,maxj];
             }  else if (GAME.oldflickscreendat.length>0){
                 mini=GAME.oldflickscreendat[0];
@@ -279,7 +279,7 @@ export function drawEditorIcons() {
 	var glyphStartIndex=0;
 	var glyphEndIndex = glyphImages.length;/*Math.min(
 							glyphStartIndex+10,
-							screenwidth-2,
+							ENGINE.screenwidth-2,
 							glyphStartIndex+Math.max(glyphCount-glyphStartIndex,0)
 							);*/
 	var glyphsToDisplay = glyphEndIndex-glyphStartIndex;
@@ -290,23 +290,23 @@ export function drawEditorIcons() {
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
-	var mouseIndex=mouseCoordX+(screenwidth-1)*ypos;
+	var mouseIndex=mouseCoordX+(ENGINE.screenwidth-1)*ypos;
 
 	for (var i=0;i<glyphsToDisplay;i++) {
 		var glyphIndex = glyphStartIndex+i;
 		var sprite = glyphImages[glyphIndex];
-        var xpos=i%(screenwidth-1);
-        var ypos=(i/(screenwidth-1))|0;
+        var xpos=i%(ENGINE.screenwidth-1);
+        var ypos=(i/(ENGINE.screenwidth-1))|0;
 		GRAPHICS.ctx.drawImage(sprite,xoffset+(xpos)*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
-		if (mouseCoordX>=0&&mouseCoordX<(screenwidth-1)&&mouseIndex===i) {
+		if (mouseCoordX>=0&&mouseCoordX<(ENGINE.screenwidth-1)&&mouseIndex===i) {
 			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
 			GRAPHICS.ctx.drawImage(glyphHighlight,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		}
 	}
-	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<screenwidth-1&&mouseCoordY<screenheight-1-editorRowCount) {
-		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==screenwidth-2||mouseCoordY===screenheight-2-editorRowCount) {
+	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<ENGINE.screenwidth-1&&mouseCoordY<ENGINE.screenheight-1-editorRowCount) {
+		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==ENGINE.screenwidth-2||mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
 			GRAPHICS.ctx.drawImage(glyphHighlightResize,
 				xoffset+mouseCoordX*cellwidth,
 				yoffset+mouseCoordY*cellheight
@@ -330,32 +330,32 @@ export function canvasResize() {
     GRAPHICS.canvas.width = GRAPHICS.canvas.parentNode.clientWidth;
     GRAPHICS.canvas.height = GRAPHICS.canvas.parentNode.clientHeight;
 
-    screenwidth=GAME.level.width;
-    screenheight=GAME.level.height;
+    ENGINE.screenwidth=GAME.level.width;
+    ENGINE.screenheight=GAME.level.height;
     if (ENGINE.state!==undefined){
-        flickscreen=ENGINE.state.metadata.flickscreen!==undefined;
-        zoomscreen=ENGINE.state.metadata.zoomscreen!==undefined;
+        ENGINE.flickscreen=ENGINE.state.metadata.flickscreen!==undefined;
+        ENGINE.zoomscreen=ENGINE.state.metadata.zoomscreen!==undefined;
 	    if (GAME.levelEditorOpened) {
-            screenwidth+=2;
+            ENGINE.screenwidth+=2;
             var glyphcount = glyphCount();
-            editorRowCount = Math.ceil(glyphcount/(screenwidth-1));
-            screenheight+=2+editorRowCount;
-        } else if (flickscreen) {
-	        screenwidth=ENGINE.state.metadata.flickscreen[0];
-	        screenheight=ENGINE.state.metadata.flickscreen[1];
-	    } else if (zoomscreen) {
-	        screenwidth=ENGINE.state.metadata.zoomscreen[0];
-	        screenheight=ENGINE.state.metadata.zoomscreen[1];
+            editorRowCount = Math.ceil(glyphcount/(ENGINE.screenwidth-1));
+            ENGINE.screenheight+=2+editorRowCount;
+        } else if (ENGINE.flickscreen) {
+	        ENGINE.screenwidth=ENGINE.state.metadata.flickscreen[0];
+	        ENGINE.screenheight=ENGINE.state.metadata.flickscreen[1];
+	    } else if (ENGINE.zoomscreen) {
+	        ENGINE.screenwidth=ENGINE.state.metadata.zoomscreen[0];
+	        ENGINE.screenheight=ENGINE.state.metadata.zoomscreen[1];
 	    }
 	}
 
     if (ENGINE.textMode) {
-        screenwidth=ENGINE.titleWidth;
-        screenheight=ENGINE.titleHeight;
+        ENGINE.screenwidth=ENGINE.titleWidth;
+        ENGINE.screenheight=ENGINE.titleHeight;
     }
 
-    cellwidth = GRAPHICS.canvas.width / screenwidth;
-    cellheight = GRAPHICS.canvas.height / screenheight;
+    cellwidth = GRAPHICS.canvas.width / ENGINE.screenwidth;
+    cellheight = GRAPHICS.canvas.height / ENGINE.screenheight;
 
     var w = 5;//sprites[1].dat.length;
     var h = 5;//sprites[1].dat[0].length;
@@ -374,13 +374,13 @@ export function canvasResize() {
 
     if (cellwidth > cellheight) {
         cellwidth = cellheight;
-        xoffset = (GRAPHICS.canvas.width - cellwidth * screenwidth) / 2;
-        yoffset = (GRAPHICS.canvas.height - cellheight * screenheight) / 2;
+        xoffset = (GRAPHICS.canvas.width - cellwidth * ENGINE.screenwidth) / 2;
+        yoffset = (GRAPHICS.canvas.height - cellheight * ENGINE.screenheight) / 2;
     }
     else { //if (cellheight > cellwidth) {
         cellheight = cellwidth;
-        yoffset = (GRAPHICS.canvas.height - cellheight * screenheight) / 2;
-        xoffset = (GRAPHICS.canvas.width - cellwidth * screenwidth) / 2;
+        yoffset = (GRAPHICS.canvas.height - cellheight * ENGINE.screenheight) / 2;
+        xoffset = (GRAPHICS.canvas.width - cellwidth * ENGINE.screenwidth) / 2;
     }
     magnification = ((cellwidth/w)*5)|0;
 

@@ -749,11 +749,6 @@ export function restoreLevel(lev) {
     GAME.level.commandQueue=[];
 }
 
-var zoomscreen=false;
-var flickscreen=false;
-var screenwidth=0;
-var screenheight=0;
-
 
 export function DoRestart(force) {
 
