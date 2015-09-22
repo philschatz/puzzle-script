@@ -60,92 +60,92 @@ function adjustLevel(level, widthdelta, heightdelta) {
 }
 
 function addLeftColumn() {
-	var oldlevel = adjustLevel(level, 1, 0);
-	for (var x=1; x<level.width; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index - level.height))
+	var oldlevel = adjustLevel(GAME.level, 1, 0);
+	for (var x=1; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index - GAME.level.height))
 		}
 	}
 }
 
 function addRightColumn() {
-	var oldlevel = adjustLevel(level, 1, 0);
-	for (var x=0; x<level.width-1; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index))
+	var oldlevel = adjustLevel(GAME.level, 1, 0);
+	for (var x=0; x<GAME.level.width-1; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index))
 		}
 	}
 }
 
 function addTopRow() {
-	var oldlevel = adjustLevel(level, 0, 1);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=1; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index - x - 1))
+	var oldlevel = adjustLevel(GAME.level, 0, 1);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=1; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index - x - 1))
 		}
 	}
 }
 
 function addBottomRow() {
-	var oldlevel = adjustLevel(level, 0, 1);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=0; y<level.height - 1; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index - x));
+	var oldlevel = adjustLevel(GAME.level, 0, 1);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height - 1; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index - x));
 		}
 	}
 }
 
 function removeLeftColumn() {
-	if (level.width<=1) {
+	if (GAME.level.width<=1) {
 		return;
 	}
-	var oldlevel = adjustLevel(level, -1, 0);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index + level.height))
+	var oldlevel = adjustLevel(GAME.level, -1, 0);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index + GAME.level.height))
 		}
 	}
 }
 
 function removeRightColumn(){
-	if (level.width<=1) {
+	if (GAME.level.width<=1) {
 		return;
 	}
-	var oldlevel = adjustLevel(level, -1, 0);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index))
+	var oldlevel = adjustLevel(GAME.level, -1, 0);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index))
 		}
 	}
 }
 
 function removeTopRow(){
-	if (level.height<=1) {
+	if (GAME.level.height<=1) {
 		return;
 	}
-	var oldlevel = adjustLevel(level, 0, -1);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index + x + 1))
+	var oldlevel = adjustLevel(GAME.level, 0, -1);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index + x + 1))
 		}
 	}
 }
 function removeBottomRow(){
-	if (level.height<=1) {
+	if (GAME.level.height<=1) {
 		return;
 	}
-	var oldlevel = adjustLevel(level, 0, -1);
-	for (var x=0; x<level.width; ++x) {
-		for (var y=0; y<level.height; ++y) {
-			var index = x*level.height + y;
-			level.setCell(index, oldlevel.getCell(index + x))
+	var oldlevel = adjustLevel(GAME.level, 0, -1);
+	for (var x=0; x<GAME.level.width; ++x) {
+		for (var y=0; y<GAME.level.height; ++y) {
+			var index = x*GAME.level.height + y;
+			GAME.level.setCell(index, oldlevel.getCell(index + x))
 		}
 	}
 }
@@ -219,19 +219,19 @@ function printLevel() {
 	}
 	selectableint++;
 	var tag = 'selectable'+selectableint;
-	var output="Printing level contents:<br><br><span id=\""+tag+"\" onclick=\"selectText('"+tag+"',event)\">";
-	cache_console_messages = false;
-	for (var j=0;j<level.height;j++) {
-		for (var i=0;i<level.width;i++) {
-			var cellIndex = j+i*level.height;
-			var cellMask = level.getCell(cellIndex);
+	var output="Printing GAME.level contents:<br><br><span id=\""+tag+"\" onclick=\"selectText('"+tag+"',event)\">";
+	GAME.cache_console_messages = false;
+	for (var j=0;j<GAME.level.height;j++) {
+		for (var i=0;i<GAME.level.width;i++) {
+			var cellIndex = j+i*GAME.level.height;
+			var cellMask = GAME.level.getCell(cellIndex);
 			var glyph = matchGlyph(cellMask,glyphAndMask);
 			if (glyph in htmlEntityMap) {
 				glyph = htmlEntityMap[glyph];
 			}
 			output = output+glyph;
 		}
-		if (j<level.height-1){
+		if (j<GAME.level.height-1){
 			output=output+"<br>";
 		}
 	}
@@ -269,8 +269,8 @@ function levelEditorClick(event,click) {
 			glyphmask.ibitset(state.backgroundid);
 		}
 
-		var coordIndex = mouseCoordY + mouseCoordX*level.height;
-		var getcell = level.getCell(coordIndex);
+		var coordIndex = mouseCoordY + mouseCoordX*GAME.level.height;
+		var getcell = GAME.level.getCell(coordIndex);
 		if (getcell.equals(glyphmask)) {
 			return;
 		} else {
@@ -278,7 +278,7 @@ function levelEditorClick(event,click) {
 				anyEditsSinceMouseDown=true;
         		backups.push(backupLevel());
 			}
-			level.setCell(coordIndex, glyphmask);
+			GAME.level.setCell(coordIndex, glyphmask);
 			redraw();
 		}
 	}
@@ -308,10 +308,10 @@ function levelEditorRightClick(event,click) {
 			redraw();
 		}
 	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
-		var coordIndex = mouseCoordY + mouseCoordX*level.height;
+		var coordIndex = mouseCoordY + mouseCoordX*GAME.level.height;
 		var glyphmask = new BitVec(STRIDE_OBJ);
 		glyphmask.ibitset(state.backgroundid);
-		level.setCell(coordIndex, glyphmask);
+		GAME.level.setCell(coordIndex, glyphmask);
 		redraw();
 	}
 	else if (click) {
@@ -338,12 +338,12 @@ var anyEditsSinceMouseDown = false;
 function onMouseDown(event) {
 	if (event.button===0 && !(event.ctrlKey||event.metaKey) ) {
         lastDownTarget = event.target;
-        keybuffer=[];
+        GAME.keybuffer=[];
         if (event.target===GRAPHICS.canvas) {
         	setMouseCoord(event);
         	dragging=true;
         	rightdragging=false;
-        	if (levelEditorOpened) {
+        	if (GAME.levelEditorOpened) {
         		anyEditsSinceMouseDown=false;
         		return levelEditorClick(event,true);
         	}
@@ -354,7 +354,7 @@ function onMouseDown(event) {
     	if (event.target.id==="gameCanvas") {
 		    dragging=false;
 		    rightdragging=true;
-        	if (levelEditorOpened) {
+        	if (GAME.levelEditorOpened) {
         		return levelEditorRightClick(event,true);
         	}
         }
@@ -381,13 +381,13 @@ function onKeyDown(event) {
 	}
 
 
-    if (keybuffer.indexOf(event.keyCode)>=0) {
+    if (GAME.keybuffer.indexOf(event.keyCode)>=0) {
     	return;
     }
 
     if(lastDownTarget === GRAPHICS.canvas) {
-    	if (keybuffer.indexOf(event.keyCode)===-1) {
-    		keybuffer.splice(keyRepeatIndex,0,event.keyCode);
+    	if (GAME.keybuffer.indexOf(event.keyCode)===-1) {
+    		GAME.keybuffer.splice(keyRepeatIndex,0,event.keyCode);
 	    	keyRepeatTimer=0;
 	    	checkKey(event,true);
 		}
@@ -427,9 +427,9 @@ HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
 
 function onKeyUp(event) {
 	event = event || window.event;
-	var index=keybuffer.indexOf(event.keyCode);
+	var index=GAME.keybuffer.indexOf(event.keyCode);
 	if (index>=0){
-    	keybuffer.splice(index,1);
+    	GAME.keybuffer.splice(index,1);
     	if (keyRepeatIndex>=index){
     		keyRepeatIndex--;
     	}
@@ -437,13 +437,13 @@ function onKeyUp(event) {
 }
 
 function onMyFocus(event) {
-	keybuffer=[];
+	GAME.keybuffer=[];
 	keyRepeatIndex = 0;
 	keyRepeatTimer = 0;
 }
 
 function onMyBlur(event) {
-	keybuffer=[];
+	GAME.keybuffer=[];
 	keyRepeatIndex = 0;
 	keyRepeatTimer = 0;
 }
@@ -460,7 +460,7 @@ function setMouseCoord(e){
 }
 
 function mouseMove(event) {
-    if (levelEditorOpened) {
+    if (GAME.levelEditorOpened) {
     	setMouseCoord(event);
     	if (dragging) {
     		levelEditorClick(event,false);
@@ -495,7 +495,7 @@ function prevent(e) {
 
 function checkKey(e,justPressed) {
 
-    if (winning) {
+    if (GAME.winning) {
     	return;
     }
     var inputdir=-1;
@@ -534,7 +534,7 @@ function checkKey(e,justPressed) {
         case 88://x
         {
 //            window.console.log("ACTION");
-			if (norepeat_action===false || justPressed) {
+			if (GAME.norepeat_action===false || justPressed) {
             	inputdir=4;
             } else {
             	return;
@@ -578,7 +578,7 @@ function checkKey(e,justPressed) {
         case 69: {//e
         	if (canOpenEditor) {
         		if (justPressed) {
-        			levelEditorOpened=!levelEditorOpened;
+        			GAME.levelEditorOpened=!GAME.levelEditorOpened;
         			restartTarget=backupLevel();
         			canvasResize();
         		}
@@ -597,7 +597,7 @@ function checkKey(e,justPressed) {
 		case 56://8
 		case 57://9
 		{
-        	if (levelEditorOpened&&justPressed) {
+        	if (GAME.levelEditorOpened&&justPressed) {
         		var num=9;
         		if (e.keyCode>=49)  {
         			num = e.keyCode-49;
@@ -606,7 +606,7 @@ function checkKey(e,justPressed) {
 				if (num<glyphImages.length) {
 					glyphSelectedIndex=num;
 				} else {
-					consolePrint("Trying to select tile outside of range in level editor.",true)
+					consolePrint("Trying to select tile outside of range in GAME.level editor.",true)
 				}
 
         		canvasResize();
@@ -615,8 +615,8 @@ function checkKey(e,justPressed) {
         	break;
         }
     }
-    if (throttle_movement && inputdir>=0&&inputdir<=3) {
-    	if (lastinput==inputdir && input_throttle_timer<repeatinterval) {
+    if (GAME.throttle_movement && inputdir>=0&&inputdir<=3) {
+    	if (lastinput==inputdir && input_throttle_timer<GAME.repeatinterval) {
     		return;
     	} else {
     		lastinput=inputdir;
@@ -632,9 +632,9 @@ function checkKey(e,justPressed) {
     				if (ENGINE.titleSelected===false) {
 						tryPlayStartGameSound();
 	    				ENGINE.titleSelected=true;
-	    				messageselected=false;
-	    				timer=0;
-	    				quittingTitleScreen=true;
+	    				GAME.messageselected=false;
+	    				GAME.timer=0;
+	    				GAME.quittingTitleScreen=true;
 	    				generateTitleScreen();
 	    				canvasResize();
 	    			}
@@ -644,9 +644,9 @@ function checkKey(e,justPressed) {
     				if (ENGINE.titleSelected===false) {
 						tryPlayStartGameSound();
 	    				ENGINE.titleSelected=true;
-	    				messageselected=false;
-	    				timer=0;
-	    				quittingTitleScreen=true;
+	    				GAME.messageselected=false;
+	    				GAME.timer=0;
+	    				GAME.quittingTitleScreen=true;
 	    				generateTitleScreen();
 	    				redraw();
 	    			}
@@ -659,13 +659,13 @@ function checkKey(e,justPressed) {
     		}
     	} else {
     		if (inputdir==4&&justPressed) {
-				if (unitTesting) {
+				if (GAME.unitTesting) {
 					nextLevel();
 					return;
-				} else if (messageselected===false) {
-    				messageselected=true;
-    				timer=0;
-    				quittingMessageScreen=true;
+				} else if (GAME.messageselected===false) {
+    				GAME.messageselected=true;
+    				GAME.timer=0;
+    				GAME.quittingMessageScreen=true;
     				tryPlayCloseMessageSound();
     				ENGINE.titleScreen=false;
     				drawMessageScreen();
@@ -673,7 +673,7 @@ function checkKey(e,justPressed) {
     		}
     	}
     } else {
-	    if (!againing && inputdir>=0) {
+	    if (!GAME.againing && inputdir>=0) {
             if (inputdir===4 && ('noaction' in state.metadata)) {
 
             } else {
@@ -689,33 +689,33 @@ function checkKey(e,justPressed) {
 
 
 function update() {
-    timer+=deltatime;
-    input_throttle_timer+=deltatime;
-    if (quittingTitleScreen) {
-        if (timer/1000>0.3) {
-            quittingTitleScreen=false;
+    GAME.timer+=GAME.deltatime;
+    input_throttle_timer+=GAME.deltatime;
+    if (GAME.quittingTitleScreen) {
+        if (GAME.timer/1000>0.3) {
+            GAME.quittingTitleScreen=false;
             nextLevel();
         }
     }
-    if (againing) {
-        if (timer>againinterval&&messagetext.length==0) {
+    if (GAME.againing) {
+        if (GAME.timer>GAME.againinterval&&messagetext.length==0) {
             if (processInput(-1)) {
                 redraw();
                 keyRepeatTimer=0;
-                autotick=0;
+                GAME.autotick=0;
             }
         }
     }
-    if (quittingMessageScreen) {
-        if (timer/1000>0.15) {
-            quittingMessageScreen=false;
+    if (GAME.quittingMessageScreen) {
+        if (GAME.timer/1000>0.15) {
+            GAME.quittingMessageScreen=false;
             if (messagetext==="") {
             	nextLevel();
             } else {
             	messagetext="";
             	ENGINE.textMode=false;
 				ENGINE.titleScreen=false;
-				ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
+				ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 				ENGINE.titleSelected=false;
 				ENGINE.titleSelection=0;
     			canvasResize();
@@ -723,27 +723,27 @@ function update() {
             }
         }
     }
-    if (winning) {
-        if (timer/1000>0.5) {
-            winning=false;
+    if (GAME.winning) {
+        if (GAME.timer/1000>0.5) {
+            GAME.winning=false;
             nextLevel();
         }
     }
-    if (keybuffer.length>0) {
-	    keyRepeatTimer+=deltatime;
-	    var ticklength = throttle_movement ? repeatinterval : repeatinterval/(Math.sqrt(keybuffer.length));
+    if (GAME.keybuffer.length>0) {
+	    keyRepeatTimer+=GAME.deltatime;
+	    var ticklength = GAME.throttle_movement ? GAME.repeatinterval : GAME.repeatinterval/(Math.sqrt(GAME.keybuffer.length));
 	    if (keyRepeatTimer>ticklength) {
 	    	keyRepeatTimer=0;
-	    	keyRepeatIndex = (keyRepeatIndex+1)%keybuffer.length;
-	    	var key = keybuffer[keyRepeatIndex];
+	    	keyRepeatIndex = (keyRepeatIndex+1)%GAME.keybuffer.length;
+	    	var key = GAME.keybuffer[keyRepeatIndex];
 	        checkKey({keyCode:key},false);
 	    }
 	}
 
-    if (autotickinterval>0&&!ENGINE.textMode&&!levelEditorOpened&&!againing&&!winning) {
-        autotick+=deltatime;
-        if (autotick>autotickinterval) {
-            autotick=0;
+    if (GAME.autotickinterval>0&&!ENGINE.textMode&&!GAME.levelEditorOpened&&!GAME.againing&&!GAME.winning) {
+        GAME.autotick+=GAME.deltatime;
+        if (GAME.autotick>GAME.autotickinterval) {
+            GAME.autotick=0;
             pushInput("tick");
             if (processInput(-1)) {
                 redraw();
@@ -755,4 +755,4 @@ function update() {
 // Lights, camera…function!
 setInterval(function() {
     update();
-}, deltatime);
+}, GAME.deltatime);

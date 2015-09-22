@@ -966,7 +966,7 @@ function cacheSeed(seed){
 }
 
 export function playSound(seed) {
-  if (unitTesting) return;
+  if (GAME.unitTesting) return;
   var sound = cacheSeed(seed);
   sound.play();
 }

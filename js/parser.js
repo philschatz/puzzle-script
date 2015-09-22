@@ -1013,7 +1013,7 @@ var codeMirrorFn = function() {
                         if (sol)
                         {
                             if (stream.match(/\s*message\s*/, true)) {
-                                state.tokenIndex = 1;//1/2 = message/level
+                                state.tokenIndex = 1;//1/2 = message/GAME.level
                                 var newdat = ['\n', mixedCase.slice(stream.pos).trim()];
                                 if (state.levels[state.levels.length - 1].length == 0) {
                                     state.levels.splice(state.levels.length - 1, 0, newdat);
@@ -1031,7 +1031,7 @@ var codeMirrorFn = function() {
 /*                                    if (lastlevel.length>0)
                                     {
                                         if (line.length!=lastlevel[1].length) {
-//                                            logError("Within a single level, the width of each row must be the same.",state.lineNumber);
+//                                            logError("Within a single GAME.level, the width of each row must be the same.",state.lineNumber);
                                         }
                                     }*/
                                     if (lastlevel.length==0)
@@ -1044,7 +1044,7 @@ var codeMirrorFn = function() {
                                 if (lastlevel.length>1) {
                                     if (lastlevel[lastlevel.length-2].length!=line.length) {
                                         stream.match(reg_notcommentstart,true);
-                                        logError("All line lengths in a level have to be the same",state.lineNumber);
+                                        logError("All line lengths in a GAME.level have to be the same",state.lineNumber);
                                         return "ERROR";
                                     }
                                 }*/
@@ -1095,7 +1095,7 @@ var codeMirrorFn = function() {
 		                    			}
 		                    			state.tokenIndex=1;
 		                    			return 'METADATA';
-		                    		} else if ( ['run_rules_on_level_start','norepeat_action','require_player_movement','debug','verbose_logging','throttle_movement','noundo','noaction','norestart','scanline'].indexOf(token)>=0) {
+		                    		} else if ( ['run_rules_on_level_start','GAME.norepeat_action','require_player_movement','debug','GAME.verbose_logging','GAME.throttle_movement','noundo','noaction','norestart','scanline'].indexOf(token)>=0) {
 		                    			state.metadata.push(token);
 		                    			state.metadata.push("true");
 		                    			state.tokenIndex=-1;

@@ -90,8 +90,8 @@ export function generateExtraMembers(state) {
 
 	//get colorpalette name
 	debugMode=false;
-	verbose_logging=false;
-	throttle_movement=false;
+	GAME.verbose_logging=false;
+	GAME.throttle_movement=false;
 	colorPalette=colorPalettes.arnecolors;
 	for (var i=0;i<state.metadata.length;i+=2){
 		var key = state.metadata[i];
@@ -107,12 +107,12 @@ export function generateExtraMembers(state) {
 			}
 		} else if (key==='debug') {
 			debugMode=true;
-			cache_console_messages=true;
-		} else if (key ==='verbose_logging') {
-			verbose_logging=true;
-			cache_console_messages=true;
-		} else if (key==='throttle_movement') {
-			throttle_movement=true;
+			GAME.cache_console_messages=true;
+		} else if (key ==='GAME.verbose_logging') {
+			GAME.verbose_logging=true;
+			GAME.cache_console_messages=true;
+		} else if (key==='GAME.throttle_movement') {
+			GAME.throttle_movement=true;
 		}
 	}
 
@@ -418,7 +418,7 @@ export function levelFromString(state,level) {
 				if (state.propertiesDict[ch]===undefined) {
 					logError('Error, symbol "' + ch + '", used in map, not found.', level[0]+j);
 				} else {
-					logError('Error, symbol "' + ch + '" is defined using \'or\', and therefore ambiguous - it cannot be used in a map. Did you mean to define it in terms of \'and\'?', level[0]+j);
+					logError('Error, symbol "' + ch + '" is defined using \'or\', and therefore ambiguous - it cannot be used in a map. Did you mean to define it in terms of \'and\'?', GAME.level[0]+j);
 				}
 
 			}

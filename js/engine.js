@@ -146,8 +146,8 @@ var titletemplate_select1_selected = [
 
 export function unloadGame() {
 	state=introstate;
-	level = new Level(0, 5, 5, 2, null);
-	level.objects = new Int32Array(0);
+	GAME.level = new Level(0, 5, 5, 2, null);
+	GAME.level.objects = new Int32Array(0);
 	generateTitleScreen();
 	canvasResize();
 	redraw();
@@ -155,7 +155,7 @@ export function unloadGame() {
 
 export function generateTitleScreen()
 {
-	ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 
 	if (state.levels.length===0) {
 		ENGINE.titleImage=intro_template;
@@ -325,7 +325,7 @@ export function drawMessageScreen() {
 
 	var message;
 	if (messagetext==="") {
-		var leveldat = state.levels[curlevel];
+		var leveldat = state.levels[GAME.curlevel];
 		message = leveldat.message.trim();
 	} else {
 		message = messagetext;
@@ -342,7 +342,7 @@ export function drawMessageScreen() {
 		ENGINE.titleImage[row]=rowtext.slice(0,lmargin)+m+rowtext.slice(lmargin+m.length);
 	}
 
-	if (quittingMessageScreen) {
+	if (GAME.quittingMessageScreen) {
 		ENGINE.titleImage[10]=ENGINE.titleImage[9];
 	}
 	canvasResize();
@@ -358,18 +358,18 @@ export function loadLevelFromLevelDat(state,leveldat,randomseed) {
 	RandomGen = new RNG(loadedLevelSeed);
 	forceRegenImages=true;
 	ENGINE.titleScreen=false;
-	ENGINE.titleMode=(curlevel>0||curlevelTarget!==null)?1:0;
-	ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
+	ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 	ENGINE.titleSelected=false;
-    againing=false;
+    GAME.againing=false;
     if (leveldat===undefined) {
-    	consolePrint("Trying to access a level that doesn't exist.",true);
+    	consolePrint("Trying to access a GAME.level that doesn't exist.",true);
     	return;
     }
     if (leveldat.message===undefined) {
     	ENGINE.titleMode=0;
     	ENGINE.textMode=false;
-		level = leveldat.clone();
+		GAME.level = leveldat.clone();
 		RebuildLevelArrays();
 
 	    backups=[]
@@ -389,8 +389,8 @@ export function loadLevelFromLevelDat(state,leveldat,randomseed) {
 
 export function loadLevelFromStateTarget(state,levelindex,target,randomseed) {
     var leveldat = target;
-	curlevel=levelindex;
-	curlevelTarget=target;
+	GAME.curlevel=levelindex;
+	GAME.curlevelTarget=target;
     if (leveldat.message===undefined) {
 	    if (levelindex=== 0){
 			tryPlayStartLevelSound();
@@ -405,8 +405,8 @@ export function loadLevelFromStateTarget(state,levelindex,target,randomseed) {
 
 export function loadLevelFromState(state,levelindex,randomseed) {
     var leveldat = state.levels[levelindex];
-	curlevel=levelindex;
-	curlevelTarget=null;
+	GAME.curlevel=levelindex;
+	GAME.curlevelTarget=null;
     if (leveldat.message===undefined) {
 	    if (levelindex=== 0){
 			tryPlayStartLevelSound();
@@ -491,21 +491,21 @@ var restartTarget;
 
 export function backupLevel() {
 	var ret = {
-		dat : new Int32Array(level.objects),
-		width : level.width,
-		height : level.height,
-		oldflickscreendat: oldflickscreendat.concat([])
+		dat : new Int32Array(GAME.level.objects),
+		width : GAME.level.width,
+		height : GAME.level.height,
+		oldflickscreendat: GAME.oldflickscreendat.concat([])
 	};
 	return ret;
 }
 
 export function setGameState(_state, command, randomseed) {
-	oldflickscreendat=[];
-	timer=0;
-	autotick=0;
-	winning=false;
-	againing=false;
-    messageselected=false;
+	GAME.oldflickscreendat=[];
+	GAME.timer=0;
+	GAME.autotick=0;
+	GAME.winning=false;
+	GAME.againing=false;
+    GAME.messageselected=false;
     STRIDE_MOV=_state.STRIDE_MOV;
     STRIDE_OBJ=_state.STRIDE_OBJ;
 
@@ -536,44 +536,44 @@ export function setGameState(_state, command, randomseed) {
         }
     }
     if (state.metadata.realtime_interval!==undefined) {
-    	autotick=0;
-    	autotickinterval=state.metadata.realtime_interval*1000;
+    	GAME.autotick=0;
+    	GAME.autotickinterval=state.metadata.realtime_interval*1000;
     } else {
-    	autotick=0;
-    	autotickinterval=0;
+    	GAME.autotick=0;
+    	GAME.autotickinterval=0;
     }
 
     if (state.metadata.key_repeat_interval!==undefined) {
-		repeatinterval=state.metadata.key_repeat_interval*1000;
+		GAME.repeatinterval=state.metadata.key_repeat_interval*1000;
     } else {
-    	repeatinterval=150;
+    	GAME.repeatinterval=150;
     }
 
     if (state.metadata.again_interval!==undefined) {
-		againinterval=state.metadata.again_interval*1000;
+		GAME.againinterval=state.metadata.again_interval*1000;
     } else {
-    	againinterval=150;
+    	GAME.againinterval=150;
     }
-    if (throttle_movement && autotickinterval===0) {
-    	logWarning("throttle_movement is designed for use in conjunction with realtime_interval. Using it in other situations makes games gross and unresponsive, broadly speaking.  Please don't.");
+    if (GAME.throttle_movement && GAME.autotickinterval===0) {
+    	logWarning("GAME.throttle_movement is designed for use in conjunction with realtime_interval. Using it in other situations makes games gross and unresponsive, broadly speaking.  Please don't.");
     }
-    norepeat_action = state.metadata.norepeat_action!==undefined;
+    GAME.norepeat_action = state.metadata.norepeat_action!==undefined;
 
     switch(command[0]){
     	case "restart":
     	{
-		    winning=false;
-		    timer=0;
+		    GAME.winning=false;
+		    GAME.timer=0;
 		    ENGINE.titleScreen=true;
 		    tryPlayTitleSound();
 		    ENGINE.textMode=true;
-		    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+		    ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 		    ENGINE.titleSelected=false;
-		    quittingMessageScreen=false;
-		    quittingTitleScreen=false;
-		    messageselected=false;
+		    GAME.quittingMessageScreen=false;
+		    GAME.quittingTitleScreen=false;
+		    GAME.messageselected=false;
 		    ENGINE.titleMode = 0;
-		    if ((curlevel>0||curlevelTarget!==null)) {
+		    if ((GAME.curlevel>0||GAME.curlevelTarget!==null)) {
 		    	ENGINE.titleMode=1;
 		    }
 		    generateTitleScreen();
@@ -587,16 +587,16 @@ export function setGameState(_state, command, randomseed) {
 		case "loadLevel":
 		{
 			var targetLevel = command[1];
-			curlevel=i;
-		    winning=false;
-		    timer=0;
+			GAME.curlevel=i;
+		    GAME.winning=false;
+		    GAME.timer=0;
 		    ENGINE.titleScreen=false;
 		    ENGINE.textMode=false;
-		    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+		    ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 		    ENGINE.titleSelected=false;
-		    quittingMessageScreen=false;
-		    quittingTitleScreen=false;
-		    messageselected=false;
+		    GAME.quittingMessageScreen=false;
+		    GAME.quittingTitleScreen=false;
+		    GAME.messageselected=false;
 		    ENGINE.titleMode = 0;
 			loadLevelFromState(state,targetLevel,randomseed);
 			break;
@@ -607,16 +607,16 @@ export function setGameState(_state, command, randomseed) {
 			for (var i=state.levels.length-1;i>=0;i--) {
 				var level= state.levels[i];
 				if(level.lineNumber<=targetLine+1) {
-					curlevel=i;
-				    winning=false;
-				    timer=0;
+					GAME.curlevel=i;
+				    GAME.winning=false;
+				    GAME.timer=0;
 				    ENGINE.titleScreen=false;
 				    ENGINE.textMode=false;
-				    ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+				    ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 				    ENGINE.titleSelected=false;
-				    quittingMessageScreen=false;
-				    quittingTitleScreen=false;
-				    messageselected=false;
+				    GAME.quittingMessageScreen=false;
+				    GAME.quittingTitleScreen=false;
+				    GAME.messageselected=false;
 				    ENGINE.titleMode = 0;
 					loadLevelFromState(state,i);
 					break;
@@ -683,13 +683,13 @@ export function setGameState(_state, command, randomseed) {
 }
 
 export function RebuildLevelArrays() {
-	level.movements = new Int32Array(level.n_tiles * STRIDE_MOV);
+	GAME.level.movements = new Int32Array(GAME.level.n_tiles * STRIDE_MOV);
 
-    level.rigidMovementAppliedMask = [];
-    level.rigidGroupIndexMask = [];
-	level.rowCellContents = [];
-	level.colCellContents = [];
-	level.mapCellContents = new BitVec(STRIDE_OBJ);
+    GAME.level.rigidMovementAppliedMask = [];
+    GAME.level.rigidGroupIndexMask = [];
+	GAME.level.rowCellContents = [];
+	GAME.level.colCellContents = [];
+	GAME.level.mapCellContents = new BitVec(STRIDE_OBJ);
 	_movementsVec = new BitVec(STRIDE_MOV);
 
 	_o1 = new BitVec(STRIDE_OBJ);
@@ -710,30 +710,30 @@ export function RebuildLevelArrays() {
 	_m3 = new BitVec(STRIDE_MOV);
 
 
-    for (var i=0;i<level.height;i++) {
-    	level.rowCellContents[i]=new BitVec(STRIDE_OBJ);
+    for (var i=0;i<GAME.level.height;i++) {
+    	GAME.level.rowCellContents[i]=new BitVec(STRIDE_OBJ);
     }
-    for (var i=0;i<level.width;i++) {
-    	level.colCellContents[i]=new BitVec(STRIDE_OBJ);
+    for (var i=0;i<GAME.level.width;i++) {
+    	GAME.level.colCellContents[i]=new BitVec(STRIDE_OBJ);
     }
 
-    for (var i=0;i<level.n_tiles;i++)
+    for (var i=0;i<GAME.level.n_tiles;i++)
     {
-        level.rigidMovementAppliedMask[i]=new BitVec(STRIDE_MOV);
-        level.rigidGroupIndexMask[i]=new BitVec(STRIDE_MOV);
+        GAME.level.rigidMovementAppliedMask[i]=new BitVec(STRIDE_MOV);
+        GAME.level.rigidGroupIndexMask[i]=new BitVec(STRIDE_MOV);
     }
 }
 
 // TODO: Move to globals
 window.messagetext="";
 export function restoreLevel(lev) {
-	oldflickscreendat=lev.oldflickscreendat.concat([]);
+	GAME.oldflickscreendat=lev.oldflickscreendat.concat([]);
 
-	level.objects = new Int32Array(lev.dat);
-	if (level.width !== lev.width || level.height !== lev.height) {
-		level.width = lev.width;
-		level.height = lev.height;
-		level.n_tiles = lev.width * lev.height;
+	GAME.level.objects = new Int32Array(lev.dat);
+	if (GAME.level.width !== lev.width || GAME.level.height !== lev.height) {
+		GAME.level.width = lev.width;
+		GAME.level.height = lev.height;
+		GAME.level.n_tiles = lev.width * lev.height;
 		RebuildLevelArrays();
 		//regenerate all other stride-related stuff
 	}
@@ -741,24 +741,24 @@ export function restoreLevel(lev) {
 	{
 	// layercount doesn't change
 
-		for (var i=0;i<level.n_tiles;i++) {
-			level.movements[i]=0;
-			level.rigidMovementAppliedMask[i]=0;
-			level.rigidGroupIndexMask[i]=0;
+		for (var i=0;i<GAME.level.n_tiles;i++) {
+			GAME.level.movements[i]=0;
+			GAME.level.rigidMovementAppliedMask[i]=0;
+			GAME.level.rigidGroupIndexMask[i]=0;
 		}
 
-	    for (var i=0;i<level.height;i++) {
-	    	var rcc = level.rowCellContents[i];
+	    for (var i=0;i<GAME.level.height;i++) {
+	    	var rcc = GAME.level.rowCellContents[i];
 	    	rcc.setZero();
 	    }
-	    for (var i=0;i<level.width;i++) {
-	    	var ccc = level.colCellContents[i];
+	    for (var i=0;i<GAME.level.width;i++) {
+	    	var ccc = GAME.level.colCellContents[i];
 	    	ccc.setZero();
 	    }
 	}
 
-    againing=false;
-    level.commandQueue=[];
+    GAME.againing=false;
+    GAME.level.commandQueue=[];
 }
 
 var zoomscreen=false;
@@ -776,7 +776,7 @@ export function DoRestart(force) {
 		backups.push(backupLevel());
 	}
 
-	if (verbose_logging) {
+	if (GAME.verbose_logging) {
 		consolePrint("--- restarting ---",true);
 	}
 
@@ -787,14 +787,14 @@ export function DoRestart(force) {
     	processInput(-1,true);
 	}
 
-	level.commandQueue=[];
+	GAME.level.commandQueue=[];
 }
 
 export function DoUndo(force) {
-	if ((!levelEditorOpened)&&('noundo' in state.metadata && force!==true)) {
+	if ((!GAME.levelEditorOpened)&&('noundo' in state.metadata && force!==true)) {
 		return;
 	}
-	if (verbose_logging) {
+	if (GAME.verbose_logging) {
 		consolePrint("--- undoing ---",true);
 	}
 	if (backups.length>0) {
@@ -810,8 +810,8 @@ export function DoUndo(force) {
 export function getPlayerPositions() {
     var result=[];
     var playerMask = state.playerMask;
-    for (i=0;i<level.n_tiles;i++) {
-        level.getCellInto(i,_o11);
+    for (i=0;i<GAME.level.n_tiles;i++) {
+        GAME.level.getCellInto(i,_o11);
         if (playerMask.anyBitsInCommon(_o11)) {
             result.push(i);
         }
@@ -832,15 +832,15 @@ export function getLayersOfMask(cellMask) {
 }
 
 export function moveEntitiesAtIndex(positionIndex, entityMask, dirMask) {
-    var cellMask = level.getCell(positionIndex);
+    var cellMask = GAME.level.getCell(positionIndex);
     cellMask.iand(entityMask);
     var layers = getLayersOfMask(cellMask);
 
-    var movementMask = level.getMovements(positionIndex);
+    var movementMask = GAME.level.getMovements(positionIndex);
     for (var i=0;i<layers.length;i++) {
     	movementMask.ishiftor(dirMask, 5 * layers[i]);
     }
-    level.setMovements(positionIndex, movementMask);
+    GAME.level.setMovements(positionIndex, movementMask);
 }
 
 
@@ -883,20 +883,20 @@ export function repositionEntitiesOnLayer(positionIndex,layer,dirMask)
 
     var dx = delta[0];
     var dy = delta[1];
-    var tx = ((positionIndex/level.height)|0);
-    var ty = ((positionIndex%level.height));
-    var maxx = level.width-1;
-    var maxy = level.height-1;
+    var tx = ((positionIndex/GAME.level.height)|0);
+    var ty = ((positionIndex%GAME.level.height));
+    var maxx = GAME.level.width-1;
+    var maxy = GAME.level.height-1;
 
     if ( (tx===0&&dx<0) || (tx===maxx&&dx>0) || (ty===0&&dy<0) || (ty===maxy&&dy>0)) {
     	return false;
     }
 
-    var targetIndex = (positionIndex+delta[1]+delta[0]*level.height)%level.n_tiles;
+    var targetIndex = (positionIndex+delta[1]+delta[0]*GAME.level.height)%GAME.level.n_tiles;
 
     var layerMask = state.layerMasks[layer];
-    var targetMask = level.getCellInto(targetIndex,_o7);
-    var sourceMask = level.getCellInto(positionIndex,_o8);
+    var targetMask = GAME.level.getCellInto(targetIndex,_o7);
+    var sourceMask = GAME.level.getCellInto(positionIndex,_o8);
 
     if (layerMask.anyBitsInCommon(targetMask) && (dirMask!=16)) {
         return false;
@@ -906,7 +906,7 @@ export function repositionEntitiesOnLayer(positionIndex,layer,dirMask)
 		var o = state.sfx_MovementMasks[i];
 		var objectMask = o.objectMask;
 		if (objectMask.anyBitsInCommon(sourceMask)) {
-			var movementMask = level.getMovements(positionIndex);
+			var movementMask = GAME.level.getMovements(positionIndex);
 			var directionMask = o.directionMask;
 			if (movementMask.anyBitsInCommon(directionMask) && seedsToPlay_CanMove.indexOf(o.seed)===-1) {
 				seedsToPlay_CanMove.push(o.seed);
@@ -919,24 +919,24 @@ export function repositionEntitiesOnLayer(positionIndex,layer,dirMask)
     movingEntities.iand(layerMask);
     targetMask.ior(movingEntities);
 
-    level.setCell(positionIndex, sourceMask);
-    level.setCell(targetIndex, targetMask);
+    GAME.level.setCell(positionIndex, sourceMask);
+    GAME.level.setCell(targetIndex, targetMask);
 
-    var colIndex=(targetIndex/level.height)|0;
-	var rowIndex=(targetIndex%level.height);
-    level.colCellContents[colIndex].ior(movingEntities);
-    level.rowCellContents[rowIndex].ior(movingEntities);
-    level.mapCellContents.ior(layerMask);
+    var colIndex=(targetIndex/GAME.level.height)|0;
+	var rowIndex=(targetIndex%GAME.level.height);
+    GAME.level.colCellContents[colIndex].ior(movingEntities);
+    GAME.level.rowCellContents[rowIndex].ior(movingEntities);
+    GAME.level.mapCellContents.ior(layerMask);
     return true;
 }
 
 export function repositionEntitiesAtCell(positionIndex) {
-    var movementMask = level.getMovements(positionIndex);
+    var movementMask = GAME.level.getMovements(positionIndex);
     if (movementMask.iszero())
         return false;
 
     var moved=false;
-    for (var layer=0;layer<level.layerCount;layer++) {
+    for (var layer=0;layer<GAME.level.layerCount;layer++) {
         var layerMovement = movementMask.getshiftor(0x1f, 5*layer);
         if (layerMovement!==0) {
             var thismoved = repositionEntitiesOnLayer(positionIndex,layer,layerMovement);
@@ -947,7 +947,7 @@ export function repositionEntitiesAtCell(positionIndex) {
         }
     }
 
-   	level.setMovements(positionIndex, movementMask);
+   	GAME.level.setMovements(positionIndex, movementMask);
 
     return moved;
 }
@@ -1153,18 +1153,18 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 			/*
 			hard substitute in the first one - if I substitute in all of them, firefox chokes.
 			*/
-		var fn = "var d = "+d1+"+"+d0+"*level.height;\n";
+		var fn = "var d = "+d1+"+"+d0+"*GAME.level.height;\n";
 		var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
 		for (var i = 0; i < STRIDE_OBJ; ++i) {
-			fn += 'var cellObjects' + i + ' = level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
+			fn += 'var cellObjects' + i + ' = GAME.level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
 		mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
 		for (var i = 0; i < STRIDE_MOV; ++i) {
-			fn += 'var cellMovements' + i + ' = level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
+			fn += 'var cellMovements' + i + ' = GAME.level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
 		fn += "return "+cellRow[0].generateMatchString('0_');// cellRow[0].matches(i)";
 		for (var cellIndex=1;cellIndex<cr_l;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%GAME.level.n_tiles)";
 		}
 		fn+=";";
 
@@ -1180,20 +1180,20 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 		var cr_l = cellRow.length;
 
 
-		var fn = "var d = "+d1+"+"+d0+"*level.height;\n";
+		var fn = "var d = "+d1+"+"+d0+"*GAME.level.height;\n";
 		fn += "var result = [];\n"
 		fn += "if(cellRow[0].matches(i)";
 		var cellIndex=1;
 		for (;cellRow[cellIndex]!==ellipsisPattern;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches((i+"+cellIndex+"*d)%GAME.level.n_tiles)";
 		}
 		cellIndex++;
 		fn+=") {\n";
 		fn+="\tfor (var k=kmin;k<kmax;k++) {\n"
-		fn+="\t\tif(cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%level.n_tiles)";
+		fn+="\t\tif(cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%GAME.level.n_tiles)";
 		cellIndex++;
 		for (;cellIndex<cr_l;cellIndex++) {
-			fn+="&&cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%level.n_tiles)";
+			fn+="&&cellRow["+cellIndex+"].matches((i+d*(k+"+(cellIndex-1)+"))%GAME.level.n_tiles)";
 		}
 		fn+="){\n";
 		fn+="\t\t\tresult.push([i,k]);\n";
@@ -1217,7 +1217,7 @@ export function cellRowMatchesWildcardFunctionGenerate(direction,cellRow,i, maxk
 	var matchfirsthalf = cellRow[0].matches(i);
 	if (matchfirsthalf) {
 		for (var k=mink;k<maxk;k++) {
-			if (cellRow[2].matches((i+d*(k+0))%level.n_tiles)) {
+			if (cellRow[2].matches((i+d*(k+0))%GAME.level.n_tiles)) {
 				result.push([i,k]);
 			}
 		}
@@ -1311,11 +1311,11 @@ CellPattern.prototype.generateMatchFunction = function() {
 	var fn = '';
 	var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
 	for (var i = 0; i < STRIDE_OBJ; ++i) {
-		fn += '\tvar cellObjects' + i + ' = level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
+		fn += '\tvar cellObjects' + i + ' = GAME.level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
 	for (var i = 0; i < STRIDE_MOV; ++i) {
-		fn += '\tvar cellMovements' + i + ' = level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
+		fn += '\tvar cellMovements' + i + ' = GAME.level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	fn += "return " + this.generateMatchString()+';';
 	if (fn in matchCache) {
@@ -1368,7 +1368,7 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 		movementsClear.ishiftor(0x1f, 5 * o.layer);
 	}
 	if (!replace_RandomDirMask.iszero()) {
-		for (var layerIndex=0;layerIndex<level.layerCount;layerIndex++){
+		for (var layerIndex=0;layerIndex<GAME.level.layerCount;layerIndex++){
 			if (replace_RandomDirMask.get(5*layerIndex)) {
 				var randomDir = Math.floor(RandomGen.uniform()*4);
 				movementsSet.ibitset(randomDir + 5 * layerIndex);
@@ -1376,8 +1376,8 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 		}
 	}
 
-	var curCellMask = level.getCellInto(currentIndex,_o2_5);
-	var curMovementMask = level.getMovements(currentIndex);
+	var curCellMask = GAME.level.getCellInto(currentIndex,_o2_5);
+	var curMovementMask = GAME.level.getMovements(currentIndex);
 
 	var oldCellMask = curCellMask.cloneInto(_o3);
 	var oldMovementMask = curMovementMask.cloneInto(_m3);
@@ -1395,12 +1395,12 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 		var rigidGroupIndex = state.groupNumber_to_RigidGroupIndex[rule.groupNumber];
 		rigidGroupIndex++;//don't forget to -- it when decoding :O
 		var rigidMask = new BitVec(STRIDE_MOV);
-		for (var layer = 0; layer < level.layerCount; layer++) {
+		for (var layer = 0; layer < GAME.level.layerCount; layer++) {
 			rigidMask.ishiftor(rigidGroupIndex, layer * 5);
 		}
 		rigidMask.iand(replace.movementsLayerMask);
-		curRigidGroupIndexMask = level.rigidGroupIndexMask[currentIndex] || new BitVec(STRIDE_MOV);
-		curRigidMovementAppliedMask = level.rigidMovementAppliedMask[currentIndex] || new BitVec(STRIDE_MOV);
+		curRigidGroupIndexMask = GAME.level.rigidGroupIndexMask[currentIndex] || new BitVec(STRIDE_MOV);
+		curRigidMovementAppliedMask = GAME.level.rigidMovementAppliedMask[currentIndex] || new BitVec(STRIDE_MOV);
 
 		if (!rigidMask.bitsSetInArray(curRigidGroupIndexMask.data) &&
 			!replace.movementsLayerMask.bitsSetInArray(curRigidMovementAppliedMask.data) ) {
@@ -1417,8 +1417,8 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 	if (!oldCellMask.equals(curCellMask) || !oldMovementMask.equals(curMovementMask) || rigidchange) {
 		result=true;
 		if (rigidchange) {
-			level.rigidGroupIndexMask[currentIndex] = curRigidGroupIndexMask;
-			level.rigidMovementAppliedMask[currentIndex] = curRigidMovementAppliedMask;
+			GAME.level.rigidGroupIndexMask[currentIndex] = curRigidGroupIndexMask;
+			GAME.level.rigidMovementAppliedMask[currentIndex] = curRigidMovementAppliedMask;
 		}
 
 		var created = curCellMask.cloneInto(_o4);
@@ -1428,14 +1428,14 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 		destroyed.iclear(curCellMask);
 		sfxDestroyMask.ior(destroyed);
 
-		level.setCell(currentIndex, curCellMask);
-		level.setMovements(currentIndex, curMovementMask);
+		GAME.level.setCell(currentIndex, curCellMask);
+		GAME.level.setMovements(currentIndex, curMovementMask);
 
-		var colIndex=(currentIndex/level.height)|0;
-		var rowIndex=(currentIndex%level.height);
-		level.colCellContents[colIndex].ior(curCellMask);
-		level.rowCellContents[rowIndex].ior(curCellMask);
-		level.mapCellContents.ior(curCellMask);
+		var colIndex=(currentIndex/GAME.level.height)|0;
+		var rowIndex=(currentIndex%GAME.level.height);
+		GAME.level.colCellContents[colIndex].ior(curCellMask);
+		GAME.level.rowCellContents[rowIndex].ior(curCellMask);
+		GAME.level.mapCellContents.ior(curCellMask);
 	}
 
 	return result;
@@ -1447,10 +1447,10 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 export function cellRowMatchesWildcardFunctionGenerate(direction,cellRow,i, maxk, mink) {
 
 	var result = [];
-	var matchfirsthalf = cellRow[0].matches(i)&&cellRow[1].matches((i+d)%level.n_tiles);
+	var matchfirsthalf = cellRow[0].matches(i)&&cellRow[1].matches((i+d)%GAME.level.n_tiles);
 	if (matchfirsthalf) {
 		for (var k=mink,kmaxk;k++) {
-			if (cellRow[2].matches((i+d*(k+0))%level.n_tiles)&&cellRow[2].matches((i+d*(k+1))%level.n_tiles)) {
+			if (cellRow[2].matches((i+d*(k+0))%GAME.level.n_tiles)&&cellRow[2].matches((i+d*(k+1))%GAME.level.n_tiles)) {
 				result.push([i,k]);
 			}
 		}
@@ -1470,25 +1470,25 @@ export function DoesCellRowMatchWildCard(direction,cellRow,i,maxk,mink) {
 
     if (cellPattern.matches(i)){
     	var delta = dirMasksDelta[direction];
-    	var d0 = delta[0]*level.height;
+    	var d0 = delta[0]*GAME.level.height;
 		var d1 = delta[1];
         var targetIndex = i;
 
         for (var j=1;j<cellRow.length;j+=1) {
-            targetIndex = (targetIndex+d1+d0)%level.n_tiles;
+            targetIndex = (targetIndex+d1+d0)%GAME.level.n_tiles;
 
             var cellPattern = cellRow[j]
             if (cellPattern === ellipsisPattern) {
             	//BAM inner loop time
             	for (var k=mink;k<maxk;k++) {
             		var targetIndex2=targetIndex;
-                    targetIndex2 = (targetIndex2+(d1+d0)*(k)+level.n_tiles)%level.n_tiles;
+                    targetIndex2 = (targetIndex2+(d1+d0)*(k)+GAME.level.n_tiles)%GAME.level.n_tiles;
             		for (var j2=j+1;j2<cellRow.length;j2++) {
 		                cellPattern = cellRow[j2];
 					    if (!cellPattern.matches(targetIndex2)) {
 					    	break;
 					    }
-                        targetIndex2 = (targetIndex2+d1+d0)%level.n_tiles;
+                        targetIndex2 = (targetIndex2+d1+d0)%GAME.level.n_tiles;
             		}
 
 		            if (j2>=cellRow.length) {
@@ -1510,8 +1510,8 @@ export function DoesCellRowMatchWildCard(direction,cellRow,i,maxk,mink) {
 CellRow Matches can be specialized to look something like:
 export function cellRowMatchesFunctionGenerate(direction,cellRow,i) {
 	var delta = dirMasksDelta[direction];
-	var d = delta[1]+delta[0]*level.height;
-	return cellRow[0].matches(i)&&cellRow[1].matches((i+d)%level.n_tiles)&&cellRow[2].matches((i+2*d)%level.n_tiles);
+	var d = delta[1]+delta[0]*GAME.level.height;
+	return cellRow[0].matches(i)&&cellRow[1].matches((i+d)%GAME.level.n_tiles)&&cellRow[2].matches((i+2*d)%GAME.level.n_tiles);
 }
 */
 
@@ -1520,17 +1520,17 @@ export function DoesCellRowMatch(direction,cellRow,i,k) {
     if (cellPattern.matches(i)) {
 
 	    var delta = dirMasksDelta[direction];
-	    var d0 = delta[0]*level.height;
+	    var d0 = delta[0]*GAME.level.height;
 		var d1 = delta[1];
 		var cr_l = cellRow.length;
 
         var targetIndex = i;
         for (var j=1;j<cr_l;j++) {
-            targetIndex = (targetIndex+d1+d0)%level.n_tiles;
+            targetIndex = (targetIndex+d1+d0)%GAME.level.n_tiles;
             cellPattern = cellRow[j];
 			if (cellPattern === ellipsisPattern) {
 					//only for once off verifications
-            	targetIndex = (targetIndex+(d1+d0)*k)%level.n_tiles;
+            	targetIndex = (targetIndex+(d1+d0)*k)%GAME.level.n_tiles;
             }
 		    if (!cellPattern.matches(targetIndex)) {
                 break;
@@ -1548,14 +1548,14 @@ export function DoesCellRowMatch(direction,cellRow,i,k) {
 export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
 	var result=[];
 
-	if ((!cellRowMask.bitsSetInArray(level.mapCellContents.data))) {
+	if ((!cellRowMask.bitsSetInArray(GAME.level.mapCellContents.data))) {
 		return result;
 	}
 
 	var xmin=0;
-	var xmax=level.width;
+	var xmax=GAME.level.width;
 	var ymin=0;
-	var ymax=level.height;
+	var ymax=GAME.level.height;
 
     var len=cellRow.length;
 
@@ -1589,12 +1589,12 @@ export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
     var horizontal=direction>2;
     if (horizontal) {
 		for (var y=ymin;y<ymax;y++) {
-			if (!cellRowMask.bitsSetInArray(level.rowCellContents[y].data)) {
+			if (!cellRowMask.bitsSetInArray(GAME.level.rowCellContents[y].data)) {
 				continue;
 			}
 
 			for (var x=xmin;x<xmax;x++) {
-				var i = x*level.height+y;
+				var i = x*GAME.level.height+y;
 				if (cellRowMatch(cellRow,i))
 				{
 					result.push(i);
@@ -1603,12 +1603,12 @@ export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
 		}
 	} else {
 		for (var x=xmin;x<xmax;x++) {
-			if (!cellRowMask.bitsSetInArray(level.colCellContents[x].data)) {
+			if (!cellRowMask.bitsSetInArray(GAME.level.colCellContents[x].data)) {
 				continue;
 			}
 
 			for (var y=ymin;y<ymax;y++) {
-				var i = x*level.height+y;
+				var i = x*GAME.level.height+y;
 				if (cellRowMatch(	cellRow,i))
 				{
 					result.push(i);
@@ -1623,13 +1623,13 @@ export function matchCellRow(direction, cellRowMatch, cellRow, cellRowMask) {
 
 export function matchCellRowWildCard(direction, cellRowMatch, cellRow,cellRowMask) {
 	var result=[];
-	if ((!cellRowMask.bitsSetInArray(level.mapCellContents.data))) {
+	if ((!cellRowMask.bitsSetInArray(GAME.level.mapCellContents.data))) {
 		return result;
 	}
 	var xmin=0;
-	var xmax=level.width;
+	var xmax=GAME.level.width;
 	var ymin=0;
-	var ymax=level.height;
+	var ymax=GAME.level.height;
 
 	var len=cellRow.length-1;//remove one to deal with wildcard
     switch(direction) {
@@ -1664,18 +1664,18 @@ export function matchCellRowWildCard(direction, cellRowMatch, cellRow,cellRowMas
     var horizontal=direction>2;
     if (horizontal) {
 		for (var y=ymin;y<ymax;y++) {
-			if (!cellRowMask.bitsSetInArray(level.rowCellContents[y].data)) {
+			if (!cellRowMask.bitsSetInArray(GAME.level.rowCellContents[y].data)) {
 				continue;
 			}
 
 			for (var x=xmin;x<xmax;x++) {
-				var i = x*level.height+y;
+				var i = x*GAME.level.height+y;
 				var kmax;
 
 				if (direction === 4) { //left
 					kmax=x-len+2;
 				} else if (direction === 8) { //right
-					kmax=level.width-(x+len)+1;
+					kmax=GAME.level.width-(x+len)+1;
 				} else {
 					window.console.log("EEEP2 "+direction);
 				}
@@ -1685,16 +1685,16 @@ export function matchCellRowWildCard(direction, cellRowMatch, cellRow,cellRowMas
 		}
 	} else {
 		for (var x=xmin;x<xmax;x++) {
-			if (!cellRowMask.bitsSetInArray(level.colCellContents[x].data)) {
+			if (!cellRowMask.bitsSetInArray(GAME.level.colCellContents[x].data)) {
 				continue;
 			}
 
 			for (var y=ymin;y<ymax;y++) {
-				var i = x*level.height+y;
+				var i = x*GAME.level.height+y;
 				var kmax;
 
 				if (direction === 2) { // down
-					kmax=level.height-(y+len)+1;
+					kmax=GAME.level.height-(y+len)+1;
 				} else if (direction === 1) { // up
 					kmax=y-len+2;
 				} else {
@@ -1734,11 +1734,11 @@ export function commitPreservationState(ruleGroupIndex) {
 	var propagationState = {
 		ruleGroupIndex:ruleGroupIndex,
 		//don't need to know the tuple index
-		objects:new Int32Array(level.objects),
-		movements:new Int32Array(level.movements),
-		rigidGroupIndexMask:level.rigidGroupIndexMask.concat([]),
-		rigidMovementAppliedMask:level.rigidMovementAppliedMask.concat([]),
-		bannedGroup:level.bannedGroup.concat([])
+		objects:new Int32Array(GAME.level.objects),
+		movements:new Int32Array(GAME.level.movements),
+		rigidGroupIndexMask:GAME.level.rigidGroupIndexMask.concat([]),
+		rigidMovementAppliedMask:GAME.level.rigidMovementAppliedMask.concat([]),
+		bannedGroup:GAME.level.bannedGroup.concat([])
 	};
 	rigidBackups[ruleGroupIndex]=propagationState;
 	return propagationState;
@@ -1746,10 +1746,10 @@ export function commitPreservationState(ruleGroupIndex) {
 
 export function restorePreservationState(preservationState) {
 //don't need to concat or anythign here, once something is restored it won't be used again.
-	level.objects = new Int32Array(preservationState.objects);
-	level.movements = new Int32Array(preservationState.movements);
-	level.rigidGroupIndexMask = preservationState.rigidGroupIndexMask.concat([]);
-    level.rigidMovementAppliedMask = preservationState.rigidMovementAppliedMask.concat([]);
+	GAME.level.objects = new Int32Array(preservationState.objects);
+	GAME.level.movements = new Int32Array(preservationState.movements);
+	GAME.level.rigidGroupIndexMask = preservationState.rigidGroupIndexMask.concat([]);
+    GAME.level.rigidMovementAppliedMask = preservationState.rigidMovementAppliedMask.concat([]);
     sfxCreateMask=new BitVec(STRIDE_OBJ);
     sfxDestroyMask=new BitVec(STRIDE_OBJ);
 //	rigidBackups = preservationState.rigidBackups;
@@ -1802,7 +1802,7 @@ Rule.prototype.applyAt = function(delta,tuple,check) {
     var result=false;
 
     //APPLY THE RULE
-    var d0 = delta[0]*level.height;
+    var d0 = delta[0]*GAME.level.height;
     var d1 = delta[1];
     for (var cellRowIndex=0;cellRowIndex<rule.patterns.length;cellRowIndex++) {
         var preRow = rule.patterns[cellRowIndex];
@@ -1813,17 +1813,17 @@ Rule.prototype.applyAt = function(delta,tuple,check) {
 
             if (preCell === ellipsisPattern) {
             	var k = tuple[cellRowIndex][1];
-            	currentIndex = (currentIndex+(d1+d0)*k)%level.n_tiles;
+            	currentIndex = (currentIndex+(d1+d0)*k)%GAME.level.n_tiles;
             	continue;
             }
 
             result = preCell.replace(rule, currentIndex) || result;
 
-            currentIndex = (currentIndex+d1+d0)%level.n_tiles;
+            currentIndex = (currentIndex+d1+d0)%GAME.level.n_tiles;
         }
     }
 
-	if (verbose_logging && result){
+	if (GAME.verbose_logging && result){
 		var ruleDirection = dirMaskName[rule.direction];
 		var logString = '<font color="green">Rule <a onclick="jumpToLine(' + rule.lineNumber + ');"  href="javascript:void(0);">' + rule.lineNumber + '</a> ' +
 			ruleDirection + ' applied.</font>';
@@ -1864,12 +1864,12 @@ Rule.prototype.queueCommands = function() {
 	for(var i=0;i<commands.length;i++) {
 		var command=commands[i];
 		var already=false;
-		if (level.commandQueue.indexOf(command[0])>=0) {
+		if (GAME.level.commandQueue.indexOf(command[0])>=0) {
 			continue;
 		}
-		level.commandQueue.push(command[0]);
+		GAME.level.commandQueue.push(command[0]);
 
-		if (verbose_logging){
+		if (GAME.verbose_logging){
 			var lineNumber = this.lineNumber;
 			var ruleDirection = dirMaskName[this.direction];
 			var logString = '<font color="green">Rule <a onclick="jumpToLine(' + lineNumber.toString() + ');"  href="javascript:void(0);">' + lineNumber.toString() + '</a> triggers command '+command[0]+'.</font>';
@@ -1883,11 +1883,11 @@ Rule.prototype.queueCommands = function() {
 };
 
 export function showTempMessage() {
-	keybuffer=[];
+	GAME.keybuffer=[];
 	ENGINE.textMode=true;
 	ENGINE.titleScreen=false;
-	quittingMessageScreen=false;
-	messageselected=false;
+	GAME.quittingMessageScreen=false;
+	GAME.messageselected=false;
 	tryPlayShowMessageSound();
 	drawMessageScreen();
 	canvasResize();
@@ -2002,30 +2002,30 @@ export function resolveMovements(dir){
     var moved=true;
     while(moved){
         moved=false;
-        for (var i=0;i<level.n_tiles;i++) {
+        for (var i=0;i<GAME.level.n_tiles;i++) {
         	moved = repositionEntitiesAtCell(i) || moved;
         }
     }
     var doUndo=false;
 
-	for (var i=0;i<level.n_tiles;i++) {
-		var cellMask = level.getCellInto(i,_o6);
-		var movementMask = level.getMovements(i);
+	for (var i=0;i<GAME.level.n_tiles;i++) {
+		var cellMask = GAME.level.getCellInto(i,_o6);
+		var movementMask = GAME.level.getMovements(i);
 		if (!movementMask.iszero()) {
-			var rigidMovementAppliedMask = level.rigidMovementAppliedMask[i];
+			var rigidMovementAppliedMask = GAME.level.rigidMovementAppliedMask[i];
 			if (rigidMovementAppliedMask !== 0) {
 				movementMask.iand(rigidMovementAppliedMask);
 				if (!movementMask.iszero()) {
 					//find what layer was restricted
-					for (var j=0;j<level.layerCount;j++) {
+					for (var j=0;j<GAME.level.layerCount;j++) {
 						var layerSection = movementMask.getshiftor(0x1f, 5*j);
 						if (layerSection!==0) {
 							//this is our layer!
-							var rigidGroupIndexMask = level.rigidGroupIndexMask[i];
+							var rigidGroupIndexMask = GAME.level.rigidGroupIndexMask[i];
 							var rigidGroupIndex = rigidGroupIndexMask.getshiftor(0x1f, 5*j);
 							rigidGroupIndex--;//group indices start at zero, but are incremented for storing in the bitfield
 							var groupIndex = state.rigidGroupIndex_to_GroupIndex[rigidGroupIndex];
-							level.bannedGroup[groupIndex]=true;
+							GAME.level.bannedGroup[groupIndex]=true;
 							//backtrackTarget = rigidBackups[rigidGroupIndex];
 							doUndo=true;
 							break;
@@ -2046,10 +2046,10 @@ export function resolveMovements(dir){
     	}
 
     	for (var j=0;j<STRIDE_MOV;j++) {
-    		level.movements[j+i*STRIDE_MOV]=0;
+    		GAME.level.movements[j+i*STRIDE_MOV]=0;
     	}
-	    level.rigidGroupIndexMask[i]=0;
-	    level.rigidMovementAppliedMask[i]=0;
+	    GAME.level.rigidGroupIndexMask[i]=0;
+	    GAME.level.rigidMovementAppliedMask[i]=0;
     }
     return doUndo;
 }
@@ -2058,36 +2058,36 @@ var sfxCreateMask=0;
 var sfxDestroyMask=0;
 
 export function calculateRowColMasks() {
-	for(var i=0;i<level.mapCellContents.length;i++) {
-		level.mapCellContents[i]=0;
+	for(var i=0;i<GAME.level.mapCellContents.length;i++) {
+		GAME.level.mapCellContents[i]=0;
 	}
 
-	for (var i=0;i<level.width;i++) {
-		var ccc = level.colCellContents[i];
+	for (var i=0;i<GAME.level.width;i++) {
+		var ccc = GAME.level.colCellContents[i];
 		ccc.setZero();
 	}
 
-	for (var i=0;i<level.height;i++) {
-		var rcc = level.rowCellContents[i];
+	for (var i=0;i<GAME.level.height;i++) {
+		var rcc = GAME.level.rowCellContents[i];
 		rcc.setZero();
 	}
 
-	for (var i=0;i<level.width;i++) {
-		for (var j=0;j<level.height;j++) {
-			var index = j+i*level.height;
-			var cellContents=level.getCellInto(index,_o9);
-			level.mapCellContents.ior(cellContents);
-			level.rowCellContents[j].ior(cellContents);
-			level.colCellContents[i].ior(cellContents);
+	for (var i=0;i<GAME.level.width;i++) {
+		for (var j=0;j<GAME.level.height;j++) {
+			var index = j+i*GAME.level.height;
+			var cellContents=GAME.level.getCellInto(index,_o9);
+			GAME.level.mapCellContents.ior(cellContents);
+			GAME.level.rowCellContents[j].ior(cellContents);
+			GAME.level.colCellContents[i].ior(cellContents);
 		}
 	}
 }
 
 /* returns a bool indicating if anything changed */
 export function processInput(dir,dontCheckWin,dontModify) {
-	againing = false;
+	GAME.againing = false;
 
-	if (verbose_logging) {
+	if (GAME.verbose_logging) {
 	 	if (dir===-1) {
 	 		consolePrint('Turn starts with no input.')
 	 	} else {
@@ -2132,9 +2132,9 @@ export function processInput(dir,dontCheckWin,dontModify) {
 		}
 
         var i=0;
-        level.bannedGroup = [];
+        GAME.level.bannedGroup = [];
         rigidBackups = [];
-        level.commandQueue=[];
+        GAME.level.commandQueue=[];
         var startRuleGroupIndex=0;
         var rigidloop=false;
         var startState = commitPreservationState();
@@ -2152,9 +2152,9 @@ export function processInput(dir,dontCheckWin,dontModify) {
         	rigidloop=false;
         	i++;
 
-        	if (verbose_logging){consolePrint('applying rules');}
+        	if (GAME.verbose_logging){consolePrint('applying rules');}
 
-        	applyRules(state.rules, state.loopPoint, startRuleGroupIndex, level.bannedGroup);
+        	applyRules(state.rules, state.loopPoint, startRuleGroupIndex, GAME.level.bannedGroup);
         	var shouldUndo = resolveMovements();
 
         	if (shouldUndo) {
@@ -2162,7 +2162,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
         		restorePreservationState(startState);
         		startRuleGroupIndex=0;//rigidGroupUndoDat.ruleGroupIndex+1;
         	} else {
-        		if (verbose_logging){consolePrint('applying late rules');}
+        		if (GAME.verbose_logging){consolePrint('applying late rules');}
         		applyRules(state.lateRules, state.lateLoopPoint, 0);
         		startRuleGroupIndex=0;
         	}
@@ -2177,14 +2177,14 @@ export function processInput(dir,dontCheckWin,dontModify) {
         	var somemoved=false;
         	for (var i=0;i<playerPositions.length;i++) {
         		var pos = playerPositions[i];
-        		var val = level.getCell(pos);
+        		var val = GAME.level.getCell(pos);
         		if (state.playerMask.bitsClearInArray(val.data)) {
         			somemoved=true;
         			break;
         		}
         	}
         	if (somemoved===false) {
-        		if (verbose_logging){
+        		if (GAME.verbose_logging){
 	    			consolePrint('require_player_movement set, but no player movement detected, so cancelling turn.');
 	    			consoleCacheDump();
         		}
@@ -2195,8 +2195,8 @@ export function processInput(dir,dontCheckWin,dontModify) {
         	//play player cantmove sounds here
         }
 
-	    if (level.commandQueue.indexOf('cancel')>=0) {
-	    	if (verbose_logging) {
+	    if (GAME.level.commandQueue.indexOf('cancel')>=0) {
+	    	if (GAME.verbose_logging) {
 	    		consolePrint('CANCEL command executed, cancelling turn.');
 	    		consoleCacheDump();
 			}
@@ -2205,8 +2205,8 @@ export function processInput(dir,dontCheckWin,dontModify) {
     		return false;
 	    }
 
-	    if (level.commandQueue.indexOf('restart')>=0) {
-	    	if (verbose_logging) {
+	    if (GAME.level.commandQueue.indexOf('restart')>=0) {
+	    	if (GAME.verbose_logging) {
 	    		consolePrint('RESTART command executed, reverting to restart state.');
 	    		consoleCacheDump();
 			}
@@ -2215,15 +2215,15 @@ export function processInput(dir,dontCheckWin,dontModify) {
     		return true;
 	    }
 
-	    if (dontModify && level.commandQueue.indexOf('win')>=0) {
+	    if (dontModify && GAME.level.commandQueue.indexOf('win')>=0) {
 	    	return true;
 	    }
 
         var modified=false;
-	    for (var i=0;i<level.objects.length;i++) {
-	    	if (level.objects[i]!==bak.dat[i]) {
+	    for (var i=0;i<GAME.level.objects.length;i++) {
+	    	if (GAME.level.objects[i]!==bak.dat[i]) {
 				if (dontModify) {
-	        		if (verbose_logging) {
+	        		if (GAME.verbose_logging) {
 	        			consoleCacheDump();
 	        		}
 	        		backups.push(bak);
@@ -2240,7 +2240,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 	    }
 
 		if (dontModify) {
-    		if (verbose_logging) {
+    		if (GAME.verbose_logging) {
     			consoleCacheDump();
     		}
 			return false;
@@ -2268,12 +2268,12 @@ export function processInput(dir,dontCheckWin,dontModify) {
         	}
         }
 
-	    for (var i=0;i<level.commandQueue.length;i++) {
-	 		var command = level.commandQueue[i];
+	    for (var i=0;i<GAME.level.commandQueue.length;i++) {
+	 		var command = GAME.level.commandQueue[i];
 	 		if (command.charAt(1)==='f')  {//identifies sfxN
 	 			tryPlaySimpleSound(command);
 	 		}
-			if (unitTesting===false) {
+			if (GAME.unitTesting===false) {
 				if (command==='message') {
 					showTempMessage();
 				}
@@ -2281,19 +2281,19 @@ export function processInput(dir,dontCheckWin,dontModify) {
 	    }
 
 	    if (ENGINE.textMode===false && (dontCheckWin===undefined ||dontCheckWin===false)) {
-	    	if (verbose_logging) {
+	    	if (GAME.verbose_logging) {
 	    		consolePrint('Checking win condition.');
 			}
 	    	checkWin();
 	    }
 
-	    if (!winning) {
-			if (level.commandQueue.indexOf('checkpoint')>=0) {
-		    	if (verbose_logging) {
+	    if (!GAME.winning) {
+			if (GAME.level.commandQueue.indexOf('checkpoint')>=0) {
+		    	if (GAME.verbose_logging) {
 		    		consolePrint('CHECKPOINT command executed, saving current state to the restart state.');
 				}
 				restartTarget=backupLevel();
-				curlevelTarget=restartTarget;
+				GAME.curlevelTarget=restartTarget;
 				localStorage[document.URL+'_checkpoint']=JSON.stringify(restartTarget);
 				//test line, remove later!:
 				var restored = JSON.parse(localStorage[document.URL+'_checkpoint']);
@@ -2302,45 +2302,45 @@ export function processInput(dir,dontCheckWin,dontModify) {
 				    arr[p] = restored.dat[p];
 				}
 				restored.dat = new Int32Array(arr);
-				localStorage[document.URL]=curlevel;
+				localStorage[document.URL]=GAME.curlevel;
 			}
 
-		    if (level.commandQueue.indexOf('again')>=0 && modified) {
+		    if (GAME.level.commandQueue.indexOf('again')>=0 && modified) {
 		    	//first have to verify that something's changed
-		    	var old_verbose_logging=verbose_logging;
+		    	var old_verbose_logging=GAME.verbose_logging;
 		    	var oldmessagetext = messagetext;
-		    	verbose_logging=false;
+		    	GAME.verbose_logging=false;
 		    	if (processInput(-1,true,true)) {
-			    	verbose_logging=old_verbose_logging;
+			    	GAME.verbose_logging=old_verbose_logging;
 
-			    	if (verbose_logging) {
+			    	if (GAME.verbose_logging) {
 			    		consolePrint('AGAIN command executed, with changes detected - will execute another turn.');
 					}
 
-			    	againing=true;
-			    	timer=0;
+			    	GAME.againing=true;
+			    	GAME.timer=0;
 			    } else {
-			    	verbose_logging=old_verbose_logging;
-					if (verbose_logging) {
+			    	GAME.verbose_logging=old_verbose_logging;
+					if (GAME.verbose_logging) {
 						consolePrint('AGAIN command not executed, it wouldn\'t make any changes.');
 					}
 			    }
-			    verbose_logging=old_verbose_logging;
+			    GAME.verbose_logging=old_verbose_logging;
 			    messagetext = oldmessagetext;
 		    }
 		}
 
 
-	    level.commandQueue=[];
+	    GAME.level.commandQueue=[];
 
     }
 
-	if (verbose_logging) {
+	if (GAME.verbose_logging) {
 		consoleCacheDump();
 	}
 
-	if (winning) {
-		againing=false;
+	if (GAME.winning) {
+		GAME.againing=false;
 	}
 
 	return modified;
@@ -2348,11 +2348,11 @@ export function processInput(dir,dontCheckWin,dontModify) {
 
 export function checkWin() {
 
-	if (levelEditorOpened) {
+	if (GAME.levelEditorOpened) {
 		return;
 	}
 
-	if (level.commandQueue.indexOf('win')>=0) {
+	if (GAME.level.commandQueue.indexOf('win')>=0) {
 		consolePrint("Win Condition Satisfied");
 		DoWin();
 		return;
@@ -2369,8 +2369,8 @@ export function checkWin() {
 			switch(wincondition[0]) {
 				case -1://NO
 				{
-					for (var i=0;i<level.n_tiles;i++) {
-						var cell = level.getCellInto(i,_o10);
+					for (var i=0;i<GAME.level.n_tiles;i++) {
+						var cell = GAME.level.getCellInto(i,_o10);
 						if ( (!filter1.bitsClearInArray(cell.data)) &&
 							 (!filter2.bitsClearInArray(cell.data)) ) {
 							rulePassed=false;
@@ -2383,8 +2383,8 @@ export function checkWin() {
 				case 0://SOME
 				{
 					var passedTest=false;
-					for (var i=0;i<level.n_tiles;i++) {
-						var cell = level.getCellInto(i,_o10);
+					for (var i=0;i<GAME.level.n_tiles;i++) {
+						var cell = GAME.level.getCellInto(i,_o10);
 						if ( (!filter1.bitsClearInArray(cell.data)) &&
 							 (!filter2.bitsClearInArray(cell.data)) ) {
 							passedTest=true;
@@ -2398,8 +2398,8 @@ export function checkWin() {
 				}
 				case 1://ALL
 				{
-					for (var i=0;i<level.n_tiles;i++) {
-						var cell = level.getCellInto(i,_o10);
+					for (var i=0;i<GAME.level.n_tiles;i++) {
+						var cell = GAME.level.getCellInto(i,_o10);
 						if ( (!filter1.bitsClearInArray(cell.data)) &&
 							 (filter2.bitsClearInArray(cell.data)) ) {
 							rulePassed=false;
@@ -2423,25 +2423,25 @@ export function checkWin() {
 }
 
 export function DoWin() {
-	if (winning) {
+	if (GAME.winning) {
 		return;
 	}
-	againing=false;
+	GAME.againing=false;
 	tryPlayEndLevelSound();
-	if (unitTesting) {
+	if (GAME.unitTesting) {
 		nextLevel();
 		return;
 	}
 
-	winning=true;
-	timer=0;
+	GAME.winning=true;
+	GAME.timer=0;
 }
 
 /*
 //this function isn't valid after refactoring, but also isn't used.
 export function anyMovements() {
-    for (var i=0;i<level.movementMask.length;i++) {
-        if (level.movementMask[i]!==0) {
+    for (var i=0;i<GAME.level.movementMask.length;i++) {
+        if (GAME.level.movementMask[i]!==0) {
         	return true;
         }
     }
@@ -2450,37 +2450,37 @@ export function anyMovements() {
 
 
 export function nextLevel() {
-	keybuffer=[];
-    againing=false;
+	GAME.keybuffer=[];
+    GAME.againing=false;
 	messagetext="";
 	if (ENGINE.titleScreen) {
 		if (ENGINE.titleSelection===0) {
 			//new game
-			curlevel=0;
-			curlevelTarget=null;
+			GAME.curlevel=0;
+			GAME.curlevelTarget=null;
 		}
-		if (curlevelTarget!==null){
-			loadLevelFromStateTarget(state,curlevel,curlevelTarget);
+		if (GAME.curlevelTarget!==null){
+			loadLevelFromStateTarget(state,GAME.curlevel,GAME.curlevelTarget);
 		} else {
-			loadLevelFromState(state,curlevel);
+			loadLevelFromState(state,GAME.curlevel);
 		}
 	} else {
-		if (curlevel<(state.levels.length-1))
+		if (GAME.curlevel<(state.levels.length-1))
 		{
-			curlevel++;
+			GAME.curlevel++;
 			ENGINE.textMode=false;
 			ENGINE.titleScreen=false;
-			quittingMessageScreen=false;
-			messageselected=false;
+			GAME.quittingMessageScreen=false;
+			GAME.messageselected=false;
 
-			if (curlevelTarget!==null){
-				loadLevelFromStateTarget(state,curlevel,curlevelTarget);
+			if (GAME.curlevelTarget!==null){
+				loadLevelFromStateTarget(state,GAME.curlevel,GAME.curlevelTarget);
 			} else {
-				loadLevelFromState(state,curlevel);
+				loadLevelFromState(state,GAME.curlevel);
 			}
 		} else {
-			curlevel=0;
-			curlevelTarget=null;
+			GAME.curlevel=0;
+			GAME.curlevelTarget=null;
 			goToTitleScreen();
 			tryPlayEndGameSound();
 		}
@@ -2488,9 +2488,9 @@ export function nextLevel() {
 	}
 	try {
 		if (!!window.localStorage) {
-			localStorage[document.URL]=curlevel;
-			if (curlevelTarget!==null){
-				localStorage[document.URL+"_checkpoint"]=JSON.stringify(curlevelTarget);
+			localStorage[document.URL]=GAME.curlevel;
+			if (GAME.curlevelTarget!==null){
+				localStorage[document.URL+"_checkpoint"]=JSON.stringify(GAME.curlevelTarget);
 			} else {
 				localStorage.removeItem(document.URL+"_checkpoint");
 			}
@@ -2504,11 +2504,11 @@ export function nextLevel() {
 }
 
 export function goToTitleScreen(){
-    againing=false;
+    GAME.againing=false;
 	messagetext="";
 	ENGINE.titleScreen=true;
 	ENGINE.textMode=true;
-	ENGINE.titleSelection=(curlevel>0||curlevelTarget!==null)?1:0;
+	ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
 	generateTitleScreen();
 }
 

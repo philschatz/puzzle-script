@@ -1,7 +1,7 @@
-window.unitTesting=false;
-window.curlevel=0;
-window.curlevelTarget=null;
-window.levelEditorOpened=false;
+let unitTesting=false;
+let curlevel=0;
+let curlevelTarget=null;
+let levelEditorOpened=false;
 
 try {
  	if (!!window.localStorage) {
@@ -23,28 +23,28 @@ try {
 }
 
 
-window.verbose_logging=false;
-window.throttle_movement=false;
-window.cache_console_messages=false;
-window.quittingTitleScreen=false;
-window.quittingMessageScreen=false;
-window.deltatime=17;
-window.timer=0;
-window.repeatinterval=150;
-window.autotick=0;
-window.autotickinterval=0;
-window.winning=false;
-window.againing=false;
-window.againinterval=150;
-window.norepeat_action=false;
-window.oldflickscreendat=[];//used for buffering old flickscreen/scrollscreen positions, in case player vanishes
-window.keybuffer = [];
+let verbose_logging=false;
+let throttle_movement=false;
+let cache_console_messages=false;
+let quittingTitleScreen=false;
+let quittingMessageScreen=false;
+let deltatime=17;
+let timer=0;
+let repeatinterval=150;
+let autotick=0;
+let autotickinterval=0;
+let winning=false;
+let againing=false;
+let againinterval=150;
+let norepeat_action=false;
+let oldflickscreendat=[];//used for buffering old flickscreen/scrollscreen positions, in case player vanishes
+let keybuffer = [];
 
 
-window.messageselected=false;
+let messageselected=false;
 
-window.textImages={};
-window.initLevel = {
+let textImages={};
+let initLevel = {
     width: 5,
     height: 5,
     layerCount: 2,
@@ -69,4 +69,37 @@ window.initLevel = {
     rowCellContents:[]
 };
 
-window.level = initLevel;
+let level = initLevel;
+
+
+export const globals = {
+  curlevelTarget,
+  curlevelTarget,
+  curlevelTarget,
+  levelEditorOpened,
+  verbose_logging,
+  throttle_movement,
+  cache_console_messages,
+  quittingTitleScreen,
+  quittingMessageScreen,
+  deltatime,
+  timer,
+  repeatinterval,
+  autotick,
+  autotickinterval,
+  winning,
+  againing,
+  againinterval,
+  norepeat_action,
+  oldflickscreendat,
+  keybuffer,
+
+
+  messageselected,
+
+  textImages,
+  level,
+
+}
+
+window.GAME = globals;

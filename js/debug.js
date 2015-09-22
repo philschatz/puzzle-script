@@ -10,9 +10,9 @@ function convertLevelToString() {
 	var out = '';
 	var seenCells = {};
 	var i = 0;
-	for (var y = 0; y < level.height; y++) {
-		for (var x = 0; x < level.width; x++) {
-			var bitmask = level.getCell(x + y * level.width);
+	for (var y = 0; y < GAME.level.height; y++) {
+		for (var x = 0; x < GAME.level.width; x++) {
+			var bitmask = GAME.level.getCell(x + y * GAME.level.width);
 			var objs = [];
 			for (var bit = 0; bit < 32 * STRIDE_OBJ; ++bit) {
 				if (bitmask.get(bit)) {
@@ -38,7 +38,7 @@ function dumpTestCase() {
 	var input = inputHistory.concat([]);
 	var outputDat = convertLevelToString();
 
-	var resultarray = [levelDat,input,outputDat,curlevel,loadedLevelSeed];
+	var resultarray = [levelDat,input,outputDat,GAME.curlevel,loadedLevelSeed];
 	var resultstring = JSON.stringify(resultarray);
 	consolePrint("<br><br><br>"+resultstring+"<br><br><br>",true);
 }

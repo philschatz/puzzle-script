@@ -1,7 +1,7 @@
 export function makeGIF() {
 	var randomseed = RandomGen.seed;
-	levelEditorOpened=false;
-	var targetlevel=curlevel;
+	GAME.levelEditorOpened=false;
+	var targetlevel=GAME.curlevel;
 	var gifcanvas = document.createElement('canvas');
 	gifcanvas.width=screenwidth*cellwidth;
 	gifcanvas.height=screenheight*cellheight;
@@ -13,7 +13,7 @@ export function makeGIF() {
 	var inputDat = inputHistory.concat([]);
 	
 
-	unitTesting=true;
+	GAME.unitTesting=true;
 	levelString=compiledText;
 
 
@@ -23,7 +23,7 @@ export function makeGIF() {
 	encoder.setDelay(200);
 	encoder.start();
 
-	compile(["loadLevel",curlevel],levelString,randomseed);
+	compile(["loadLevel",GAME.curlevel],levelString,randomseed);
 	canvasResize();
 	redraw();
 	gifctx.drawImage(canvas,-xoffset,-yoffset);
@@ -46,13 +46,13 @@ export function makeGIF() {
 		redraw();
 		gifctx.drawImage(canvas,-xoffset,-yoffset);
 		encoder.addFrame(gifctx);
-		encoder.setDelay(realtimeframe?autotickinterval:repeatinterval);
-		autotimer+=repeatinterval;
+		encoder.setDelay(realtimeframe?GAME.autotickinterval:GAME.repeatinterval);
+		autotimer+=GAME.repeatinterval;
 
-		while (againing) {
+		while (GAME.againing) {
 			processInput(-1);		
 			redraw();
-			encoder.setDelay(againinterval);
+			encoder.setDelay(GAME.againinterval);
 			gifctx.drawImage(canvas,-xoffset,-yoffset);
 	  		encoder.addFrame(gifctx);	
 		}
@@ -62,5 +62,5 @@ export function makeGIF() {
   	var dat = 'data:image/gif;base64,'+encode64(encoder.stream().getData());
   	window.open(dat);
   	
-  	unitTesting = false;
+  	GAME.unitTesting = false;
 }

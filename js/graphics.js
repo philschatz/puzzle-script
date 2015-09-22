@@ -38,11 +38,11 @@ export function createSprite(name,spritegrid, colors, padding) {
 }
 
 export function regenText(spritecanvas,spritectx) {
-	textImages={};
+	GAME.textImages={};
 
 	for (var n in font) {
 		if (font.hasOwnProperty(n)) {
-			textImages[n] = createSprite('char'+n,font[n], undefined, 1);
+			GAME.textImages[n] = createSprite('char'+n,font[n], undefined, 1);
 		}
 	}
 }
@@ -51,8 +51,8 @@ export function regenSpriteImages() {
 	if (ENGINE.textMode) {
 		regenText();
 		return;
-	} else if (levelEditorOpened) {
-        textImages['s'] = createSprite('chars',font['s'],undefined);
+	} else if (GAME.levelEditorOpened) {
+        GAME.textImages['s'] = createSprite('chars',font['s'],undefined);
     }
 
     if (state.levels.length===0) {
@@ -133,7 +133,7 @@ export function generateGlyphImages() {
 	}
 
 	{
-		glyphPrintButton = textImages['s'];
+		glyphPrintButton = GAME.textImages['s'];
 	}
 	{
 		//make highlight thingy
@@ -192,8 +192,8 @@ export function redraw() {
         for (var i = 0; i < ENGINE.titleWidth; i++) {
             for (var j = 0; j < ENGINE.titleHeight; j++) {
                 var ch = ENGINE.titleImage[j].charAt(i);
-                if (ch in textImages) {
-                    var sprite = textImages[ch];
+                if (ch in GAME.textImages) {
+                    var sprite = GAME.textImages[ch];
                     GRAPHICS.ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
                 }
             }
@@ -208,7 +208,7 @@ export function redraw() {
         var minj=0;
         var maxj=screenheight;
 
-        if (levelEditorOpened) {
+        if (GAME.levelEditorOpened) {
             var glyphcount = glyphCount();
             editorRowCount = Math.ceil(glyphcount/(screenwidth-1));
             maxi-=2;
@@ -217,47 +217,47 @@ export function redraw() {
             var playerPositions = getPlayerPositions();
             if (playerPositions.length>0) {
                 var playerPosition=playerPositions[0];
-                var px = (playerPosition/(level.height))|0;
-                var py = (playerPosition%level.height)|0;
+                var px = (playerPosition/(GAME.level.height))|0;
+                var py = (playerPosition%GAME.level.height)|0;
 
                 var screenx = (px/screenwidth)|0;
                 var screeny = (py/screenheight)|0;
                 mini=screenx*screenwidth;
                 minj=screeny*screenheight;
-                maxi=Math.min(mini+screenwidth,level.width);
-                maxj=Math.min(minj+screenheight,level.height);
+                maxi=Math.min(mini+screenwidth,GAME.level.width);
+                maxj=Math.min(minj+screenheight,GAME.level.height);
 
-                oldflickscreendat=[mini,minj,maxi,maxj];
-            } else if (oldflickscreendat.length>0){
-                mini=oldflickscreendat[0];
-                minj=oldflickscreendat[1];
-                maxi=oldflickscreendat[2];
-                maxj=oldflickscreendat[3];
+                GAME.oldflickscreendat=[mini,minj,maxi,maxj];
+            } else if (GAME.oldflickscreendat.length>0){
+                mini=GAME.oldflickscreendat[0];
+                minj=GAME.oldflickscreendat[1];
+                maxi=GAME.oldflickscreendat[2];
+                maxj=GAME.oldflickscreendat[3];
             }
         } else if (zoomscreen) {
             var playerPositions = getPlayerPositions();
             if (playerPositions.length>0) {
                 var playerPosition=playerPositions[0];
-                var px = (playerPosition/(level.height))|0;
-                var py = (playerPosition%level.height)|0;
-                mini=Math.max(Math.min(px-((screenwidth/2)|0),level.width-screenwidth),0);
-                minj=Math.max(Math.min(py-((screenheight/2)|0),level.height-screenheight),0);
-                maxi=Math.min(mini+screenwidth,level.width);
-                maxj=Math.min(minj+screenheight,level.height);
-                oldflickscreendat=[mini,minj,maxi,maxj];
-            }  else if (oldflickscreendat.length>0){
-                mini=oldflickscreendat[0];
-                minj=oldflickscreendat[1];
-                maxi=oldflickscreendat[2];
-                maxj=oldflickscreendat[3];
+                var px = (playerPosition/(GAME.level.height))|0;
+                var py = (playerPosition%GAME.level.height)|0;
+                mini=Math.max(Math.min(px-((screenwidth/2)|0),GAME.level.width-screenwidth),0);
+                minj=Math.max(Math.min(py-((screenheight/2)|0),GAME.level.height-screenheight),0);
+                maxi=Math.min(mini+screenwidth,GAME.level.width);
+                maxj=Math.min(minj+screenheight,GAME.level.height);
+                GAME.oldflickscreendat=[mini,minj,maxi,maxj];
+            }  else if (GAME.oldflickscreendat.length>0){
+                mini=GAME.oldflickscreendat[0];
+                minj=GAME.oldflickscreendat[1];
+                maxi=GAME.oldflickscreendat[2];
+                maxj=GAME.oldflickscreendat[3];
             }
         }
 
 
         for (var i = mini; i < maxi; i++) {
             for (var j = minj; j < maxj; j++) {
-                var posIndex = j + i * level.height;
-                var posMask = level.getCellInto(posIndex,_o12);
+                var posIndex = j + i * GAME.level.height;
+                var posMask = GAME.level.getCellInto(posIndex,_o12);
                 for (var k = 0; k < state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
@@ -267,7 +267,7 @@ export function redraw() {
             }
         }
 
-	    if (levelEditorOpened) {
+	    if (GAME.levelEditorOpened) {
 	    	drawEditorIcons();
 	    }
     }
@@ -331,12 +331,12 @@ export function canvasResize() {
     GRAPHICS.canvas.width = GRAPHICS.canvas.parentNode.clientWidth;
     GRAPHICS.canvas.height = GRAPHICS.canvas.parentNode.clientHeight;
 
-    screenwidth=level.width;
-    screenheight=level.height;
+    screenwidth=GAME.level.width;
+    screenheight=GAME.level.height;
     if (state!==undefined){
         flickscreen=state.metadata.flickscreen!==undefined;
         zoomscreen=state.metadata.zoomscreen!==undefined;
-	    if (levelEditorOpened) {
+	    if (GAME.levelEditorOpened) {
             screenwidth+=2;
             var glyphcount = glyphCount();
             editorRowCount = Math.ceil(glyphcount/(screenwidth-1));
@@ -385,7 +385,7 @@ export function canvasResize() {
     }
     magnification = ((cellwidth/w)*5)|0;
 
-    if (levelEditorOpened && !ENGINE.textMode) {
+    if (GAME.levelEditorOpened && !ENGINE.textMode) {
     	xoffset+=cellwidth;
     	yoffset+=cellheight*(1+editorRowCount);
     }

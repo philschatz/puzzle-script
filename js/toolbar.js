@@ -136,10 +136,10 @@ loadDropdown.selectedIndex=0;
 function levelEditorClick_Fn() {
 	if (textMode || state.levels.length===0) {
 		compile(["loadLevel",0]);
-		levelEditorOpened=true;
+		GAME.levelEditorOpened=true;
     	canvasResize();
 	} else {
-		levelEditorOpened=!levelEditorOpened;
+		GAME.levelEditorOpened=!GAME.levelEditorOpened;
     	canvasResize();
     }
     lastDownTarget=canvas;	

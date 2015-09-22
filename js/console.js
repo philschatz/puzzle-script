@@ -16,7 +16,7 @@ export function consolePrint(text,urgent) {
 	if (urgent===undefined) {
 		urgent=false;
 	}
-	if (cache_console_messages&&urgent==false) {
+	if (GAME.cache_console_messages&&urgent==false) {
 		consolecache.push(text);
 	} else {
 		addToConsole(text);
@@ -40,7 +40,7 @@ export function addToConsole(text) {
 }
 
 export function consoleCacheDump() {
-	if (cache_console_messages===false) {
+	if (GAME.cache_console_messages===false) {
 		return;
 	}
 
