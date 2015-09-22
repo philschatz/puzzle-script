@@ -7,7 +7,7 @@ var config = {
     context: path.resolve(__dirname),
     entry: [
       // './style/index.js',
-      './js/index.js'
+      './game-loader.js'
     ],
     output: {
         path: __dirname + '/dist',

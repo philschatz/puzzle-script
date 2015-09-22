@@ -478,13 +478,6 @@ function mouseOut() {
 //  window.console.log("clear");
 }
 
-document.addEventListener('mousedown', onMouseDown, false);
-document.addEventListener('mouseup', onMouseUp, false);
-document.addEventListener('keydown', onKeyDown, false);
-document.addEventListener('keyup', onKeyUp, false);
-window.addEventListener('focus', onMyFocus, false);
-window.addEventListener('blur', onMyBlur, false);
-
 
 function prevent(e) {
     if (e.preventDefault) e.preventDefault();
@@ -754,6 +747,31 @@ function update() {
 }
 
 // Lights, camera…function!
-setInterval(function() {
-    update();
-}, GAME.deltatime);
+let gameLoopInterval = null;
+export function startGameLoop() {
+	gameLoopInterval = setInterval(function() {
+	    update();
+	}, GAME.deltatime);
+}
+
+export function stopGameLoop() {
+	clearInterval(gameLoopInterval);
+}
+
+export function addListeners(node) {
+	document.addEventListener('mousedown', onMouseDown, false);
+	document.addEventListener('mouseup', onMouseUp, false);
+	document.addEventListener('keydown', onKeyDown, false);
+	document.addEventListener('keyup', onKeyUp, false);
+	node.addEventListener('focus', onMyFocus, false);
+	node.addEventListener('blur', onMyBlur, false);
+}
+
+export function removeListeners(node) {
+	document.removeEventListener('mousedown', onMouseDown);
+	document.removeEventListener('mouseup', onMouseUp);
+	document.removeEventListener('keydown', onKeyDown);
+	document.removeEventListener('keyup', onKeyUp);
+	node.removeEventListener('focus', onMyFocus);
+	node.removeEventListener('blur', onMyBlur);
+}

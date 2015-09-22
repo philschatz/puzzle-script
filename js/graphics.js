@@ -165,9 +165,6 @@ export function generateGlyphImages() {
 	}
 }
 
-
-window.addEventListener('resize', canvasResize, false);
-
 export function glyphCount(){
     var count=0;
     for (var n in ENGINE.state.glyphDict) {
@@ -405,4 +402,13 @@ export function canvasResize() {
     oldfgcolor=ENGINE.state.fgcolor;
 
     redraw();
+}
+
+
+export function addListeners(node) {
+	node.addEventListener('resize', canvasResize, false);
+}
+
+export function removeListeners(node) {
+	node.removeEventListener('resize', canvasResize);
 }
