@@ -1,4 +1,5 @@
 import {globals as GAME} from './globalVariables';
+import {globals as ENGINE} from './_global-engine';
 
 var canSetHTMLColors=false;
 var canDump=true;

@@ -49,8 +49,8 @@ function adjustLevel(level, widthdelta, heightdelta) {
 	level.width += widthdelta;
 	level.height += heightdelta;
 	level.n_tiles = level.width * level.height;
-	level.objects = new Int32Array(level.n_tiles * STRIDE_OBJ);
-	var bgMask = new BitVec(STRIDE_OBJ);
+	level.objects = new Int32Array(level.n_tiles * ENGINE.STRIDE_OBJ);
+	var bgMask = new BitVec(ENGINE.STRIDE_OBJ);
 	bgMask.ibitset(ENGINE.state.backgroundid);
 	for (var i=0; i<level.n_tiles; ++i)
 		level.setCell(i, bgMask);
@@ -161,7 +161,7 @@ function matchGlyph(inputmask,glyphAndMask) {
 		//require all bits of glyph to be in input
 		if (glyphmask.bitsSetInArray(inputmask.data)) {
 			var bitcount = 0;
-			for (var bit=0;bit<32*STRIDE_OBJ;++bit) {
+			for (var bit=0;bit<32*ENGINE.STRIDE_OBJ;++bit) {
 				if (glyphmask.get(bit) && inputmask.get(bit))
 					bitcount++;
 			}
@@ -195,7 +195,7 @@ function printLevel() {
 	for (var glyphName in ENGINE.state.glyphDict) {
 		if (ENGINE.state.glyphDict.hasOwnProperty(glyphName)&&glyphName.length===1) {
 			var glyph = ENGINE.state.glyphDict[glyphName];
-			var glyphmask=new BitVec(STRIDE_OBJ);
+			var glyphmask=new BitVec(ENGINE.STRIDE_OBJ);
 			for (var i=0;i<glyph.length;i++)
 			{
 				var id = glyph[i];
@@ -254,7 +254,7 @@ function levelEditorClick(event,click) {
 	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
 		var glyphname = glyphImagesCorrespondance[glyphSelectedIndex];
 		var glyph = ENGINE.state.glyphDict[glyphname];
-		var glyphmask = new BitVec(STRIDE_OBJ);
+		var glyphmask = new BitVec(ENGINE.STRIDE_OBJ);
 		for (var i=0;i<glyph.length;i++)
 		{
 			var id = glyph[i];
@@ -310,7 +310,7 @@ function levelEditorRightClick(event,click) {
 		}
 	} else if (mouseCoordX>-1&&mouseCoordY>-1&&mouseCoordX<screenwidth-2&&mouseCoordY<screenheight-2-editorRowCount	) {
 		var coordIndex = mouseCoordY + mouseCoordX*GAME.level.height;
-		var glyphmask = new BitVec(STRIDE_OBJ);
+		var glyphmask = new BitVec(ENGINE.STRIDE_OBJ);
 		glyphmask.ibitset(state.backgroundid);
 		GAME.level.setCell(coordIndex, glyphmask);
 		redraw();

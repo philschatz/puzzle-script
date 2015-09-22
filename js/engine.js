@@ -496,8 +496,8 @@ export function setGameState(_state, command, randomseed) {
 	GAME.winning=false;
 	GAME.againing=false;
     GAME.messageselected=false;
-    STRIDE_MOV=_state.STRIDE_MOV;
-    STRIDE_OBJ=_state.STRIDE_OBJ;
+    ENGINE.STRIDE_MOV=_state.STRIDE_MOV;
+    ENGINE.STRIDE_OBJ=_state.STRIDE_OBJ;
 
 	if (command===undefined) {
 		command=["restart"];
@@ -673,44 +673,44 @@ export function setGameState(_state, command, randomseed) {
 }
 
 export function RebuildLevelArrays() {
-	GAME.level.movements = new Int32Array(GAME.level.n_tiles * STRIDE_MOV);
+	GAME.level.movements = new Int32Array(GAME.level.n_tiles * ENGINE.STRIDE_MOV);
 
     GAME.level.rigidMovementAppliedMask = [];
     GAME.level.rigidGroupIndexMask = [];
 	GAME.level.rowCellContents = [];
 	GAME.level.colCellContents = [];
-	GAME.level.mapCellContents = new BitVec(STRIDE_OBJ);
-	_movementsVec = new BitVec(STRIDE_MOV);
+	GAME.level.mapCellContents = new BitVec(ENGINE.STRIDE_OBJ);
+	_movementsVec = new BitVec(ENGINE.STRIDE_MOV);
 
-	_o1 = new BitVec(STRIDE_OBJ);
-	_o2 = new BitVec(STRIDE_OBJ);
-	_o2_5 = new BitVec(STRIDE_OBJ);
-	_o3 = new BitVec(STRIDE_OBJ);
-	_o4 = new BitVec(STRIDE_OBJ);
-	_o5 = new BitVec(STRIDE_OBJ);
-	_o6 = new BitVec(STRIDE_OBJ);
-	_o7 = new BitVec(STRIDE_OBJ);
-	_o8 = new BitVec(STRIDE_OBJ);
-	_o9 = new BitVec(STRIDE_OBJ);
-	_o10 = new BitVec(STRIDE_OBJ);
-	_o11 = new BitVec(STRIDE_OBJ);
-	_o12 = new BitVec(STRIDE_OBJ);
-	_m1 = new BitVec(STRIDE_MOV);
-	_m2 = new BitVec(STRIDE_MOV);
-	_m3 = new BitVec(STRIDE_MOV);
+	_o1 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o2 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o2_5 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o3 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o4 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o5 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o6 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o7 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o8 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o9 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o10 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o11 = new BitVec(ENGINE.STRIDE_OBJ);
+	_o12 = new BitVec(ENGINE.STRIDE_OBJ);
+	_m1 = new BitVec(ENGINE.STRIDE_MOV);
+	_m2 = new BitVec(ENGINE.STRIDE_MOV);
+	_m3 = new BitVec(ENGINE.STRIDE_MOV);
 
 
     for (var i=0;i<GAME.level.height;i++) {
-    	GAME.level.rowCellContents[i]=new BitVec(STRIDE_OBJ);
+    	GAME.level.rowCellContents[i]=new BitVec(ENGINE.STRIDE_OBJ);
     }
     for (var i=0;i<GAME.level.width;i++) {
-    	GAME.level.colCellContents[i]=new BitVec(STRIDE_OBJ);
+    	GAME.level.colCellContents[i]=new BitVec(ENGINE.STRIDE_OBJ);
     }
 
     for (var i=0;i<GAME.level.n_tiles;i++)
     {
-        GAME.level.rigidMovementAppliedMask[i]=new BitVec(STRIDE_MOV);
-        GAME.level.rigidGroupIndexMask[i]=new BitVec(STRIDE_MOV);
+        GAME.level.rigidMovementAppliedMask[i]=new BitVec(ENGINE.STRIDE_MOV);
+        GAME.level.rigidGroupIndexMask[i]=new BitVec(ENGINE.STRIDE_MOV);
     }
 }
 
@@ -958,34 +958,34 @@ Level.prototype.clone = function() {
 }
 
 Level.prototype.getCell = function(index) {
-	return new BitVec(this.objects.subarray(index * STRIDE_OBJ, index * STRIDE_OBJ + STRIDE_OBJ));
+	return new BitVec(this.objects.subarray(index * ENGINE.STRIDE_OBJ, index * ENGINE.STRIDE_OBJ + ENGINE.STRIDE_OBJ));
 }
 
 Level.prototype.getCellInto = function(index,targetarray) {
-	for (var i=0;i<STRIDE_OBJ;i++) {
-		targetarray.data[i]=this.objects[index*STRIDE_OBJ+i];
+	for (var i=0;i<ENGINE.STRIDE_OBJ;i++) {
+		targetarray.data[i]=this.objects[index*ENGINE.STRIDE_OBJ+i];
 	}
 	return targetarray;
 }
 
 Level.prototype.setCell = function(index, vec) {
 	for (var i = 0; i < vec.data.length; ++i) {
-		this.objects[index * STRIDE_OBJ + i] = vec.data[i];
+		this.objects[index * ENGINE.STRIDE_OBJ + i] = vec.data[i];
 	}
 }
 
 var _movementsVec;
 
 Level.prototype.getMovements = function(index) {
-	for (var i=0;i<STRIDE_MOV;i++) {
-		_movementsVec.data[i]=this.movements[index*STRIDE_MOV+i];
+	for (var i=0;i<ENGINE.STRIDE_MOV;i++) {
+		_movementsVec.data[i]=this.movements[index*ENGINE.STRIDE_MOV+i];
 	}
 	return _movementsVec;
 }
 
 Level.prototype.setMovements = function(index, vec) {
 	for (var i = 0; i < vec.data.length; ++i) {
-		this.movements[index * STRIDE_MOV + i] = vec.data[i];
+		this.movements[index * ENGINE.STRIDE_MOV + i] = vec.data[i];
 	}
 }
 
@@ -1142,12 +1142,12 @@ Rule.prototype.generateCellRowMatchesFunction = function(cellRow,hasEllipsis)  {
 			hard substitute in the first one - if I substitute in all of them, firefox chokes.
 			*/
 		var fn = "var d = "+d1+"+"+d0+"*GAME_dot_level.height;\n";
-		var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
-		for (var i = 0; i < STRIDE_OBJ; ++i) {
+		var mul = ENGINE.STRIDE_OBJ === 1 ? '' : '*'+ENGINE.STRIDE_OBJ;
+		for (var i = 0; i < ENGINE.STRIDE_OBJ; ++i) {
 			fn += 'var cellObjects' + i + ' = GAME_dot_level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
-		mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
-		for (var i = 0; i < STRIDE_MOV; ++i) {
+		mul = ENGINE.STRIDE_MOV === 1 ? '' : '*'+ENGINE.STRIDE_MOV;
+		for (var i = 0; i < ENGINE.STRIDE_MOV; ++i) {
 			fn += 'var cellMovements' + i + ' = GAME_dot_level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 		}
 		fn += "return "+cellRow[0].generateMatchString('0_');// cellRow[0].matches(i)";
@@ -1225,9 +1225,6 @@ Rule.prototype.toJSON = function() {
 	];
 };
 
-// TODO: move these to globals?
-window.STRIDE_OBJ = 1;
-window.STRIDE_MOV = 1;
 
 export function CellPattern(row) {
 	this.objectsPresent = row[0];
@@ -1256,7 +1253,7 @@ var matchCache = {};
 
 CellPattern.prototype.generateMatchString = function() {
 	var fn = "(true";
-	for (var i = 0; i < Math.max(STRIDE_OBJ, STRIDE_MOV); ++i) {
+	for (var i = 0; i < Math.max(ENGINE.STRIDE_OBJ, ENGINE.STRIDE_MOV); ++i) {
 		var co = 'cellObjects' + i;
 		var cm = 'cellMovements' + i;
 		var op = this.objectsPresent.data[i];
@@ -1282,7 +1279,7 @@ CellPattern.prototype.generateMatchString = function() {
 	}
 	for (var j = 0; j < this.anyObjectsPresent.length; j++) {
 		fn += "\t\t&& (0";
-		for (var i = 0; i < STRIDE_OBJ; ++i) {
+		for (var i = 0; i < ENGINE.STRIDE_OBJ; ++i) {
 			var aop = this.anyObjectsPresent[j].data[i];
 			if (aop)
 				fn += "|(cellObjects" + i + "&" + aop + ")";
@@ -1296,12 +1293,12 @@ CellPattern.prototype.generateMatchString = function() {
 CellPattern.prototype.generateMatchFunction = function() {
 	var i;
 	var fn = '';
-	var mul = STRIDE_OBJ === 1 ? '' : '*'+STRIDE_OBJ;
-	for (var i = 0; i < STRIDE_OBJ; ++i) {
+	var mul = ENGINE.STRIDE_OBJ === 1 ? '' : '*'+ENGINE.STRIDE_OBJ;
+	for (var i = 0; i < ENGINE.STRIDE_OBJ; ++i) {
 		fn += '\tvar cellObjects' + i + ' = GAME_dot_level.objects[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
-	mul = STRIDE_MOV === 1 ? '' : '*'+STRIDE_MOV;
-	for (var i = 0; i < STRIDE_MOV; ++i) {
+	mul = ENGINE.STRIDE_MOV === 1 ? '' : '*'+ENGINE.STRIDE_MOV;
+	for (var i = 0; i < ENGINE.STRIDE_MOV; ++i) {
 		fn += '\tvar cellMovements' + i + ' = GAME_dot_level.movements[i' + mul + (i ? '+'+i: '') + '];\n';
 	}
 	fn += "return " + this.generateMatchString()+';';
@@ -1342,7 +1339,7 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 
 	if (!replace_RandomEntityMask.iszero()) {
 		var choices=[];
-		for (var i=0;i<32*STRIDE_OBJ;i++) {
+		for (var i=0;i<32*ENGINE.STRIDE_OBJ;i++) {
 			if (replace_RandomEntityMask.get(i)) {
 				choices.push(i);
 			}
@@ -1381,13 +1378,13 @@ CellPattern.prototype.replace = function(rule, currentIndex) {
 	if (rule.isRigid) {
 		var rigidGroupIndex = ENGINE.state.groupNumber_to_RigidGroupIndex[rule.groupNumber];
 		rigidGroupIndex++;//don't forget to -- it when decoding :O
-		var rigidMask = new BitVec(STRIDE_MOV);
+		var rigidMask = new BitVec(ENGINE.STRIDE_MOV);
 		for (var layer = 0; layer < GAME.level.layerCount; layer++) {
 			rigidMask.ishiftor(rigidGroupIndex, layer * 5);
 		}
 		rigidMask.iand(replace.movementsLayerMask);
-		curRigidGroupIndexMask = GAME.level.rigidGroupIndexMask[currentIndex] || new BitVec(STRIDE_MOV);
-		curRigidMovementAppliedMask = GAME.level.rigidMovementAppliedMask[currentIndex] || new BitVec(STRIDE_MOV);
+		curRigidGroupIndexMask = GAME.level.rigidGroupIndexMask[currentIndex] || new BitVec(ENGINE.STRIDE_MOV);
+		curRigidMovementAppliedMask = GAME.level.rigidMovementAppliedMask[currentIndex] || new BitVec(ENGINE.STRIDE_MOV);
 
 		if (!rigidMask.bitsSetInArray(curRigidGroupIndexMask.data) &&
 			!replace.movementsLayerMask.bitsSetInArray(curRigidMovementAppliedMask.data) ) {
@@ -1737,8 +1734,8 @@ export function restorePreservationState(preservationState) {
 	GAME.level.movements = new Int32Array(preservationState.movements);
 	GAME.level.rigidGroupIndexMask = preservationState.rigidGroupIndexMask.concat([]);
     GAME.level.rigidMovementAppliedMask = preservationState.rigidMovementAppliedMask.concat([]);
-    sfxCreateMask=new BitVec(STRIDE_OBJ);
-    sfxDestroyMask=new BitVec(STRIDE_OBJ);
+    sfxCreateMask=new BitVec(ENGINE.STRIDE_OBJ);
+    sfxDestroyMask=new BitVec(ENGINE.STRIDE_OBJ);
 //	rigidBackups = preservationState.rigidBackups;
 }
 
@@ -2032,8 +2029,8 @@ export function resolveMovements(dir){
 			}
     	}
 
-    	for (var j=0;j<STRIDE_MOV;j++) {
-    		GAME.level.movements[j+i*STRIDE_MOV]=0;
+    	for (var j=0;j<ENGINE.STRIDE_MOV;j++) {
+    		GAME.level.movements[j+i*ENGINE.STRIDE_MOV]=0;
     	}
 	    GAME.level.rigidGroupIndexMask[i]=0;
 	    GAME.level.rigidMovementAppliedMask[i]=0;
@@ -2125,8 +2122,8 @@ export function processInput(dir,dontCheckWin,dontModify) {
         var startRuleGroupIndex=0;
         var rigidloop=false;
         var startState = commitPreservationState();
-	    sfxCreateMask=new BitVec(STRIDE_OBJ);
-	    sfxDestroyMask=new BitVec(STRIDE_OBJ);
+	    sfxCreateMask=new BitVec(ENGINE.STRIDE_OBJ);
+	    sfxDestroyMask=new BitVec(ENGINE.STRIDE_OBJ);
 
 		seedsToPlay_CanMove=[];
 		seedsToPlay_CantMove=[];
