@@ -569,7 +569,7 @@ function checkKey(e,justPressed) {
         case 27://escape
         {
         	if (ENGINE.titleScreen===false) {
-				goToTitleScreen();
+				ENGINE.goToTitleScreen();
 		    	tryPlayTitleSound();
 				canvasResize();
 				return prevent(e)
