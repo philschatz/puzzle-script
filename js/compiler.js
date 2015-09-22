@@ -1,6 +1,8 @@
 import {Level, BitVec, ellipsisPattern, CellPattern, CellReplacement, Rule, setGameState} from './engine';
 import {consolePrint, clearInputHistory, consoleCacheDump} from './debug_off';
 import {codeMirrorFn} from './parser';
+import {globals as GRAPHICS} from './_global-graphics';
+
 
 'use strict';
 
@@ -2441,7 +2443,7 @@ export function compile(command,text,randomseed) {
 	if (randomseed===undefined) {
 		randomseed = null;
 	}
-	lastDownTarget=canvas;
+	lastDownTarget=GRAPHICS.canvas;
 
 	if (text===undefined){
 		var code = window.form1.code;

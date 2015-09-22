@@ -1,20 +1,22 @@
-// TODO: Move to globals or export object
-window.canvas = null;
-window.ctx = null;
+const canvas = document.getElementById('gameCanvas');
 
-// TODO: Move to globals or export object
-window.x;
-window.y;
-window.cellwidth;
-window.cellheight;
-window.magnification;
-window.xoffset;
-window.yoffset;
+const globals = {
+  // Used elsewhere
+  canvas: canvas,
 
-canvas = document.getElementById('gameCanvas');
-ctx = canvas.getContext('2d');
-x = 0;
-y = 0;
+  // Local to graphics
 
+  cellwidth: null,
+  cellheight: null,
+  magnification: null,
+  xoffset: null,
+  yoffset: null,
 
-window.canvasdict={};
+  ctx: canvas.getContext('2d'),
+  x: 0,
+  y: 0,
+
+  canvasdict: {}
+}
+
+export {globals}

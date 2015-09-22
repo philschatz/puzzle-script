@@ -1,6 +1,7 @@
 import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processInput, tryPlayCloseMessageSound, drawMessageScreen, DoRestart} from './engine';
 import {redraw, canvasResize} from './graphics';
 import {pushInput} from './debug_off';
+import {globals as GRAPHICS} from './_global-graphics';
 
 var keyRepeatTimer=0;
 var keyRepeatIndex=0;
@@ -337,7 +338,7 @@ function onMouseDown(event) {
 	if (event.button===0 && !(event.ctrlKey||event.metaKey) ) {
         lastDownTarget = event.target;
         keybuffer=[];
-        if (event.target===canvas) {
+        if (event.target===GRAPHICS.canvas) {
         	setMouseCoord(event);
         	dragging=true;
         	rightdragging=false;
@@ -383,7 +384,7 @@ function onKeyDown(event) {
     	return;
     }
 
-    if(lastDownTarget === canvas) {
+    if(lastDownTarget === GRAPHICS.canvas) {
     	if (keybuffer.indexOf(event.keyCode)===-1) {
     		keybuffer.splice(keyRepeatIndex,0,event.keyCode);
 	    	keyRepeatTimer=0;
@@ -450,7 +451,7 @@ var mouseCoordX=0;
 var mouseCoordY=0;
 
 function setMouseCoord(e){
-    var coords = canvas.relMouseCoords(e);
+    var coords = GRAPHICS.canvas.relMouseCoords(e);
     mouseCoordX=coords.x-xoffset;
 	mouseCoordY=coords.y-yoffset;
 	mouseCoordX=Math.floor(mouseCoordX/cellwidth);

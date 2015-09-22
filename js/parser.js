@@ -1175,6 +1175,6 @@ var codeMirrorFn = function() {
 };
 
 // TODO: is this used in the game? It's *the* lexer for the language!!!
-CodeMirror.defineMode('puzzle', codeMirrorFn);
+// CodeMirror.defineMode('puzzle', codeMirrorFn);
 
 export {codeMirrorFn};

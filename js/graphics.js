@@ -1,4 +1,4 @@
-import PHIL_HACK from './_global-graphics';
+import {globals as GRAPHICS} from './_global-graphics';
 import font from './font';
 import {sprites, _o12} from './engine';
 
@@ -82,11 +82,11 @@ var editorRowCount=1;
 
 export function makeSpriteCanvas(name) {
     var canvas;
-    if (name in canvasdict) {
-        canvas = canvasdict[name];
+    if (name in GRAPHICS.canvasdict) {
+        canvas = GRAPHICS.canvasdict[name];
     } else {
         canvas = document.createElement('canvas');
-        canvasdict[name]=canvas;
+        GRAPHICS.canvasdict[name]=canvas;
     }
 	canvas.width = cellwidth;
 	canvas.height = cellheight;
@@ -163,24 +163,8 @@ export function generateGlyphImages() {
 	}
 }
 
-// // TODO: Move to globals or export object
-// window.canvas = null;
-// window.ctx = null;
-//
-// // TODO: Move to globals or export object
-// window.x;
-// window.y;
-// window.cellwidth;
-// window.cellheight;
-// window.magnification;
-// window.xoffset;
-// window.yoffset;
-//
+
 window.addEventListener('resize', canvasResize, false);
-// canvas = document.getElementById('gameCanvas');
-// ctx = canvas.getContext('2d');
-x = 0;
-y = 0;
 
 export function glyphCount(){
     var count=0;
@@ -201,22 +185,22 @@ export function redraw() {
     }
 
     if (textMode) {
-        ctx.fillStyle = state.bgcolor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        GRAPHICS.ctx.fillStyle = state.bgcolor;
+        GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         for (var i = 0; i < titleWidth; i++) {
             for (var j = 0; j < titleHeight; j++) {
                 var ch = titleImage[j].charAt(i);
                 if (ch in textImages) {
                     var sprite = textImages[ch];
-                    ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
+                    GRAPHICS.ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
                 }
             }
         }
         return;
     } else {
-        ctx.fillStyle = state.bgcolor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        GRAPHICS.ctx.fillStyle = state.bgcolor;
+        GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         var mini=0;
         var maxi=screenwidth;
@@ -276,7 +260,7 @@ export function redraw() {
                 for (var k = 0; k < state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
-                        ctx.drawImage(sprite, xoffset + (i-mini) * cellwidth, yoffset + (j-minj) * cellheight);
+                        GRAPHICS.ctx.drawImage(sprite, xoffset + (i-mini) * cellwidth, yoffset + (j-minj) * cellheight);
                     }
                 }
             }
@@ -298,9 +282,9 @@ export function drawEditorIcons() {
 							);*/
 	var glyphsToDisplay = glyphEndIndex-glyphStartIndex;
 
-	ctx.drawImage(glyphPrintButton,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
+	GRAPHICS.ctx.drawImage(glyphPrintButton,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
 	if (mouseCoordY===(-1-editorRowCount)&&mouseCoordX===-1) {
-			ctx.drawImage(glyphMouseOver,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
@@ -311,22 +295,22 @@ export function drawEditorIcons() {
 		var sprite = glyphImages[glyphIndex];
         var xpos=i%(screenwidth-1);
         var ypos=(i/(screenwidth-1))|0;
-		ctx.drawImage(sprite,xoffset+(xpos)*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+		GRAPHICS.ctx.drawImage(sprite,xoffset+(xpos)*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		if (mouseCoordX>=0&&mouseCoordX<(screenwidth-1)&&mouseIndex===i) {
-			ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
-			ctx.drawImage(glyphHighlight,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphHighlight,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
 		}
 	}
 	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<screenwidth-1&&mouseCoordY<screenheight-1-editorRowCount) {
 		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==screenwidth-2||mouseCoordY===screenheight-2-editorRowCount) {
-			ctx.drawImage(glyphHighlightResize,
+			GRAPHICS.ctx.drawImage(glyphHighlightResize,
 				xoffset+mouseCoordX*cellwidth,
 				yoffset+mouseCoordY*cellheight
 				);
 		} else {
-			ctx.drawImage(glyphHighlight,
+			GRAPHICS.ctx.drawImage(glyphHighlight,
 				xoffset+mouseCoordX*cellwidth,
 				yoffset+mouseCoordY*cellheight
 				);
@@ -343,8 +327,8 @@ var oldtextmode=-1;
 var oldfgcolor=-1;
 var forceRegenImages=false;
 export function canvasResize() {
-    canvas.width = canvas.parentNode.clientWidth;
-    canvas.height = canvas.parentNode.clientHeight;
+    GRAPHICS.canvas.width = GRAPHICS.canvas.parentNode.clientWidth;
+    GRAPHICS.canvas.height = GRAPHICS.canvas.parentNode.clientHeight;
 
     screenwidth=level.width;
     screenheight=level.height;
@@ -370,8 +354,8 @@ export function canvasResize() {
         screenheight=titleHeight;
     }
 
-    cellwidth = canvas.width / screenwidth;
-    cellheight = canvas.height / screenheight;
+    cellwidth = GRAPHICS.canvas.width / screenwidth;
+    cellheight = GRAPHICS.canvas.height / screenheight;
 
     var w = 5;//sprites[1].dat.length;
     var h = 5;//sprites[1].dat[0].length;
@@ -390,13 +374,13 @@ export function canvasResize() {
 
     if (cellwidth > cellheight) {
         cellwidth = cellheight;
-        xoffset = (canvas.width - cellwidth * screenwidth) / 2;
-        yoffset = (canvas.height - cellheight * screenheight) / 2;
+        xoffset = (GRAPHICS.canvas.width - cellwidth * screenwidth) / 2;
+        yoffset = (GRAPHICS.canvas.height - cellheight * screenheight) / 2;
     }
     else { //if (cellheight > cellwidth) {
         cellheight = cellwidth;
-        yoffset = (canvas.height - cellheight * screenheight) / 2;
-        xoffset = (canvas.width - cellwidth * screenwidth) / 2;
+        yoffset = (GRAPHICS.canvas.height - cellheight * screenheight) / 2;
+        xoffset = (GRAPHICS.canvas.width - cellwidth * screenwidth) / 2;
     }
     magnification = ((cellwidth/w)*5)|0;
 
