@@ -2,7 +2,7 @@
  * Add gesture support for mobile devices.
  */
 
-window.Mobile = {};
+const Mobile = {};
 
 //stolen from https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js
 Mobile.hasTouch = function() {
@@ -29,7 +29,7 @@ Mobile.enable = function (force) {
     return Mobile._instance;
 };
 
-window.Mobile.GestureHandler = function () {
+Mobile.GestureHandler = function () {
     this.initialize.apply(this, arguments);
 };
 
@@ -688,9 +688,9 @@ Mobile.debugDot = function (event) {
         body.setAttribute('class', body.getAttribute('class') + ' disable-select');
     };
 
-}(window.Mobile.GestureHandler.prototype));
+}(Mobile.GestureHandler.prototype));
 
-window.Animator = function () {
+var Animator = function () {
     this.initialize.apply(this, arguments);
 };
 
@@ -742,10 +742,10 @@ window.Animator = function () {
         }
     };
 
-}(window.Animator.prototype));
+}(Animator.prototype));
 
-window.Animator.getInstance = function () {
-    if (!window.Animator._instance) {
+Animator.getInstance = function () {
+    if (!Animator._instance) {
         window.Animator._instance = new window.Animator();
     }
     return window.Animator._instance;
@@ -835,3 +835,5 @@ function Animatable(key, increment, update) {
         };
     }
 }());
+
+export default Mobile

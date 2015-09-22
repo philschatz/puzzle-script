@@ -1,3 +1,4 @@
+import Mobile from './mobile';
 
 for (var i=0;i<10;i++) {
 	var idname = "newsound"+i;
@@ -46,7 +47,7 @@ window.onbeforeunload = function (e) {
   var e = e || window.event;
   var msg = 'You have unsaved changes!';
 
-  if(_editorDirty) {      
+  if(_editorDirty) {
 
     // For IE and Firefox prior to version 4
     if (e) {

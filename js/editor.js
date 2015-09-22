@@ -1,3 +1,5 @@
+import CodeMirror from './codemirror/codemirror';
+
 var code = document.getElementById('code');
 var _editorDirty = false;
 var _editorCleanState = "";
@@ -22,13 +24,13 @@ if (fileToOpen!==null&&fileToOpen.length>0) {
 					loadDropdown.selectedIndex=0;
 			}
 		} catch(ex) {
-			
+
 		}
 	}
 }
 
 
-var editor = window.CodeMirror.fromTextArea(code, {
+var editor = CodeMirror.fromTextArea(code, {
 //	viewportMargin: Infinity,
 	lineWrapping: true,
 	lineNumbers: true,
@@ -90,9 +92,9 @@ var mapObj = {
 
 /*
 editor.on("beforeChange", function(instance, change) {
-    var startline = 
+    var startline =
     for (var i = 0; i < change.text.length; ++i)
-      text.push(change.text[i].replace(/parallel|perpendicular/gi, function(matched){ 
+      text.push(change.text[i].replace(/parallel|perpendicular/gi, function(matched){
         return mapObj[matched];
       }));
 
@@ -117,7 +119,7 @@ function tryLoadGist(id) {
 	var githubHTTPClient = new XMLHttpRequest();
 	githubHTTPClient.open('GET', githubURL);
 	githubHTTPClient.onreadystatechange = function() {
-	
+
 		if(githubHTTPClient.readyState!=4) {
 			return;
 		}
@@ -147,11 +149,11 @@ function tryLoadFile(fileName) {
 	var fileOpenClient = new XMLHttpRequest();
 	fileOpenClient.open('GET', 'demo/'+fileName+".txt");
 	fileOpenClient.onreadystatechange = function() {
-		
+
   		if(fileOpenClient.readyState!=4) {
   			return;
   		}
-  		
+
 		editor.setValue(fileOpenClient.responseText);
 		setEditorClean();
 		unloadGame();
@@ -164,4 +166,3 @@ function dropdownChange() {
 	tryLoadFile(this.value);
 	this.selectedIndex=0;
 }
-

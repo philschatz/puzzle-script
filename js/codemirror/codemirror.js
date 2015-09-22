@@ -4,16 +4,16 @@
 // You can find some technical background for some of the code below
 // at http://marijnhaverbeke.nl/blog/#cm-internals .
 
-(function(mod) {
-  // TODO: Find a better way to pull out CodeMirror as a module
-  window.CodeMirror = mod();
-  // if (typeof exports == "object" && typeof module == "object") // CommonJS
-  //   module.exports = mod();
-  // else if (typeof define == "function" && define.amd) // AMD
-  //   return define([], mod);
-  // else // Plain browser env
-  //   this.CodeMirror = mod();
-})(function() {
+// (function(mod) {
+//   // if (typeof exports == "object" && typeof module == "object") // CommonJS
+//   //   module.exports = mod();
+//   // else if (typeof define == "function" && define.amd) // AMD
+//   //   return define([], mod);
+//   // else // Plain browser env
+//   //   this.CodeMirror = mod();
+// })
+
+const codeMirrorCreator = (function() {
   "use strict";
 
   // BROWSER SNIFFING
@@ -7345,4 +7345,4 @@
 });
 
 
-export default window.CodeMirror;
+export default codeMirrorCreator();

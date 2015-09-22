@@ -5,6 +5,7 @@ import {codeMirrorFn, errorStrings, errorCount, compiling} from './parser';
 import {globals as GRAPHICS} from './_global-graphics';
 import {globals as GAME} from './globalVariables';
 import {colorPalettes} from './colors';
+import CodeMirror from './codemirror/codemirror';
 
 'use strict';
 

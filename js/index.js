@@ -12,7 +12,7 @@ import {init as engineInit} from './engine';
 import * as FOO11 from './parser';
 import {compile, qualifyURL} from './compiler';
 import * as FOO13 from './inputoutput';
-import * as FOO14 from './mobile';
+import Mobile from './mobile';
 
 
 engineInit();
