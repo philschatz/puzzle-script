@@ -35,5 +35,6 @@ export const globals = {
 	titleSelection: 0,
 	titleSelected: false,
 	introstate,
-	state: introstate
+	state: introstate,
+	messagetext: ''
 };

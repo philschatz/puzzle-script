@@ -313,11 +313,11 @@ export function drawMessageScreen() {
 	var width = ENGINE.titleImage[0].length;
 
 	var message;
-	if (messagetext==="") {
+	if (ENGINE.messagetext==="") {
 		var leveldat = ENGINE.state.levels[GAME.curlevel];
 		message = leveldat.message.trim();
 	} else {
-		message = messagetext;
+		message = ENGINE.messagetext;
 	}
 	splitMessage = wordwrap(message,ENGINE.titleImage[0].length);
 
@@ -714,8 +714,6 @@ export function RebuildLevelArrays() {
     }
 }
 
-// TODO: Move to globals
-window.messagetext="";
 export function restoreLevel(lev) {
 	GAME.oldflickscreendat=lev.oldflickscreendat.concat([]);
 
@@ -1866,7 +1864,7 @@ Rule.prototype.queueCommands = function() {
 		}
 
 		if (command[0]==='message') {
-			messagetext=command[1];
+			ENGINE.messagetext=command[1];
 		}
 	}
 };
@@ -2297,7 +2295,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 		    if (GAME.level.commandQueue.indexOf('again')>=0 && modified) {
 		    	//first have to verify that something's changed
 		    	var old_verbose_logging=GAME.verbose_logging;
-		    	var oldmessagetext = messagetext;
+		    	var oldmessagetext = ENGINE.messagetext;
 		    	GAME.verbose_logging=false;
 		    	if (processInput(-1,true,true)) {
 			    	GAME.verbose_logging=old_verbose_logging;
@@ -2315,7 +2313,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 					}
 			    }
 			    GAME.verbose_logging=old_verbose_logging;
-			    messagetext = oldmessagetext;
+			    ENGINE.messagetext = oldmessagetext;
 		    }
 		}
 
@@ -2441,7 +2439,7 @@ export function anyMovements() {
 export function nextLevel() {
 	GAME.keybuffer=[];
     GAME.againing=false;
-	messagetext="";
+	ENGINE.messagetext="";
 	if (ENGINE.titleScreen) {
 		if (ENGINE.titleSelection===0) {
 			//new game
@@ -2494,7 +2492,7 @@ export function nextLevel() {
 
 export function goToTitleScreen(){
     GAME.againing=false;
-	messagetext="";
+	ENGINE.messagetext="";
 	ENGINE.titleScreen=true;
 	ENGINE.textMode=true;
 	ENGINE.titleSelection=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;

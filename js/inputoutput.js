@@ -699,7 +699,7 @@ function update() {
         }
     }
     if (GAME.againing) {
-        if (GAME.timer>GAME.againinterval&&messagetext.length==0) {
+        if (GAME.timer>GAME.againinterval&&ENGINE.messagetext.length==0) {
             if (processInput(-1)) {
                 redraw();
                 keyRepeatTimer=0;
@@ -710,10 +710,10 @@ function update() {
     if (GAME.quittingMessageScreen) {
         if (GAME.timer/1000>0.15) {
             GAME.quittingMessageScreen=false;
-            if (messagetext==="") {
+            if (ENGINE.messagetext==="") {
             	nextLevel();
             } else {
-            	messagetext="";
+            	ENGINE.messagetext="";
             	ENGINE.textMode=false;
 				ENGINE.titleScreen=false;
 				ENGINE.titleMode=(GAME.curlevel>0||GAME.curlevelTarget!==null)?1:0;
