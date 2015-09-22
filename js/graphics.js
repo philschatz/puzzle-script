@@ -195,7 +195,7 @@ export function redraw() {
                 var ch = ENGINE.titleImage[j].charAt(i);
                 if (ch in GAME.textImages) {
                     var sprite = GAME.textImages[ch];
-                    GRAPHICS.ctx.drawImage(sprite, xoffset + i * ENGINE.cellwidth, yoffset + j * ENGINE.cellheight);
+                    GRAPHICS.ctx.drawImage(sprite, ENGINE.xoffset + i * ENGINE.cellwidth, ENGINE.yoffset + j * ENGINE.cellheight);
                 }
             }
         }
@@ -262,7 +262,7 @@ export function redraw() {
                 for (var k = 0; k < ENGINE.state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
-                        GRAPHICS.ctx.drawImage(sprite, xoffset + (i-mini) * ENGINE.cellwidth, yoffset + (j-minj) * ENGINE.cellheight);
+                        GRAPHICS.ctx.drawImage(sprite, ENGINE.xoffset + (i-mini) * ENGINE.cellwidth, ENGINE.yoffset + (j-minj) * ENGINE.cellheight);
                     }
                 }
             }
@@ -284,9 +284,9 @@ export function drawEditorIcons() {
 							);*/
 	var glyphsToDisplay = glyphEndIndex-glyphStartIndex;
 
-	GRAPHICS.ctx.drawImage(glyphPrintButton,xoffset-ENGINE.cellwidth,yoffset-ENGINE.cellheight*(1+editorRowCount));
+	GRAPHICS.ctx.drawImage(glyphPrintButton,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
 	if (mouseCoordY===(-1-editorRowCount)&&mouseCoordX===-1) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset-ENGINE.cellwidth,yoffset-ENGINE.cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
@@ -297,24 +297,24 @@ export function drawEditorIcons() {
 		var sprite = glyphImages[glyphIndex];
         var xpos=i%(ENGINE.screenwidth-1);
         var ypos=(i/(ENGINE.screenwidth-1))|0;
-		GRAPHICS.ctx.drawImage(sprite,xoffset+(xpos)*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+		GRAPHICS.ctx.drawImage(sprite,ENGINE.xoffset+(xpos)*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		if (mouseCoordX>=0&&mouseCoordX<(ENGINE.screenwidth-1)&&mouseIndex===i) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset+xpos*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
-			GRAPHICS.ctx.drawImage(glyphHighlight,xoffset+xpos*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphHighlight,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 	}
 	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<ENGINE.screenwidth-1&&mouseCoordY<ENGINE.screenheight-1-editorRowCount) {
 		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==ENGINE.screenwidth-2||mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
 			GRAPHICS.ctx.drawImage(glyphHighlightResize,
-				xoffset+mouseCoordX*ENGINE.cellwidth,
-				yoffset+mouseCoordY*ENGINE.cellheight
+				ENGINE.xoffset+mouseCoordX*ENGINE.cellwidth,
+				ENGINE.yoffset+mouseCoordY*ENGINE.cellheight
 				);
 		} else {
 			GRAPHICS.ctx.drawImage(glyphHighlight,
-				xoffset+mouseCoordX*ENGINE.cellwidth,
-				yoffset+mouseCoordY*ENGINE.cellheight
+				ENGINE.xoffset+mouseCoordX*ENGINE.cellwidth,
+				ENGINE.yoffset+mouseCoordY*ENGINE.cellheight
 				);
 		}
 	}
@@ -369,31 +369,31 @@ export function canvasResize() {
     ENGINE.cellwidth = w * ~~(ENGINE.cellwidth / w);
     ENGINE.cellheight = h * ~~(ENGINE.cellheight / h);
 
-    xoffset = 0;
-    yoffset = 0;
+    ENGINE.xoffset = 0;
+    ENGINE.yoffset = 0;
 
     if (ENGINE.cellwidth > ENGINE.cellheight) {
         ENGINE.cellwidth = ENGINE.cellheight;
-        xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
-        yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
+        ENGINE.xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
+        ENGINE.yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
     }
     else { //if (ENGINE.cellheight > ENGINE.cellwidth) {
         ENGINE.cellheight = ENGINE.cellwidth;
-        yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
-        xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
+        ENGINE.yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
+        ENGINE.xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
     }
 		// TODO: seems like magnification is unused
     ENGINE.magnification = ((ENGINE.cellwidth/w)*5)|0;
 
     if (GAME.levelEditorOpened && !ENGINE.textMode) {
-    	xoffset+=ENGINE.cellwidth;
-    	yoffset+=ENGINE.cellheight*(1+editorRowCount);
+    	ENGINE.xoffset+=ENGINE.cellwidth;
+    	ENGINE.yoffset+=ENGINE.cellheight*(1+editorRowCount);
     }
 
     ENGINE.cellwidth = ENGINE.cellwidth|0;
     ENGINE.cellheight = ENGINE.cellheight|0;
-    xoffset = xoffset|0;
-    yoffset = yoffset|0;
+    ENGINE.xoffset = ENGINE.xoffset|0;
+    ENGINE.yoffset = ENGINE.yoffset|0;
 
     if (oldcellwidth!=ENGINE.cellwidth||oldcellheight!=ENGINE.cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||forceRegenImages){
     	forceRegenImages=false;

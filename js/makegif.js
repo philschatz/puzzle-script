@@ -28,7 +28,7 @@ export function makeGIF() {
 	compile(["loadLevel",GAME.curlevel],levelString,randomseed);
 	canvasResize();
 	redraw();
-	gifctx.drawImage(canvas,-xoffset,-yoffset);
+	gifctx.drawImage(canvas,-ENGINE.xoffset,-ENGINE.yoffset);
   	encoder.addFrame(gifctx);
 	var autotimer=0;
 
@@ -46,7 +46,7 @@ export function makeGIF() {
 			processInput(val);
 		}
 		redraw();
-		gifctx.drawImage(canvas,-xoffset,-yoffset);
+		gifctx.drawImage(canvas,-ENGINE.xoffset,-ENGINE.yoffset);
 		encoder.addFrame(gifctx);
 		encoder.setDelay(realtimeframe?GAME.autotickinterval:GAME.repeatinterval);
 		autotimer+=GAME.repeatinterval;
@@ -55,7 +55,7 @@ export function makeGIF() {
 			processInput(-1);
 			redraw();
 			encoder.setDelay(GAME.againinterval);
-			gifctx.drawImage(canvas,-xoffset,-yoffset);
+			gifctx.drawImage(canvas,-ENGINE.xoffset,-ENGINE.yoffset);
 	  		encoder.addFrame(gifctx);
 		}
 	}

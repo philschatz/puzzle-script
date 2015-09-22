@@ -9,7 +9,7 @@ const globals = {
   cellwidth: null,
   cellheight: null,
   magnification: null,
-  xoffset: null,
+  xoffset: null, // TODO: Maybe these Should be 0?
   yoffset: null,
 
   ctx: canvas.getContext('2d'),
