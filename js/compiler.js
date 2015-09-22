@@ -48,7 +48,7 @@ export function generateSpriteMatrix(dat) {
 	return result;
 }
 
-// var debugMode;
+var debugMode;
 var colorPalette;
 
 export function generateExtraMembers(state) {

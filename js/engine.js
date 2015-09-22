@@ -1,6 +1,7 @@
 import {RNG} from './rng';
 import {canvasResize} from './graphics';
 import {globals as ENGINE} from './_global-engine';
+import {globals as GRAPHICS} from './_global-graphics';
 import {globals as DEBUG, clearInputHistory, consolePrint} from './debug_off';
 import {globals as GAME} from './globalVariables';
 import {logErrorCacheable} from './parser';
