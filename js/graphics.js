@@ -1,4 +1,4 @@
-import {globals as GRAPHICS} from './_global-graphics';
+import {globals as GRAPHICS, getCtx} from './_global-graphics';
 import font from './font';
 import {globals as ENGINE} from './_global-engine';
 import {sprites, _o12} from './engine';
@@ -187,22 +187,22 @@ export function redraw() {
     }
 
     if (ENGINE.textMode) {
-        GRAPHICS.ctx.fillStyle = ENGINE.state.bgcolor;
-        GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
+        getCtx().fillStyle = ENGINE.state.bgcolor;
+        getCtx().fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         for (var i = 0; i < ENGINE.titleWidth; i++) {
             for (var j = 0; j < ENGINE.titleHeight; j++) {
                 var ch = ENGINE.titleImage[j].charAt(i);
                 if (ch in GAME.textImages) {
                     var sprite = GAME.textImages[ch];
-                    GRAPHICS.ctx.drawImage(sprite, ENGINE.xoffset + i * ENGINE.cellwidth, ENGINE.yoffset + j * ENGINE.cellheight);
+                    getCtx().drawImage(sprite, ENGINE.xoffset + i * ENGINE.cellwidth, ENGINE.yoffset + j * ENGINE.cellheight);
                 }
             }
         }
         return;
     } else {
-        GRAPHICS.ctx.fillStyle = ENGINE.state.bgcolor;
-        GRAPHICS.ctx.fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
+        getCtx().fillStyle = ENGINE.state.bgcolor;
+        getCtx().fillRect(0, 0, GRAPHICS.canvas.width, GRAPHICS.canvas.height);
 
         var mini=0;
         var maxi=ENGINE.screenwidth;
@@ -262,7 +262,7 @@ export function redraw() {
                 for (var k = 0; k < ENGINE.state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
-                        GRAPHICS.ctx.drawImage(sprite, ENGINE.xoffset + (i-mini) * ENGINE.cellwidth, ENGINE.yoffset + (j-minj) * ENGINE.cellheight);
+                        getCtx().drawImage(sprite, ENGINE.xoffset + (i-mini) * ENGINE.cellwidth, ENGINE.yoffset + (j-minj) * ENGINE.cellheight);
                     }
                 }
             }
@@ -284,9 +284,9 @@ export function drawEditorIcons() {
 							);*/
 	var glyphsToDisplay = glyphEndIndex-glyphStartIndex;
 
-	GRAPHICS.ctx.drawImage(glyphPrintButton,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
+	getCtx().drawImage(glyphPrintButton,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
 	if (mouseCoordY===(-1-editorRowCount)&&mouseCoordX===-1) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
+			getCtx().drawImage(glyphMouseOver,ENGINE.xoffset-ENGINE.cellwidth,ENGINE.yoffset-ENGINE.cellheight*(1+editorRowCount));
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
@@ -297,22 +297,22 @@ export function drawEditorIcons() {
 		var sprite = glyphImages[glyphIndex];
         var xpos=i%(ENGINE.screenwidth-1);
         var ypos=(i/(ENGINE.screenwidth-1))|0;
-		GRAPHICS.ctx.drawImage(sprite,ENGINE.xoffset+(xpos)*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+		getCtx().drawImage(sprite,ENGINE.xoffset+(xpos)*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		if (mouseCoordX>=0&&mouseCoordX<(ENGINE.screenwidth-1)&&mouseIndex===i) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+			getCtx().drawImage(glyphMouseOver,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
-			GRAPHICS.ctx.drawImage(glyphHighlight,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
+			getCtx().drawImage(glyphHighlight,ENGINE.xoffset+xpos*ENGINE.cellwidth,ENGINE.yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 	}
 	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<ENGINE.screenwidth-1&&mouseCoordY<ENGINE.screenheight-1-editorRowCount) {
 		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==ENGINE.screenwidth-2||mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
-			GRAPHICS.ctx.drawImage(glyphHighlightResize,
+			getCtx().drawImage(glyphHighlightResize,
 				ENGINE.xoffset+mouseCoordX*ENGINE.cellwidth,
 				ENGINE.yoffset+mouseCoordY*ENGINE.cellheight
 				);
 		} else {
-			GRAPHICS.ctx.drawImage(glyphHighlight,
+			getCtx().drawImage(glyphHighlight,
 				ENGINE.xoffset+mouseCoordX*ENGINE.cellwidth,
 				ENGINE.yoffset+mouseCoordY*ENGINE.cellheight
 				);

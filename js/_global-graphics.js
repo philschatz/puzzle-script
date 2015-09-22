@@ -1,8 +1,6 @@
-const canvas = document.getElementById('gameCanvas');
-
 const globals = {
   // Used elsewhere
-  canvas: canvas,
+  canvas: null,
 
   // Local to graphics
 
@@ -12,7 +10,6 @@ const globals = {
   xoffset: null, // TODO: Maybe these Should be 0?
   yoffset: null,
 
-  ctx: canvas.getContext('2d'),
   x: 0,
   y: 0,
 
@@ -20,6 +17,14 @@ const globals = {
   lastDownTarget: null,
   forceRegenImages: false
 
+}
+
+export function setCanvas(canvas) {
+  globals.canvas = canvas;
+}
+
+export function getCtx() {
+  return globals.canvas.getContext('2d');
 }
 
 export {globals}
