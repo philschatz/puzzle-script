@@ -794,7 +794,7 @@ export function DoUndo(force) {
 export function getPlayerPositions() {
     var result=[];
     var playerMask = ENGINE.state.playerMask;
-    for (i=0;i<GAME.level.n_tiles;i++) {
+    for (var i=0;i<GAME.level.n_tiles;i++) {
         GAME.level.getCellInto(i,_o11);
         if (playerMask.anyBitsInCommon(_o11)) {
             result.push(i);
