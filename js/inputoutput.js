@@ -456,8 +456,8 @@ function setMouseCoord(e){
     var coords = GRAPHICS.canvas.relMouseCoords(e);
     mouseCoordX=coords.x-xoffset;
 	mouseCoordY=coords.y-yoffset;
-	mouseCoordX=Math.floor(mouseCoordX/cellwidth);
-	mouseCoordY=Math.floor(mouseCoordY/cellheight);
+	mouseCoordX=Math.floor(mouseCoordX/ENGINE.cellwidth);
+	mouseCoordY=Math.floor(mouseCoordY/ENGINE.cellheight);
 }
 
 function mouseMove(event) {

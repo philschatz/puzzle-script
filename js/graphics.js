@@ -12,12 +12,12 @@ export function createSprite(name,spritegrid, colors, padding) {
 	var sprite = makeSpriteCanvas(name);
 	var spritectx = sprite.getContext('2d');
 
-    spritectx.clearRect(0, 0, cellwidth, cellheight);
+    spritectx.clearRect(0, 0, ENGINE.cellwidth, ENGINE.cellheight);
 
 	var w = spritegrid[0].length;
 	var h = spritegrid.length;
-	var cw = ~~(cellwidth / (w + (padding|0)));
-    var ch = ~~(cellheight / (h + (padding|0)));
+	var cw = ~~(ENGINE.cellwidth / (w + (padding|0)));
+    var ch = ~~(ENGINE.cellheight / (h + (padding|0)));
     var pixh=ch;
     if ("scanline" in ENGINE.state.metadata) {
         pixh=Math.ceil(ch/2);
@@ -90,14 +90,14 @@ export function makeSpriteCanvas(name) {
         canvas = document.createElement('canvas');
         GRAPHICS.canvasdict[name]=canvas;
     }
-	canvas.width = cellwidth;
-	canvas.height = cellheight;
+	canvas.width = ENGINE.cellwidth;
+	canvas.height = ENGINE.cellheight;
 	return canvas;
 }
 
 
 export function generateGlyphImages() {
-    if (cellwidth===0||cellheight===0) {
+    if (ENGINE.cellwidth===0||ENGINE.cellheight===0) {
         return;
     }
 	glyphImagesCorrespondance=[];
@@ -126,11 +126,11 @@ export function generateGlyphImages() {
 		var spritectx = glyphHighlight.getContext('2d');
 		spritectx.fillStyle = '#FFFFFF';
 
-		spritectx.fillRect(0,0,cellwidth,1);
-		spritectx.fillRect(0,0,1,cellheight);
+		spritectx.fillRect(0,0,ENGINE.cellwidth,1);
+		spritectx.fillRect(0,0,1,ENGINE.cellheight);
 
-		spritectx.fillRect(0,cellheight-1,cellwidth,1);
-		spritectx.fillRect(cellwidth-1,0,1,cellheight);
+		spritectx.fillRect(0,ENGINE.cellheight-1,ENGINE.cellwidth,1);
+		spritectx.fillRect(ENGINE.cellwidth-1,0,1,ENGINE.cellheight);
 	}
 
 	{
@@ -142,13 +142,13 @@ export function generateGlyphImages() {
 		var spritectx = glyphHighlightResize.getContext('2d');
 		spritectx.fillStyle = '#FFFFFF';
 
-		var minx=((cellwidth/2)-1)|0;
-		var xsize=cellwidth-minx-1-minx;
-		var miny=((cellheight/2)-1)|0;
-		var ysize=cellheight-miny-1-minx;
+		var minx=((ENGINE.cellwidth/2)-1)|0;
+		var xsize=ENGINE.cellwidth-minx-1-minx;
+		var miny=((ENGINE.cellheight/2)-1)|0;
+		var ysize=ENGINE.cellheight-miny-1-minx;
 
-		spritectx.fillRect(minx,0,xsize,cellheight);
-		spritectx.fillRect(0,miny,cellwidth,ysize);
+		spritectx.fillRect(minx,0,xsize,ENGINE.cellheight);
+		spritectx.fillRect(0,miny,ENGINE.cellwidth,ysize);
 	}
 
 	{
@@ -157,11 +157,11 @@ export function generateGlyphImages() {
 		var spritectx = glyphMouseOver.getContext('2d');
 		spritectx.fillStyle = 'yellow';
 
-		spritectx.fillRect(0,0,cellwidth,2);
-		spritectx.fillRect(0,0,2,cellheight);
+		spritectx.fillRect(0,0,ENGINE.cellwidth,2);
+		spritectx.fillRect(0,0,2,ENGINE.cellheight);
 
-		spritectx.fillRect(0,cellheight-2,cellwidth,2);
-		spritectx.fillRect(cellwidth-2,0,2,cellheight);
+		spritectx.fillRect(0,ENGINE.cellheight-2,ENGINE.cellwidth,2);
+		spritectx.fillRect(ENGINE.cellwidth-2,0,2,ENGINE.cellheight);
 	}
 }
 
@@ -179,7 +179,7 @@ export function glyphCount(){
 }
 
 export function redraw() {
-    if (cellwidth===0||cellheight===0) {
+    if (ENGINE.cellwidth===0||ENGINE.cellheight===0) {
         return;
     }
     if (spriteimages===undefined) {
@@ -195,7 +195,7 @@ export function redraw() {
                 var ch = ENGINE.titleImage[j].charAt(i);
                 if (ch in GAME.textImages) {
                     var sprite = GAME.textImages[ch];
-                    GRAPHICS.ctx.drawImage(sprite, xoffset + i * cellwidth, yoffset + j * cellheight);
+                    GRAPHICS.ctx.drawImage(sprite, xoffset + i * ENGINE.cellwidth, yoffset + j * ENGINE.cellheight);
                 }
             }
         }
@@ -262,7 +262,7 @@ export function redraw() {
                 for (var k = 0; k < ENGINE.state.objectCount; k++) {
                     if (posMask.get(k) != 0) {
                         var sprite = spriteimages[k];
-                        GRAPHICS.ctx.drawImage(sprite, xoffset + (i-mini) * cellwidth, yoffset + (j-minj) * cellheight);
+                        GRAPHICS.ctx.drawImage(sprite, xoffset + (i-mini) * ENGINE.cellwidth, yoffset + (j-minj) * ENGINE.cellheight);
                     }
                 }
             }
@@ -284,9 +284,9 @@ export function drawEditorIcons() {
 							);*/
 	var glyphsToDisplay = glyphEndIndex-glyphStartIndex;
 
-	GRAPHICS.ctx.drawImage(glyphPrintButton,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
+	GRAPHICS.ctx.drawImage(glyphPrintButton,xoffset-ENGINE.cellwidth,yoffset-ENGINE.cellheight*(1+editorRowCount));
 	if (mouseCoordY===(-1-editorRowCount)&&mouseCoordX===-1) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset-cellwidth,yoffset-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset-ENGINE.cellwidth,yoffset-ENGINE.cellheight*(1+editorRowCount));
 	}
 
 	var ypos = editorRowCount-(-mouseCoordY-2)-1;
@@ -297,24 +297,24 @@ export function drawEditorIcons() {
 		var sprite = glyphImages[glyphIndex];
         var xpos=i%(ENGINE.screenwidth-1);
         var ypos=(i/(ENGINE.screenwidth-1))|0;
-		GRAPHICS.ctx.drawImage(sprite,xoffset+(xpos)*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+		GRAPHICS.ctx.drawImage(sprite,xoffset+(xpos)*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		if (mouseCoordX>=0&&mouseCoordX<(ENGINE.screenwidth-1)&&mouseIndex===i) {
-			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphMouseOver,xoffset+xpos*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 		if (i===glyphSelectedIndex) {
-			GRAPHICS.ctx.drawImage(glyphHighlight,xoffset+xpos*cellwidth,yoffset+ypos*cellheight-cellheight*(1+editorRowCount));
+			GRAPHICS.ctx.drawImage(glyphHighlight,xoffset+xpos*ENGINE.cellwidth,yoffset+ypos*ENGINE.cellheight-ENGINE.cellheight*(1+editorRowCount));
 		}
 	}
 	if (mouseCoordX>=-1&&mouseCoordY>=-1&&mouseCoordX<ENGINE.screenwidth-1&&mouseCoordY<ENGINE.screenheight-1-editorRowCount) {
 		if (mouseCoordX==-1||mouseCoordY==-1||mouseCoordX==ENGINE.screenwidth-2||mouseCoordY===ENGINE.screenheight-2-editorRowCount) {
 			GRAPHICS.ctx.drawImage(glyphHighlightResize,
-				xoffset+mouseCoordX*cellwidth,
-				yoffset+mouseCoordY*cellheight
+				xoffset+mouseCoordX*ENGINE.cellwidth,
+				yoffset+mouseCoordY*ENGINE.cellheight
 				);
 		} else {
 			GRAPHICS.ctx.drawImage(glyphHighlight,
-				xoffset+mouseCoordX*cellwidth,
-				yoffset+mouseCoordY*cellheight
+				xoffset+mouseCoordX*ENGINE.cellwidth,
+				yoffset+mouseCoordY*ENGINE.cellheight
 				);
 		}
 	}
@@ -354,8 +354,8 @@ export function canvasResize() {
         ENGINE.screenheight=ENGINE.titleHeight;
     }
 
-    cellwidth = GRAPHICS.canvas.width / ENGINE.screenwidth;
-    cellheight = GRAPHICS.canvas.height / ENGINE.screenheight;
+    ENGINE.cellwidth = GRAPHICS.canvas.width / ENGINE.screenwidth;
+    ENGINE.cellheight = GRAPHICS.canvas.height / ENGINE.screenheight;
 
     var w = 5;//sprites[1].dat.length;
     var h = 5;//sprites[1].dat[0].length;
@@ -366,41 +366,42 @@ export function canvasResize() {
         h=6;
     }
 
-    cellwidth = w * ~~(cellwidth / w);
-    cellheight = h * ~~(cellheight / h);
+    ENGINE.cellwidth = w * ~~(ENGINE.cellwidth / w);
+    ENGINE.cellheight = h * ~~(ENGINE.cellheight / h);
 
     xoffset = 0;
     yoffset = 0;
 
-    if (cellwidth > cellheight) {
-        cellwidth = cellheight;
-        xoffset = (GRAPHICS.canvas.width - cellwidth * ENGINE.screenwidth) / 2;
-        yoffset = (GRAPHICS.canvas.height - cellheight * ENGINE.screenheight) / 2;
+    if (ENGINE.cellwidth > ENGINE.cellheight) {
+        ENGINE.cellwidth = ENGINE.cellheight;
+        xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
+        yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
     }
-    else { //if (cellheight > cellwidth) {
-        cellheight = cellwidth;
-        yoffset = (GRAPHICS.canvas.height - cellheight * ENGINE.screenheight) / 2;
-        xoffset = (GRAPHICS.canvas.width - cellwidth * ENGINE.screenwidth) / 2;
+    else { //if (ENGINE.cellheight > ENGINE.cellwidth) {
+        ENGINE.cellheight = ENGINE.cellwidth;
+        yoffset = (GRAPHICS.canvas.height - ENGINE.cellheight * ENGINE.screenheight) / 2;
+        xoffset = (GRAPHICS.canvas.width - ENGINE.cellwidth * ENGINE.screenwidth) / 2;
     }
-    magnification = ((cellwidth/w)*5)|0;
+		// TODO: seems like magnification is unused
+    ENGINE.magnification = ((ENGINE.cellwidth/w)*5)|0;
 
     if (GAME.levelEditorOpened && !ENGINE.textMode) {
-    	xoffset+=cellwidth;
-    	yoffset+=cellheight*(1+editorRowCount);
+    	xoffset+=ENGINE.cellwidth;
+    	yoffset+=ENGINE.cellheight*(1+editorRowCount);
     }
 
-    cellwidth = cellwidth|0;
-    cellheight = cellheight|0;
+    ENGINE.cellwidth = ENGINE.cellwidth|0;
+    ENGINE.cellheight = ENGINE.cellheight|0;
     xoffset = xoffset|0;
     yoffset = yoffset|0;
 
-    if (oldcellwidth!=cellwidth||oldcellheight!=cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||forceRegenImages){
+    if (oldcellwidth!=ENGINE.cellwidth||oldcellheight!=ENGINE.cellheight||oldtextmode!=ENGINE.textMode||oldfgcolor!=ENGINE.state.fgcolor||forceRegenImages){
     	forceRegenImages=false;
     	regenSpriteImages();
     }
 
-    oldcellheight=cellheight;
-    oldcellwidth=cellwidth;
+    oldcellheight=ENGINE.cellheight;
+    oldcellwidth=ENGINE.cellwidth;
     oldtextmode=ENGINE.textMode;
     oldfgcolor=ENGINE.state.fgcolor;
 
