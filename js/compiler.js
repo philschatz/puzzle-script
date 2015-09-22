@@ -46,8 +46,6 @@ export function generateSpriteMatrix(dat) {
 	return result;
 }
 
-// TODO: use globals or something
-window.debugMode = null;
 // var debugMode;
 var colorPalette;
 
@@ -2359,7 +2357,7 @@ export function formatHomePage(state){
 
 var MAX_ERRORS=5;
 export function loadFile(str) {
-	window.console.log('loadFile');
+	// console.log('loadFile');
 
 	var processor = new codeMirrorFn();
 	var state = processor.startState();
@@ -2389,9 +2387,9 @@ export function loadFile(str) {
 
 	removeDuplicateRules(state);
 
-	if (debugMode) {
-		printRules(state);
-	}
+	// if (debugMode) {
+	// 	printRules(state);
+	// }
 
 	rulesToMask(state);
 	arrangeRulesByGroupNumber(state);
@@ -2445,13 +2443,6 @@ export function compile(command,text,randomseed) {
 	}
 	lastDownTarget=GRAPHICS.canvas;
 
-	if (text===undefined){
-		var code = window.form1.code;
-
-		var editor = code.editorreference;
-
-		text = editor.getValue()+"\n";
-	}
 	if (canDump===true) {
 		compiledText=text;
 	}
