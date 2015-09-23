@@ -2453,6 +2453,7 @@ export function nextLevel() {
 			GAME.curlevelTarget=null;
 			goToTitleScreen();
 			tryPlayEndGameSound();
+			GAME.onWinGame();
 		}
 		//continue existing game
 	}

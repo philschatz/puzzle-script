@@ -15,6 +15,11 @@ DEBUG.canYoutube = false;
 class GameEngine {
 	start(node, gameData) {
 		this.node = node;
+
+		// Just in case no one specifies the `onWinGame`
+		if (!GAME.onWinGame) {
+			GAME.onWinGame = () => {return};
+		}
 		this._load();
 		addGraphicsListeners(this.node);
 		addInputOutputListeners(this.node);
@@ -41,6 +46,9 @@ class GameEngine {
 	}
 	setLoader(fn) {
 		this._loader = fn;
+	}
+	setOnWinGame(fn) {
+		GAME.onWinGame = fn;
 	}
 
 	_load() {
