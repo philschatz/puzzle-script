@@ -455,7 +455,7 @@ var powerUp = function() {
 };
 
 var hitHurt = function() {
-  result = Params();
+  var result = Params();
   result.wave_type = rnd(2);
   if (result.wave_type === SINE)
     result.wave_type = NOISE;
@@ -474,7 +474,7 @@ var hitHurt = function() {
 
 
 var jump = function() {
-  result = Params();
+  var result = Params();
   result.wave_type = SQUARE;
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
@@ -494,7 +494,7 @@ var jump = function() {
 };
 
 var blipSelect = function() {
-  result = Params();
+  var result = Params();
   result.wave_type = rnd(1);
   result.wave_type = Math.floor(frnd(SHAPES.length));
   if (result.wave_type === 3) {
@@ -511,7 +511,7 @@ var blipSelect = function() {
 };
 
 var random = function() {
-  result = Params();
+  var result = Params();
   result.wave_type = Math.floor(frnd(SHAPES.length));
   result.p_base_freq = Math.pow(frnd(2.0) - 1.0, 2.0);
   if (rnd(1))

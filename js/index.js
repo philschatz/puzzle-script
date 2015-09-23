@@ -1,4 +1,5 @@
 import {setCanvas} from './_global-graphics';
+import {globals as DEBUG} from './debug_off';
 import {globals as GAME} from './globalVariables';
 import {globals as ENGINE} from './_global-engine';
 import {init as engineInit} from './engine';
@@ -8,6 +9,8 @@ import Mobile from './mobile';
 import {addListeners as addGraphicsListeners, removeListeners as removeGraphicsListeners} from './graphics';
 import {addListeners as addInputOutputListeners, removeListeners as removeInputOutputListeners, startGameLoop, stopGameLoop} from './inputoutput';
 
+
+DEBUG.canYoutube = false;
 
 class GameEngine {
 	start(node, gameData) {

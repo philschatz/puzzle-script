@@ -145,6 +145,8 @@ var titletemplate_select1_selected = [
 	".Z to undo, R to restart..........",
 	".................................."];
 
+var ifrm; // iframe for youtube music
+
 
 export function unloadGame() {
 	ENGINE.state=ENGINE.introstate;

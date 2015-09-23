@@ -1,4 +1,4 @@
-var colorPalettesAliases = {
+export const colorPalettesAliases = {
 	1 : "mastersystem",
 	2 : "gameboycolour",
 	3 : "amiga",
