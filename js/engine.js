@@ -2270,15 +2270,7 @@ export function processInput(dir,dontCheckWin,dontModify) {
 				}
 				restartTarget=backupLevel();
 				GAME.curlevelTarget=restartTarget;
-				localStorage[document.URL+'_checkpoint']=JSON.stringify(restartTarget);
-				//test line, remove later!:
-				var restored = JSON.parse(localStorage[document.URL+'_checkpoint']);
-				var arr = [];
-				for(var p in Object.getOwnPropertyNames(restored.dat)) {
-				    arr[p] = restored.dat[p];
-				}
-				restored.dat = new Int32Array(arr);
-				localStorage[document.URL]=GAME.curlevel;
+				GAME.stateSaver(GAME.curlevel, restartTarget);
 			}
 
 		    if (GAME.level.commandQueue.indexOf('again')>=0 && modified) {
@@ -2462,18 +2454,7 @@ export function nextLevel() {
 		}
 		//continue existing game
 	}
-	try {
-		if (!!window.localStorage) {
-			localStorage[document.URL]=GAME.curlevel;
-			if (GAME.curlevelTarget!==null){
-				localStorage[document.URL+"_checkpoint"]=JSON.stringify(GAME.curlevelTarget);
-			} else {
-				localStorage.removeItem(document.URL+"_checkpoint");
-			}
-		}
-	} catch (ex) {
-
-	}
+	GAME.stateSaver(GAME.curlevel, GAME.curlevelTarget);
 
 	canvasResize();
 	clearInputHistory();

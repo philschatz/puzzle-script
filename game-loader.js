@@ -53,6 +53,7 @@ function getData(){
 		// -------------------------------------------------------------------------
 		// -------------------------------------------------------------------------
 		const node = document.getElementById('gameCanvas');
+		GameEngine.useDefaultSaveAndLoad(document.URL);
 		GameEngine.start(node, code);
 		window.GameEngine = GameEngine;
 		// GameEngine.stop(node);
