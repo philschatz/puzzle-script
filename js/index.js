@@ -11,6 +11,7 @@ import {addListeners as addInputOutputListeners, removeListeners as removeInputO
 
 
 DEBUG.canYoutube = false;
+DEBUG.canSetHTMLColors = false;
 
 class GameEngine {
 	start(node, gameData) {
