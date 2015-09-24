@@ -1,4 +1,4 @@
-import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processInput, tryPlayCloseMessageSound, drawMessageScreen, DoRestart, DoUndo} from './engine';
+import {generateTitleScreen, tryPlayStartGameSound, nextLevel, sprites, processInput, tryPlayCloseMessageSound, drawMessageScreen, DoRestart, DoUndo, checkWin} from './engine';
 import {redraw, canvasResize} from './graphics';
 import {globals as DEBUG, pushInput} from './debug_off';
 import {globals as GRAPHICS} from './_global-graphics';
