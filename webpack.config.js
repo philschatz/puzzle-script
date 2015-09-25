@@ -19,7 +19,7 @@ var config = {
     // ],
     loaders: [
       //TODO: re-enable use-strict
-      { test: /\.js$/, loaders: ['babel?blacklist=useStrict'], exclude: /node_modules/ },
+      { test: /\.js$/, loaders: ['babel?blacklist=useStrict'] },
     ]
   },
 };

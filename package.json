@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "./node_modules/.bin/webpack --progress --colors",
+    "postinstall": "webpack --progress --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
