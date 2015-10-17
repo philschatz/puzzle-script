@@ -21,6 +21,11 @@ class GameEngine {
 		if (!GAME.onWinGame) {
 			GAME.onWinGame = () => {return};
 		}
+
+		// Clear these if they were set by another game. also cleared in .stop() just to be safe
+		GAME.curlevel = 0;
+		GAME.curlevelTarget = null;
+
 		this._load();
 		addGraphicsListeners(this.node);
 		addInputOutputListeners(this.node);
@@ -41,6 +46,10 @@ class GameEngine {
 		removeGraphicsListeners(this.node);
 		removeInputOutputListeners(this.node);
 		stopGameLoop();
+
+		// Clear these if they were set by another game. also cleared in .start() just to be safe
+		GAME.curlevel = 0;
+		GAME.curlevelTarget = null;
 	}
 	setSaver(fn) {
 		GAME.stateSaver = fn;
