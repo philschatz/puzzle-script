@@ -25,28 +25,18 @@ function strip_http(url) {
 }
 
 function getData(){
-	var id = getParameterByName("p").replace(/[\\\/]/,"");
-	if (id===null||id.length===0) {
-		displayError("No ID specified in URL.")
-		return;
-	}
-
-	var githubURL = 'https://api.github.com/gists/'+id;
+	var url = './games/' + prompt('Which game?', 'bubble') + '.txt';
 
 	var githubHTTPClient = new XMLHttpRequest();
-	githubHTTPClient.open('GET', githubURL);
+	githubHTTPClient.open('GET', url);
 	githubHTTPClient.onreadystatechange = function() {
 		if(githubHTTPClient.readyState!=4) {
 			return;
 		}
-		var result = JSON.parse(githubHTTPClient.responseText);
-		if (githubHTTPClient.status===403) {
-			displayError(result.message);
-		} else if (githubHTTPClient.status!==200&&githubHTTPClient.status!==201) {
-			displayError("HTTP Error "+ githubHTTPClient.status + ' - ' + githubHTTPClient.statusText);
+		if (githubHTTPClient.status!==200&&githubHTTPClient.status!==201) {
+			alert('Bad Filename. Refresh and Try again');
 		}
-		var result = JSON.parse(githubHTTPClient.responseText);
-		var code=result["files"]["script.txt"]["content"];
+		var code = githubHTTPClient.responseText;
 
 
 		// -------------------------------------------------------------------------
@@ -81,41 +71,13 @@ function getData(){
                 Mobile.enable();
 		var hacklink = document.getElementById("hacklink");
 
-		var url = "editor.html?hack="+id;
-		url=qualifyURL(url);
-
-		hacklink.href=url;
+		// var url = "editor.html?hack="+id;
+		// url=qualifyURL(url);
+		//
+		// hacklink.href=url;
 	}
 	githubHTTPClient.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	githubHTTPClient.send();
 }
 
 getData();
-
-
-
-		// var code=result["files"]["script.txt"]["content"];
-		// compile(["restart"],code);
-		//
-		// if (state.metadata.homepage!==undefined) {
-		// 	var homepage=state.metadata.homepage;
-		// 	var homepageLink = document.getElementById("homepagelink");
-		// 	homepageLink.innerHTML=strip_http(homepage);
- 	// 		if (!homepage.match(/^https?:\/\//)) {
- 	// 			homepage = "http://" + homepage;
- 	// 		}
- 	// 		homepageLink.href = homepage;
-		// }
-		// if (state.metadata.title!==undefined) {
-		// 	var title=state.metadata.title;
-		// 	var gametitle = document.getElementById("gametitle");
-		// 	gametitle.innerHTML=title;
-		// 	window.document.title=title+" - PuzzleScript Game";
-		// }
-    //             Mobile.enable();
-		// var hacklink = document.getElementById("hacklink");
-		//
-		// var url = "editor.html?hack="+id;
-		// url=qualifyURL(url);
-		//
-		// hacklink.href=url;

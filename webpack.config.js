@@ -4,10 +4,10 @@ var webpack = require('webpack');
 var config = {
   context: path.resolve(__dirname),
   entry: [
-    './js/index.js'
+    './js/index.js' // './game-loader.js'
   ],
   output: {
-    // library: 'PuzzleScript',
+    library: 'PuzzleScript',
     libraryTarget: 'umd',
     path: __dirname + '/dist',
     publicPath: '/dist/',
