@@ -1,6 +1,6 @@
 {
   "name": "puzzle-script",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Embeddable Puzzle-Script Engine",
   "main": "index.js",
   "directories": {
