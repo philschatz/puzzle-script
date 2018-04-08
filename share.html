@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <title>PuzzleScript</title>
+
+
+</head>
+<body>
+
+<div id="leftpanel">
+<form id="form1" name="form1"  method="POST" action="/share"><textarea id="code" class="codeform" name="code" rows="20" cols="20">
+</textarea>
+
+<input type="submit" value="Create Gist on GitHub (you may need to authenticate)"/>
+</form>
+</div>
+
+<script>
+
+// Wait a little bit to help ensure that the game in the previous tab was saved into localStorage
+setTimeout(function() {
+  var saves = JSON.parse(window.localStorage['saves'])
+  document.querySelector('#code').value = saves[saves.length - 1].text
+  document.forms["form1"].submit()
+}, 1000)
+
+</script>
+
+</body>
+</html>

@@ -154,59 +154,10 @@ function shareClick() {
 	compile();
 
 
-	var source=editor.getValue();
-
-	var gistToCreate = {
-		"description" : "title",
-		"public" : true,
-		"files": {
-			"readme.txt" : {
-				"content": "Play this game by pasting the script in http://www.puzzlescript.net/editor.html"
-			},
-			"script.txt" : {
-				"content": source
-			}
-		}
-	};
-
-	var githubURL = 'https://api.github.com/gists';
-	var githubHTTPClient = new XMLHttpRequest();
-	githubHTTPClient.open('POST', githubURL);
-	githubHTTPClient.onreadystatechange = function() {		
-		if(githubHTTPClient.readyState!=4) {
-			return;
-		}		
-		var result = JSON.parse(githubHTTPClient.responseText);
-		if (githubHTTPClient.status===403) {
-			consoleError(result.message);
-		} else if (githubHTTPClient.status!==200&&githubHTTPClient.status!==201) {
-			consoleError("HTTP Error "+ githubHTTPClient.status + ' - ' + githubHTTPClient.statusText);
-		} else {
-			var id = result.id;
-			var url = "play.html?p="+id;
-			url=qualifyURL(url);
-
-			var editurl = "editor.html?hack="+id;
-			editurl=qualifyURL(editurl);
-			var sourceCodeLink = "link to source code:<br><a target=\"_blank\"  href=\""+editurl+"\">"+editurl+"</a>";
-
-
-			consolePrint("GitHub submission successful - " + sourceCodeLink,true);
-
-
-			if (errorCount>0) {
-				consolePrint("Cannot link directly to playable game, because there are compiler errors.",true);
-			} else {
-				consolePrint("The game can now be played at this url:<br><a target=\"_blank\" href=\""+url+"\">"+url+"</a>",true);
-			} 
-
-
-		}
-	}
-	githubHTTPClient.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	var stringifiedGist = JSON.stringify(gistToCreate);
-	githubHTTPClient.send(stringifiedGist);
-    lastDownTarget=canvas;	
+	// Save the game to localStorage. The newly-opened tab (which does the OAuth dance)
+	// will use the most-recently-saved Game as the Game data for creating the Gist
+	saveClick();
+  lastDownTarget=canvas;
 }
 
 function rebuildClick() {

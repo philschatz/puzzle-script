@@ -1,0 +1,19 @@
+{
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./server.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.2.6",
+    "axios": "^0.18.0",
+    "dotenv": "^5.0.1",
+    "jsonwebtoken": "^8.2.1",
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-route": "^3.2.0",
+    "koa-static": "^4.0.2",
+    "query-string": "^6.0.0",
+    "sha1": "^1.1.1",
+    "util": "^0.10.3"
+  }
+}
